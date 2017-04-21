@@ -1,5 +1,5 @@
 using System;
-using Skarpdev.DotnetVersion.Parser;
+using Skarpdev.DotnetVersion;
 using Xunit;
 
 namespace Skarpdev.DotnetVersion.Test
