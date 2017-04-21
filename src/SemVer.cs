@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace Skarpdev.DotnetVersion
@@ -7,15 +8,53 @@ namespace Skarpdev.DotnetVersion
     {
         private static Regex _versionPartRegex = new Regex(@"^\d$", RegexOptions.Compiled);
 
-        public SemVer()
+        /// <summary>
+        /// Bump the currently parsed version information with the specified <paramref name="bump">
+        /// </summary>
+        /// <param name="bump">The bump to apply to the version</param>
+        public void Bump(VersionBump bump)
         {
+            switch(bump)
+            {
+                case VersionBump.Major:
+                {
+                    Major += 1;
+                    Minor = 0;
+                    Patch = 0;
+                    break;
+                }    
+                case VersionBump.Minor:
+                {
+                    Minor += 1;
+                    Patch = 0;
+                    break;
+                }
+                case VersionBump.Patch:
+                {
+                    Patch += 1;
+                    break;
+                }
+                default:
+                {
+                    throw new ArgumentOutOfRangeException($"VersionBump : {bump} not supported");
+                }
+            }
         }
 
-        public string Bump(VersionBump bump)
+        /// <summary>
+        /// Serialize the parsed version information into a version string
+        /// </summary>
+        /// <returns></returns>
+        public string ToVersionString()
         {
-            throw new NotImplementedException("Bumping is not yet implemented");
+            return $"{Major}.{Minor}.{Patch}";
         }
 
+        /// <summary>
+        /// Create a new instance of a SemVer based off the version string
+        /// </summary>
+        /// <param name="versionString">The version string to parse into a SemVer instance</param>
+        /// <returns></returns>
         public static SemVer FromString(string versionString)
         {
             var parts = versionString.Split('.');
@@ -44,13 +83,22 @@ namespace Skarpdev.DotnetVersion
             return Convert.ToInt32(value);
         }
 
+        /// <summary>
+        /// The parsed major version
+        /// </summary>
+        /// <returns></returns>
         public int Major { get; set; }
 
+        /// <summary>
+        /// The parsed minor version
+        /// </summary>
+        /// <returns></returns>
         public int Minor { get; set; }
 
+        /// <summary>
+        /// The parsed patch version
+        /// </summary>
+        /// <returns></returns>
         public int Patch { get; set; }
-
-        public string Additional {get; set;}
-
     }
 }
