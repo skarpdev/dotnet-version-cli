@@ -3,5 +3,6 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp1.1</TargetFramework>
     <RootNamespace>Skarpdev.DotnetVersion</RootNamespace>
+    <Version>0.0.1</Version>
   </PropertyGroup>
 </Project>
