@@ -24,8 +24,9 @@ namespace Skarpdev.DotnetVersion.Vcs
         /// When implemented by a concrete class it allows to create a commit with the 
         /// changed version in the project file
         /// </summary>
+        /// <param name="csProjFilePath">Path to the cs project file</param>
         /// <param name="message">The message to create the commit message with</param>
-        void Commit(string message);
+        void Commit(string csProjFilePath, string message);
 
         /// <summary>
         /// When implemented by a concrete class it will tag the latest commit with the

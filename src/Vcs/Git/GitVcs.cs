@@ -8,10 +8,19 @@ namespace Skarpdev.DotnetVersion.Vcs.Git
         /// <summary>
         /// Creates a new commit with the given message
         /// </summary>
+        /// <param name="csProjFilePath">Path to the cs project file that was version updated</param>
         /// <param name="message">The message to include in the commit</param>
-        public void Commit(string message)
+        public void Commit(string csProjFilePath, string message)
         {
-            throw new NotImplementedException();
+            if(!LaunchGitWithArgs($"git add {csProjFilePath}"))
+            {
+                throw new OperationCanceledException($"Unable to add cs proj file {csProjFilePath} to git index");
+            }
+
+            if(!LaunchGitWithArgs($"git commit -m {message}"))
+            {
+                throw new OperationCanceledException("Unable to commit");
+            }
         }
 
         /// <summary>
@@ -39,7 +48,10 @@ namespace Skarpdev.DotnetVersion.Vcs.Git
         /// <param name="tagName">Name of the tag</param>
         public void Tag(string tagName)
         {
-            throw new NotImplementedException();
+            if(!LaunchGitWithArgs($"tag {tagName}"))
+            {
+                throw new OperationCanceledException("Unable to create tag");
+            }
         }
 
         private static bool LaunchGitWithArgs(string args, int waitForExitTimeMs = 1000, int exitCode = 0)
