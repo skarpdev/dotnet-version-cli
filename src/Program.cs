@@ -1,12 +1,12 @@
 ﻿using System;
 
-namespace src
+namespace Skarpdev.DotnetVersion
 {
     class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Dotnet Version CLI");
+            Console.WriteLine("dotnet-version cli is alive");
         }
     }
 }
