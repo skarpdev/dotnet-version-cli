@@ -6,6 +6,12 @@ namespace Skarpdev.DotnetVersion.Vcs
     public interface IVcs
     {
         /// <summary>
+        /// When implemented by a concrete class it returns the name of the VCS tool
+        /// </summary>
+        /// <returns></returns>
+        string ToolName();
+
+        /// <summary>
         /// When implemented by a concrete class it determines whether the necessary tools
         /// are available in the current CLI contenxt - i.e check that `git` command can be found
         /// and executed

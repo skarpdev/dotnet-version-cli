@@ -80,5 +80,10 @@ namespace Skarpdev.DotnetVersion.Vcs.Git
                 RedirectStandardOutput = true,
             };
         }
+
+        public string ToolName()
+        {
+            return "git";
+        }
     }
 }
