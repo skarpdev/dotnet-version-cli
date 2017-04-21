@@ -6,6 +6,14 @@ namespace Skarpdev.DotnetVersion.Vcs
     public interface IVcs
     {
         /// <summary>
+        /// When implemented by a concrete class it determines whether the necessary tools
+        /// are available in the current CLI contenxt - i.e check that `git` command can be found
+        /// and executed
+        /// </summary>
+        /// <returns><c>true</c> if the tool exists, <c>false</c> otherwise</returns>
+        bool IsVcsToolPresent();
+        
+        /// <summary>
         /// When implemented by a concrete class it returns <c>true</c> if the 
         /// current HEAD of the local repository is clean - i.e no pending changes
         /// </summary>
