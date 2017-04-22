@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Xml.Linq;
 
-namespace Skarpdev.DotnetVersion
+namespace Skarpdev.DotnetVersion.CsProj
 {
     public class ProjectFileParser
     {

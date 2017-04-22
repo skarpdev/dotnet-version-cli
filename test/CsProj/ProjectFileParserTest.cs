@@ -1,4 +1,5 @@
 using System;
+using Skarpdev.DotnetVersion.CsProj;
 using Xunit;
 
 namespace Skarpdev.DotnetVersion.Test
