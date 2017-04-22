@@ -1,6 +1,7 @@
 using System;
 using Skarpdev.DotnetVersion.Vcs;
 using Skarpdev.DotnetVersion.CsProj;
+using Skarpdev.DotnetVersion.CsProj.FileSystem;
 
 namespace Skarpdev.DotnetVersion
 {
@@ -32,12 +33,12 @@ namespace Skarpdev.DotnetVersion
                 Environment.Exit(1);
             }
 
-            if(!_vcsTool.IsRepositoryClean())
+            if (!_vcsTool.IsRepositoryClean())
             {
                 Console.WriteLine($"You currently have uncomitted changes in your repository, please commit these and try again");
                 Environment.Exit(1);
             }
-            
+
             var csProjXml = _fileDetector.FindAndLoadCsProj(csProjFilePath);
             _fileParser.Load(csProjXml);
 
@@ -45,8 +46,8 @@ namespace Skarpdev.DotnetVersion
             semVer.Bump(bump);
 
             var patchedCsProjXml = _fileVersionPatcher.Patch(
-                csProjXml, 
-                _fileParser.Version, 
+                csProjXml,
+                _fileParser.Version,
                 semVer.ToVersionString()
             );
             _fileVersionPatcher.Flush(
@@ -54,6 +55,12 @@ namespace Skarpdev.DotnetVersion
                 _fileDetector.ResolvedCsProjFile
             );
 
+            // TODO Run git commands
+
+            Console.WriteLine(
+                "Bumped {0} to version {1}",
+                _fileDetector.ResolvedCsProjFile,
+                semVer.ToVersionString());
         }
 
         public void DumpVersion(string csProjFilePath = "")
