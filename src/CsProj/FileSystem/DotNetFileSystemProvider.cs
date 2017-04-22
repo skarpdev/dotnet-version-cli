@@ -32,7 +32,7 @@ namespace Skarpdev.DotnetVersion.CsProj.FileSystem
         /// <returns></returns>
         public string Cwd()
         {
-            return System.AppContext.BaseDirectory;
+            return Directory.GetCurrentDirectory();
         }
 
         /// <summary>
