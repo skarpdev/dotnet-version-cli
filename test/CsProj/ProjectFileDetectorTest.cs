@@ -91,9 +91,6 @@ namespace Skarpdev.DotnetVersion.Test.CsProj
             A.CallTo(() =>
                 fakeFileSystem.LoadContent(A<string>.That.Matches(str => str == theCsProjFile))
             ).Returns(_projectXml);
-            A.CallTo(() =>
-                fakeFileSystem.GetPathFromProjectFile(A<string>._)
-            ).Returns(rootPath);
 
             var detect = new ProjectFileDetector(fakeFileSystem);
             var xml = detect.FindAndLoadCsProj(theCsProjFile);
@@ -125,9 +122,6 @@ namespace Skarpdev.DotnetVersion.Test.CsProj
             A.CallTo(() =>
                 fakeFileSystem.LoadContent(A<string>.That.Matches(str => str == theCsProjFile))
             ).Returns(_projectXml);
-            A.CallTo(() =>
-                fakeFileSystem.GetPathFromProjectFile(A<string>._)
-            ).Returns(rootPath);
 
             var detect = new ProjectFileDetector(fakeFileSystem);
             var xml = detect.FindAndLoadCsProj("");

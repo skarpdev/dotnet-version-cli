@@ -19,13 +19,6 @@ namespace Skarpdev.DotnetVersion.CsProj.FileSystem
         bool IsCsProjectFile(string path);
 
         /// <summary>
-        /// Returns the path where the given csproj file is stored
-        /// </summary>
-        /// <param name="csProjFilePath"></param>
-        /// <returns></returns>
-        string GetPathFromProjectFile(string csProjFilePath);
-
-        /// <summary>
         /// Get the current working directory
         /// </summary>
         /// <returns></returns>
