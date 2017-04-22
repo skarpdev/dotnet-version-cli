@@ -5,7 +5,7 @@ namespace Skarpdev.DotnetVersion.Test
 {
     public class GitVcsTest
     {
-        private GitVcs _vcs;
+        private readonly GitVcs _vcs;
 
         public GitVcsTest()
         {
