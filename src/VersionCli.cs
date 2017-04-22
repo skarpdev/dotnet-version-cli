@@ -44,23 +44,25 @@ namespace Skarpdev.DotnetVersion
 
             var semVer = SemVer.FromString(_fileParser.Version);
             semVer.Bump(bump);
-
+            string newVersion = semVer.ToVersionString();
             var patchedCsProjXml = _fileVersionPatcher.Patch(
                 csProjXml,
                 _fileParser.Version,
-                semVer.ToVersionString()
+                newVersion
             );
             _fileVersionPatcher.Flush(
                 patchedCsProjXml,
                 _fileDetector.ResolvedCsProjFile
             );
 
-            // TODO Run git commands
+            // Run git commands
+            _vcsTool.Commit(_fileDetector.ResolvedCsProjFile, $"v{newVersion}");
+            _vcsTool.Tag($"v{newVersion}");
 
             Console.WriteLine(
                 "Bumped {0} to version {1}",
                 _fileDetector.ResolvedCsProjFile,
-                semVer.ToVersionString());
+                newVersion);
         }
 
         public void DumpVersion(string csProjFilePath = "")
