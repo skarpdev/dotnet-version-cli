@@ -4,6 +4,13 @@
     <TargetFramework>netcoreapp1.0</TargetFramework>
     <RootNamespace>Skarpdev.DotnetVersion</RootNamespace>
     <Version>0.1.0</Version>
+
+    <PackageTags>dotnet core;version; npm version;version patch;</PackageTags>
+    <PackageProjectUrl>https://github.com/skarpdev/dotnet-version-cli/</PackageProjectUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/skarpdev/dotnet-version-cli/master/LICENSE</PackageLicenseUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/skarpdev/dotnet-version-cli/</RepositoryUrl>
     <PackageId>dotnet-version-cli</PackageId>
   </PropertyGroup>
   <ItemGroup>
