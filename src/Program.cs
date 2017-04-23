@@ -14,7 +14,7 @@ namespace Skarpdev.DotnetVersion
 
         static void Main(string[] args)
         {
-            Console.WriteLine("dotnet-version cli");
+            Console.WriteLine("dotnet-version-cli");
             SetUpLogging();
             SetUpDependencies();
 
