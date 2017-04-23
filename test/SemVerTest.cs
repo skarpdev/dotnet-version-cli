@@ -28,7 +28,7 @@ namespace Skarpdev.DotnetVersion.Test
         {
             var ex = Assert.Throws<ArgumentException>(() => SemVer.FromString(version));
             Assert.Equal(ex.ParamName, "versionString");
-            Assert.Equal(ex.Message, $"Malformed version part: {version}\nParameter name: versionString");
+            Assert.Equal(ex.Message, $"Malformed version part: {version}{Environment.NewLine}Parameter name: versionString");
         }
 
         [Theory]
