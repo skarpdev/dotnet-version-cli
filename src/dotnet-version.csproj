@@ -5,6 +5,9 @@
     <RootNamespace>Skarpdev.DotnetVersion</RootNamespace>
     <Version>0.1.0</Version>
 
+    <Title>dotnet-version-cli</Title>
+    <Authors>nover</Authors>
+    <Description>A dotnet core CliTool for changing your csproj Version and automatically comitting and tagging - npm version style.</Description>
     <PackageTags>dotnet core;version; npm version;version patch;</PackageTags>
     <PackageProjectUrl>https://github.com/skarpdev/dotnet-version-cli/</PackageProjectUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/skarpdev/dotnet-version-cli/master/LICENSE</PackageLicenseUrl>
