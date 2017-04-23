@@ -1,9 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp1.0</TargetFramework>
     <RootNamespace>Skarpdev.DotnetVersion</RootNamespace>
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
 
     <Title>dotnet-version-cli</Title>
     <Authors>nover</Authors>
