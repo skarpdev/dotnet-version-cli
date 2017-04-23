@@ -33,4 +33,4 @@ exec { & dotnet build }
 
 exec { & dotnet test .\test\dotnet-version-test.csproj -c Release }
 
-exec { & dotnet pack .\src\dotnet-version.csproj -c Release -o .\artifacts --include-source }
+exec { & dotnet pack .\src\dotnet-version.csproj -c Release -o ..\artifacts --include-source }
