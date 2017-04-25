@@ -48,16 +48,13 @@ namespace Skarpdev.DotnetVersion
             var regex = new Regex(@"(major)|(minor)|(patch)", RegexOptions.Compiled);
             foreach (var arg in remainingArguments)
             {
-                if (regex.IsMatch(arg))
-                {
-                    VersionBump bump;
-                    if (!Enum.TryParse(arg, true, out bump))
-                    {
-                        Console.WriteLine($"Invalid version bump specified: {arg}");
-                        Environment.Exit(1);
-                    }
-                    return bump;
-                }
+                if (!regex.IsMatch(arg)) continue;
+                VersionBump bump;
+                if (Enum.TryParse(arg, true, out bump)) return bump;
+
+                Console.WriteLine($"Invalid version bump specified: {arg}");
+                Environment.Exit(1);
+                return bump;
             }
             Console.WriteLine("No version bump specified, please specify one of:\n\tmajor | minor | patch");
             Environment.Exit(1);

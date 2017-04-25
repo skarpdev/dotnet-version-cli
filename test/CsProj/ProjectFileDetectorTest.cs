@@ -22,8 +22,8 @@ namespace Skarpdev.DotnetVersion.Test.CsProj
         [Fact]
         public void CanDetectCsProjFileWithGivenBootstrapFolder()
         {
-            var rootPath = "/unit-test";
-            string theCsProjFile = $"{rootPath}/test.csproj";
+            const string rootPath = "/unit-test";
+            var theCsProjFile = $"{rootPath}/test.csproj";
 
             var fakeFileSystem = A.Fake<IFileSystemProvider>(opts => opts.Strict());
 
@@ -51,7 +51,7 @@ namespace Skarpdev.DotnetVersion.Test.CsProj
         [Fact]
         public void AbortsWhenMoreThanOneCsprojFile()
         {
-            var rootPath = "/unit-test";
+            const string rootPath = "/unit-test";
 
             var fakeFileSystem = A.Fake<IFileSystemProvider>(opts => opts.Strict());
             A.CallTo(() => fakeFileSystem.List(A<string>._)).Returns(
@@ -74,8 +74,8 @@ namespace Skarpdev.DotnetVersion.Test.CsProj
         [Fact]
         public void CanDetectCsProjFileWithGivenBootstrapCsProj()
         {
-            var rootPath = "/unit-test";
-            string theCsProjFile = $"{rootPath}/test.csproj";
+            const string rootPath = "/unit-test";
+            var theCsProjFile = $"{rootPath}/test.csproj";
 
             var fakeFileSystem = A.Fake<IFileSystemProvider>(opts => opts.Strict());
             A.CallTo(() => fakeFileSystem.List(A<string>._)).Returns(
@@ -102,8 +102,8 @@ namespace Skarpdev.DotnetVersion.Test.CsProj
         [Fact]
         public void CanDetectProjectFileWithEmptyBootstrapPath()
         {
-            var rootPath = "/unit-test";
-            string theCsProjFile = $"{rootPath}/test.csproj";
+            const string rootPath = "/unit-test";
+            var theCsProjFile = $"{rootPath}/test.csproj";
 
             var fakeFileSystem = A.Fake<IFileSystemProvider>(opts => opts.Strict());
             A.CallTo(() => fakeFileSystem.List(A<string>._)).Returns(

@@ -11,7 +11,7 @@ namespace Skarpdev.DotnetVersion.CsProj
         public ProjectFileDetector(
             IFileSystemProvider fileSystem)
         {
-            this._fileSystem = fileSystem;
+            _fileSystem = fileSystem;
         }
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace Skarpdev.DotnetVersion.CsProj
         public string FindAndLoadCsProj(string bootstrapPath)
         {
             var path = bootstrapPath;
-            var csProjFile = string.Empty;
+            string csProjFile;
 
             if (string.IsNullOrEmpty(bootstrapPath))
             {
@@ -62,6 +62,6 @@ namespace Skarpdev.DotnetVersion.CsProj
             return xml;
         }
 
-        public string ResolvedCsProjFile { get; set; }
+        public string ResolvedCsProjFile { get; private set; }
     }
 }

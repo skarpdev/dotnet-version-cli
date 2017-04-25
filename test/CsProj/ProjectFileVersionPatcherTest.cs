@@ -15,7 +15,8 @@ namespace Skarpdev.DotnetVersion.Test.CsProj
                     "<Version>1.0.0</Version>" +
                     "</PropertyGroup>" +
                     "</Project>";
-        private ProjectFileVersionPatcher _patcher;
+
+        private readonly ProjectFileVersionPatcher _patcher;
 
         public ProjectFileVersionPatcherTest()
         {
