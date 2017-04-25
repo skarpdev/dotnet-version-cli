@@ -20,7 +20,7 @@ To install the cli tool add it to the `csproj` file of your library / applicatio
 
 ```xml
 <ItemGroup>
-    <DotNetCliToolReference Include="dotnet-version-cli" Version="0.1.0" />
+    <DotNetCliToolReference Include="dotnet-version-cli" Version="0.1.2" />
 </ItemGroup>
 ```
 
