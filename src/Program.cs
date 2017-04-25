@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Microsoft.Extensions.CommandLineUtils;
 using Skarp.Version.Cli.CsProj;
 using Skarp.Version.Cli.CsProj.FileSystem;
 using Skarp.Version.Cli.Vcs.Git;
+using Console = Colorful.Console;
 
 namespace Skarp.Version.Cli
 {
@@ -30,16 +31,36 @@ namespace Skarp.Version.Cli
             commandLineApplication.HelpOption("-? | -h | --help");
             commandLineApplication.OnExecute(() =>
             {
-                if (commandLineApplication.RemainingArguments.Count == 0)
+                try
                 {
-                    _cli.DumpVersion();
+                    if (commandLineApplication.RemainingArguments.Count == 0)
+                    {
+                        _cli.DumpVersion();
+                        return 0;
+                    }
+
+                    var versionBump = GetVersionBumpFromRemainingArgs(commandLineApplication.RemainingArguments);
+                    _cli.Execute(versionBump);
+
                     return 0;
                 }
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine($"ERR: {ex.Message}", Color.Red);
+                    return 1;
+                }
 
-                var versionBump = GetVersionBumpFromRemainingArgs(commandLineApplication.RemainingArguments);
-                _cli.Execute(versionBump);
-
-                return 0;
+                catch (OperationCanceledException oce)
+                {
+                    Console.WriteLine($"ERR {oce.Message}", Color.Red);
+                    return 1;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("ERR Something went completly haywire, developer zen:", Color.Red);
+                    Console.WriteLine($"\t{e.Message} STACK: {Environment.NewLine}{e.StackTrace}", Color.Red);
+                    return 1;
+                }
             });
             commandLineApplication.Execute(args);
         }
