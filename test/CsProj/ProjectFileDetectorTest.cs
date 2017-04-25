@@ -1,11 +1,11 @@
-using Skarpdev.DotnetVersion.CsProj.FileSystem;
-using Xunit;
-using FakeItEasy;
-using Skarpdev.DotnetVersion.CsProj;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
+using FakeItEasy;
+using Skarp.Version.Cli.CsProj;
+using Skarp.Version.Cli.CsProj.FileSystem;
+using Xunit;
 
-namespace Skarpdev.DotnetVersion.Test.CsProj
+namespace Skarp.Version.Cli.Test.CsProj
 {
     public class ProjectFileDetectorTest
     {

@@ -1,4 +1,4 @@
-namespace Skarpdev.DotnetVersion.Vcs
+namespace Skarp.Version.Cli.Vcs
 {
     /// <summary>
     /// Version Control System abstraction interface

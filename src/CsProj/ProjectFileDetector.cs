@@ -1,9 +1,9 @@
 using System;
 using System.Linq;
 using System.Text;
-using Skarpdev.DotnetVersion.CsProj.FileSystem;
+using Skarp.Version.Cli.CsProj.FileSystem;
 
-namespace Skarpdev.DotnetVersion.CsProj
+namespace Skarp.Version.Cli.CsProj
 {
     public class ProjectFileDetector
     {

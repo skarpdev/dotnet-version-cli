@@ -1,4 +1,4 @@
-namespace Skarpdev.DotnetVersion
+namespace Skarp.Version.Cli
 {
     /// <summary>
     /// Enumerates the possible version bumps

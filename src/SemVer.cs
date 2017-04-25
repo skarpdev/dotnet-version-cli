@@ -1,8 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-namespace Skarpdev.DotnetVersion
+namespace Skarp.Version.Cli
 {
     public class SemVer
     {

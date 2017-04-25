@@ -1,7 +1,7 @@
-using Skarpdev.DotnetVersion.Vcs.Git;
+using Skarp.Version.Cli.Vcs.Git;
 using Xunit;
 
-namespace Skarpdev.DotnetVersion.Test
+namespace Skarp.Version.Cli.Test
 {
     public class GitVcsTest
     {

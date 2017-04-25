@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.CommandLineUtils;
-using Skarpdev.DotnetVersion.CsProj;
-using Skarpdev.DotnetVersion.CsProj.FileSystem;
-using Skarpdev.DotnetVersion.Vcs.Git;
+using Skarp.Version.Cli.CsProj;
+using Skarp.Version.Cli.CsProj.FileSystem;
+using Skarp.Version.Cli.Vcs.Git;
 
-namespace Skarpdev.DotnetVersion
+namespace Skarp.Version.Cli
 {
     class Program
     {

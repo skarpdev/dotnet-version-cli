@@ -1,9 +1,8 @@
 using System;
-using Skarpdev.DotnetVersion.Vcs;
-using Skarpdev.DotnetVersion.CsProj;
-using Skarpdev.DotnetVersion.CsProj.FileSystem;
+using Skarp.Version.Cli.CsProj;
+using Skarp.Version.Cli.Vcs;
 
-namespace Skarpdev.DotnetVersion
+namespace Skarp.Version.Cli
 {
     public class VersionCli
     {

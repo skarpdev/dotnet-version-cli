@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics;
 
-namespace Skarpdev.DotnetVersion.Vcs.Git
+namespace Skarp.Version.Cli.Vcs.Git
 {
     public class GitVcs : IVcs
     {

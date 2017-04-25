@@ -1,8 +1,8 @@
 using System;
-using Skarpdev.DotnetVersion.CsProj;
+using Skarp.Version.Cli.CsProj;
 using Xunit;
 
-namespace Skarpdev.DotnetVersion.Test
+namespace Skarp.Version.Cli.Test.CsProj
 {
     public class ProjectFileParserTest
     {
