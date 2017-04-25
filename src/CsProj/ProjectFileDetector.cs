@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Skarp.Version.Cli.CsProj.FileSystem;
@@ -42,11 +43,17 @@ namespace Skarp.Version.Cli.CsProj
             {
                 var files = _fileSystem.List(path);
                 var csProjFiles = files.Where(q => q.EndsWith(".csproj"));
-                if (csProjFiles.Count() > 1)
+                var projFiles = csProjFiles as IList<string> ?? csProjFiles.ToList();
+                if (projFiles.Count == 0)
+                {
+                    throw new OperationCanceledException("No csproj file could be found in path - ensure that you are running `dotnet version` next to the project file");
+                }
+
+                if (projFiles.Count > 1)
                 {
                     var sb = new StringBuilder();
                     sb.AppendLine("Multiple csproj files found - aborting:");
-                    foreach (var project in csProjFiles)
+                    foreach (var project in projFiles)
                     {
                         sb.AppendLine($"\t{project}");
                     }
@@ -54,7 +61,7 @@ namespace Skarp.Version.Cli.CsProj
                     throw new OperationCanceledException(sb.ToString());
                 }
 
-                csProjFile = csProjFiles.Single();
+                csProjFile = projFiles.Single();
             }
             ResolvedCsProjFile = csProjFile;
             
