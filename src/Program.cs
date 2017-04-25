@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.CommandLineUtils;
 using Skarp.Version.Cli.CsProj;
@@ -31,12 +32,12 @@ namespace Skarp.Version.Cli
             {
                 if (commandLineApplication.RemainingArguments.Count == 0)
                 {
-                    DumpVersion();
+                    _cli.DumpVersion();
                     return 0;
                 }
 
                 var versionBump = GetVersionBumpFromRemainingArgs(commandLineApplication.RemainingArguments);
-                PatchVersion(versionBump);
+                _cli.Execute(versionBump);
 
                 return 0;
             });
@@ -78,21 +79,6 @@ namespace Skarp.Version.Cli
                 ),
                 new ProjectFileParser(),
                 new ProjectFileVersionPatcher()
-            );
-        }
-
-        private static void DumpVersion(string path = "")
-        {
-            _cli.DumpVersion(path);
-            Environment.Exit(0);
-        }
-
-        private static void PatchVersion(VersionBump bump, string commitMsg = "", string path = "")
-        {
-            _cli.Execute(
-                bump,
-                commitMsg,
-                path
             );
         }
     }
