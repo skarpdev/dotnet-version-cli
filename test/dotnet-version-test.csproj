@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netcoreapp1.0</TargetFramework>
-    <RootNamespace>Skarpdev.DotnetVersion.Test</RootNamespace>
+    <RootNamespace>Skarp.Version.Cli.Test</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="FakeItEasy" Version="3.2.0" />
