@@ -43,23 +43,26 @@ namespace Skarp.Version.Cli
             commandLineApplication.Execute(args);
         }
 
-        private static VersionBump GetVersionBumpFromRemainingArgs(List<string> remainingArguments)
+        internal static VersionBump GetVersionBumpFromRemainingArgs(List<string> remainingArguments)
         {
-            var regex = new Regex(@"(major)|(minor)|(patch)", RegexOptions.Compiled);
+            if (remainingArguments == null || !remainingArguments.Any())
+            {
+                var msgEx = "No version bump specified, please specify one of:\n\tmajor | minor | patch";
+                // ReSharper disable once NotResolvedInText
+                throw new ArgumentException(msgEx, "versionBump");
+            }
+
+            VersionBump bump = VersionBump.Patch;
             foreach (var arg in remainingArguments)
             {
-                if (!regex.IsMatch(arg)) continue;
-                VersionBump bump;
-                if (Enum.TryParse(arg, true, out bump)) return bump;
+                if (Enum.TryParse(arg, true, out bump)) break;
 
-                Console.WriteLine($"Invalid version bump specified: {arg}");
-                Environment.Exit(1);
-                return bump;
+                var msg = $"Invalid version bump specified: {arg}";
+                // ReSharper disable once NotResolvedInText
+                throw new ArgumentException(msg, "versionBump");
             }
-            Console.WriteLine("No version bump specified, please specify one of:\n\tmajor | minor | patch");
-            Environment.Exit(1);
 
-            return VersionBump.Patch;
+            return bump;
         }
 
         private static void SetUpLogging()
