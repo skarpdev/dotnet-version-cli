@@ -1,7 +1,6 @@
-using System;
 using System.IO;
 
-namespace Skarpdev.DotnetVersion.CsProj
+namespace Skarp.Version.Cli.CsProj
 {
     public class ProjectFileVersionPatcher
     {

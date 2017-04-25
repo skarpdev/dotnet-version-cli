@@ -1,12 +1,13 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 
-namespace Skarpdev.DotnetVersion.CsProj
+namespace Skarp.Version.Cli.CsProj
 {
     public class ProjectFileParser
     {
-        public string Version { get; set; }
+        public string Version { get; private set; }
 
         public void Load(string xmlDocument)
         {
@@ -14,7 +15,8 @@ namespace Skarpdev.DotnetVersion.CsProj
 
             // Project should be root of the document
             var project = xml.Elements("Project");
-            if(!project.Any())
+            var xProject = project as IList<XElement> ?? project.ToList();
+            if(!xProject.Any())
             {
                 throw new ArgumentException(
                     "The provided csproj file seems malformed - no <Project> in the root", 
@@ -22,7 +24,7 @@ namespace Skarpdev.DotnetVersion.CsProj
                 );
             }
 
-            var propertyGroup = project.Elements("PropertyGroup");
+            var propertyGroup = xProject.Elements("PropertyGroup");
             
             var xVersion = (
                 from prop in propertyGroup.Elements()

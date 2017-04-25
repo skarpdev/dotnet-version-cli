@@ -1,8 +1,7 @@
-using System.Text.RegularExpressions;
-using Skarpdev.DotnetVersion.CsProj;
+using Skarp.Version.Cli.CsProj;
 using Xunit;
 
-namespace Skarpdev.DotnetVersion.Test.CsProj
+namespace Skarp.Version.Cli.Test.CsProj
 {
     public class ProjectFileVersionPatcherTest
     {
@@ -15,7 +14,8 @@ namespace Skarpdev.DotnetVersion.Test.CsProj
                     "<Version>1.0.0</Version>" +
                     "</PropertyGroup>" +
                     "</Project>";
-        private ProjectFileVersionPatcher _patcher;
+
+        private readonly ProjectFileVersionPatcher _patcher;
 
         public ProjectFileVersionPatcherTest()
         {

@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.CommandLineUtils;
-using Skarpdev.DotnetVersion.CsProj;
-using Skarpdev.DotnetVersion.CsProj.FileSystem;
-using Skarpdev.DotnetVersion.Vcs.Git;
+using Skarp.Version.Cli.CsProj;
+using Skarp.Version.Cli.CsProj.FileSystem;
+using Skarp.Version.Cli.Vcs.Git;
 
-namespace Skarpdev.DotnetVersion
+namespace Skarp.Version.Cli
 {
     class Program
     {
@@ -48,16 +48,13 @@ namespace Skarpdev.DotnetVersion
             var regex = new Regex(@"(major)|(minor)|(patch)", RegexOptions.Compiled);
             foreach (var arg in remainingArguments)
             {
-                if (regex.IsMatch(arg))
-                {
-                    VersionBump bump;
-                    if (!Enum.TryParse(arg, true, out bump))
-                    {
-                        Console.WriteLine($"Invalid version bump specified: {arg}");
-                        Environment.Exit(1);
-                    }
-                    return bump;
-                }
+                if (!regex.IsMatch(arg)) continue;
+                VersionBump bump;
+                if (Enum.TryParse(arg, true, out bump)) return bump;
+
+                Console.WriteLine($"Invalid version bump specified: {arg}");
+                Environment.Exit(1);
+                return bump;
             }
             Console.WriteLine("No version bump specified, please specify one of:\n\tmajor | minor | patch");
             Environment.Exit(1);

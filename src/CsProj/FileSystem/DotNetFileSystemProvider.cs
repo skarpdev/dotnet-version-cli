@@ -1,8 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Skarpdev.DotnetVersion.CsProj.FileSystem
+namespace Skarp.Version.Cli.CsProj.FileSystem
 {
     public class DotNetFileSystemProvider : IFileSystemProvider
     {

@@ -1,7 +1,7 @@
 using System;
 using Xunit;
 
-namespace Skarpdev.DotnetVersion.Test
+namespace Skarp.Version.Cli.Test
 {
     public class SemVerTest
     {

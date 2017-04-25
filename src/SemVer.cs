@@ -1,15 +1,14 @@
 using System;
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-namespace Skarpdev.DotnetVersion
+namespace Skarp.Version.Cli
 {
     public class SemVer
     {
-        private static Regex _versionPartRegex = new Regex(@"^\d$", RegexOptions.Compiled);
+        private static readonly Regex VersionPartRegex = new Regex(@"^\d$", RegexOptions.Compiled);
 
         /// <summary>
-        /// Bump the currently parsed version information with the specified <paramref name="bump">
+        /// Bump the currently parsed version information with the specified <paramref name="bump"/>
         /// </summary>
         /// <param name="bump">The bump to apply to the version</param>
         public void Bump(VersionBump bump)
@@ -75,8 +74,8 @@ namespace Skarpdev.DotnetVersion
         {
             if(index > array.Length-1) return 0;
 
-            string value = array[index];
-            if(!_versionPartRegex.IsMatch(value))
+            var value = array[index];
+            if(!VersionPartRegex.IsMatch(value))
             {
                 throw new ArgumentException($"Malformed version part: {value}", "versionString");
             }
@@ -87,18 +86,18 @@ namespace Skarpdev.DotnetVersion
         /// The parsed major version
         /// </summary>
         /// <returns></returns>
-        public int Major { get; set; }
+        public int Major { get; private set; }
 
         /// <summary>
         /// The parsed minor version
         /// </summary>
         /// <returns></returns>
-        public int Minor { get; set; }
+        public int Minor { get; private set; }
 
         /// <summary>
         /// The parsed patch version
         /// </summary>
         /// <returns></returns>
-        public int Patch { get; set; }
+        public int Patch { get; private set; }
     }
 }

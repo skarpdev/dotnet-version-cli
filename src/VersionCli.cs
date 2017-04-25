@@ -1,16 +1,15 @@
 using System;
-using Skarpdev.DotnetVersion.Vcs;
-using Skarpdev.DotnetVersion.CsProj;
-using Skarpdev.DotnetVersion.CsProj.FileSystem;
+using Skarp.Version.Cli.CsProj;
+using Skarp.Version.Cli.Vcs;
 
-namespace Skarpdev.DotnetVersion
+namespace Skarp.Version.Cli
 {
     public class VersionCli
     {
-        private IVcs _vcsTool;
-        private ProjectFileDetector _fileDetector;
-        private ProjectFileParser _fileParser;
-        private ProjectFileVersionPatcher _fileVersionPatcher;
+        private readonly IVcs _vcsTool;
+        private readonly ProjectFileDetector _fileDetector;
+        private readonly ProjectFileParser _fileParser;
+        private readonly ProjectFileVersionPatcher _fileVersionPatcher;
 
         public VersionCli(
             IVcs vcsClient,
@@ -44,7 +43,7 @@ namespace Skarpdev.DotnetVersion
 
             var semVer = SemVer.FromString(_fileParser.Version);
             semVer.Bump(bump);
-            string newVersion = semVer.ToVersionString();
+            var newVersion = semVer.ToVersionString();
             var patchedCsProjXml = _fileVersionPatcher.Patch(
                 csProjXml,
                 _fileParser.Version,
@@ -70,7 +69,6 @@ namespace Skarpdev.DotnetVersion
             var csProjXml = _fileDetector.FindAndLoadCsProj(csProjFilePath);
             _fileParser.Load(csProjXml);
 
-            var semVer = SemVer.FromString(_fileParser.Version);
             Console.WriteLine("Project version is: {0}\t{1}", Environment.NewLine, _fileParser.Version);
         }
     }

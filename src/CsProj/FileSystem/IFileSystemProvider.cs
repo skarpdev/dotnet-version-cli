@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Skarpdev.DotnetVersion.CsProj.FileSystem
+namespace Skarp.Version.Cli.CsProj.FileSystem
 {
     public interface IFileSystemProvider
     {
