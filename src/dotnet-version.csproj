@@ -1,10 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp1.0</TargetFramework>
     <RootNamespace>Skarp.Version.Cli</RootNamespace>
     <Version>0.1.2</Version>
-
     <Title>dotnet-version-cli</Title>
     <Authors>nover</Authors>
     <Description>A dotnet core CliTool for changing your csproj Version and automatically comitting and tagging - npm version style.</Description>
@@ -18,6 +17,7 @@
     <Company>SKARP ApS</Company>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Colorful.Console" Version="1.0.7" />
     <PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="1.1.0" />
     <DotNetCliToolReference Include="dotnet-version-cli" Version="0.1.2" />
   </ItemGroup>
