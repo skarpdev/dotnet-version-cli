@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
+using System.Drawing;
+using System.Linq;
 using Microsoft.Extensions.CommandLineUtils;
 using Skarp.Version.Cli.CsProj;
 using Skarp.Version.Cli.CsProj.FileSystem;
 using Skarp.Version.Cli.Vcs.Git;
+using Console = Colorful.Console;
 
 namespace Skarp.Version.Cli
 {
@@ -29,37 +31,60 @@ namespace Skarp.Version.Cli
             commandLineApplication.HelpOption("-? | -h | --help");
             commandLineApplication.OnExecute(() =>
             {
-                if (commandLineApplication.RemainingArguments.Count == 0)
+                try
                 {
-                    DumpVersion();
+                    if (commandLineApplication.RemainingArguments.Count == 0)
+                    {
+                        _cli.DumpVersion();
+                        return 0;
+                    }
+
+                    var versionBump = GetVersionBumpFromRemainingArgs(commandLineApplication.RemainingArguments);
+                    _cli.Execute(versionBump);
+
                     return 0;
                 }
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine($"ERR: {ex.Message}", Color.Red);
+                    return 1;
+                }
 
-                var versionBump = GetVersionBumpFromRemainingArgs(commandLineApplication.RemainingArguments);
-                PatchVersion(versionBump);
-
-                return 0;
+                catch (OperationCanceledException oce)
+                {
+                    Console.WriteLine($"ERR {oce.Message}", Color.Red);
+                    return 1;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("ERR Something went completly haywire, developer zen:", Color.Red);
+                    Console.WriteLine($"\t{e.Message} STACK: {Environment.NewLine}{e.StackTrace}", Color.Red);
+                    return 1;
+                }
             });
             commandLineApplication.Execute(args);
         }
 
-        private static VersionBump GetVersionBumpFromRemainingArgs(List<string> remainingArguments)
+        internal static VersionBump GetVersionBumpFromRemainingArgs(List<string> remainingArguments)
         {
-            var regex = new Regex(@"(major)|(minor)|(patch)", RegexOptions.Compiled);
+            if (remainingArguments == null || !remainingArguments.Any())
+            {
+                var msgEx = "No version bump specified, please specify one of:\n\tmajor | minor | patch";
+                // ReSharper disable once NotResolvedInText
+                throw new ArgumentException(msgEx, "versionBump");
+            }
+
+            VersionBump bump = VersionBump.Patch;
             foreach (var arg in remainingArguments)
             {
-                if (!regex.IsMatch(arg)) continue;
-                VersionBump bump;
-                if (Enum.TryParse(arg, true, out bump)) return bump;
+                if (Enum.TryParse(arg, true, out bump)) break;
 
-                Console.WriteLine($"Invalid version bump specified: {arg}");
-                Environment.Exit(1);
-                return bump;
+                var msg = $"Invalid version bump specified: {arg}";
+                // ReSharper disable once NotResolvedInText
+                throw new ArgumentException(msg, "versionBump");
             }
-            Console.WriteLine("No version bump specified, please specify one of:\n\tmajor | minor | patch");
-            Environment.Exit(1);
 
-            return VersionBump.Patch;
+            return bump;
         }
 
         private static void SetUpLogging()
@@ -75,21 +100,6 @@ namespace Skarp.Version.Cli
                 ),
                 new ProjectFileParser(),
                 new ProjectFileVersionPatcher()
-            );
-        }
-
-        private static void DumpVersion(string path = "")
-        {
-            _cli.DumpVersion(path);
-            Environment.Exit(0);
-        }
-
-        private static void PatchVersion(VersionBump bump, string commitMsg = "", string path = "")
-        {
-            _cli.Execute(
-                bump,
-                commitMsg,
-                path
             );
         }
     }

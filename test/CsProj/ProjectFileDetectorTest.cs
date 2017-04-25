@@ -72,6 +72,27 @@ namespace Skarp.Version.Cli.Test.CsProj
         }
 
         [Fact]
+        public void Aborts_when_no_csproj_file()
+        {
+            const string rootPath = "/unit-test";
+
+            var fakeFileSystem = A.Fake<IFileSystemProvider>(opts => opts.Strict());
+            A.CallTo(() => fakeFileSystem.List(A<string>._)).Returns(
+                new List<string>{
+                    $"{rootPath}/Test.cs",
+                }
+            );
+            A.CallTo(() =>
+                    fakeFileSystem.IsCsProjectFile(
+                        A<string>.That.Matches(str => str == $"{rootPath}")))
+                .Returns(false);
+
+
+            var detect = new ProjectFileDetector(fakeFileSystem);
+            Assert.Throws<OperationCanceledException>(() => detect.FindAndLoadCsProj(rootPath));
+        }
+
+        [Fact]
         public void CanDetectCsProjFileWithGivenBootstrapCsProj()
         {
             const string rootPath = "/unit-test";

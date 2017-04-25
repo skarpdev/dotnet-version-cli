@@ -1,6 +1,8 @@
 using System;
+using System.Drawing;
 using Skarp.Version.Cli.CsProj;
 using Skarp.Version.Cli.Vcs;
+using Console = Colorful.Console;
 
 namespace Skarp.Version.Cli
 {
@@ -28,13 +30,13 @@ namespace Skarp.Version.Cli
         {
             if (!_vcsTool.IsVcsToolPresent())
             {
-                Console.WriteLine($"Unable to find the vcs tool {_vcsTool.ToolName()} in your path");
+                Console.WriteLine($"ERR Unable to find the vcs tool {_vcsTool.ToolName()} in your path", Color.Red);
                 Environment.Exit(1);
             }
 
             if (!_vcsTool.IsRepositoryClean())
             {
-                Console.WriteLine($"You currently have uncomitted changes in your repository, please commit these and try again");
+                Console.WriteLine($"WARN You currently have uncomitted changes in your repository, please commit these and try again", Color.Chocolate);
                 Environment.Exit(1);
             }
 
@@ -58,10 +60,7 @@ namespace Skarp.Version.Cli
             _vcsTool.Commit(_fileDetector.ResolvedCsProjFile, $"v{newVersion}");
             _vcsTool.Tag($"v{newVersion}");
 
-            Console.WriteLine(
-                "Bumped {0} to version {1}",
-                _fileDetector.ResolvedCsProjFile,
-                newVersion);
+            Console.WriteLine($"Bumped {_fileDetector.ResolvedCsProjFile} to version {newVersion}", Color.DodgerBlue);
         }
 
         public void DumpVersion(string csProjFilePath = "")

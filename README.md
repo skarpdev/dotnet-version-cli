@@ -1,5 +1,7 @@
 # dotnet-version-cli
 
+[![Build status](https://ci.appveyor.com/api/projects/status/r50rbldhoil6pqk6/branch/master?svg=true)](https://ci.appveyor.com/project/nover/dotnet-version-cli/branch/master)
+
 This repository contains the source code for an [npm version][1] inspired cli tool for the dotnet core SDK 1.0.1 (csproj based).
 
 Once installed it provides a `dotnet version` cli extension which allows you to easily bump `patch`, `minor` and `major` versions on your project.
