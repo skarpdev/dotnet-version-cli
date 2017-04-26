@@ -7,9 +7,9 @@ namespace Skarp.Version.Cli.CsProj
 {
     public class ProjectFileParser
     {
-        public string Version { get; private set; }
+        public virtual string Version { get; private set; }
 
-        public void Load(string xmlDocument)
+        public virtual void Load(string xmlDocument)
         {
             var xml = XDocument.Parse(xmlDocument);
 

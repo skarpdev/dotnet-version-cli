@@ -9,6 +9,11 @@ namespace Skarp.Version.Cli
 
         Minor,
 
-        Patch
+        Patch,
+
+        /// <summary>
+        /// Apply a specific, given, version to the project file
+        /// </summary>
+        Specific
     }
 }

@@ -28,14 +28,14 @@ namespace Skarp.Version.Cli
         {
             if (!_vcsTool.IsVcsToolPresent())
             {
-                Console.WriteLine($"ERR Unable to find the vcs tool {_vcsTool.ToolName()} in your path");
-                Environment.Exit(1);
+                throw new OperationCanceledException(
+                    $"Unable to find the vcs tool {_vcsTool.ToolName()} in your path");
             }
 
             if (!_vcsTool.IsRepositoryClean())
             {
-                Console.WriteLine($"WARN You currently have uncomitted changes in your repository, please commit these and try again");
-                Environment.Exit(1);
+                throw new OperationCanceledException(
+                    "You currently have uncomitted changes in your repository, please commit these and try again");
             }
 
             var csProjXml = _fileDetector.FindAndLoadCsProj(csProjFilePath);
