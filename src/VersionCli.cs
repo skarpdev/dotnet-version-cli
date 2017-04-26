@@ -24,7 +24,7 @@ namespace Skarp.Version.Cli
             _fileVersionPatcher = fileVersionPatcher;
         }
 
-        public void Execute(VersionBump bump, string commitMessage = "", string csProjFilePath = "")
+        public void Execute(VersionCliArgs args)
         {
             if (!_vcsTool.IsVcsToolPresent())
             {
@@ -38,11 +38,11 @@ namespace Skarp.Version.Cli
                     "You currently have uncomitted changes in your repository, please commit these and try again");
             }
 
-            var csProjXml = _fileDetector.FindAndLoadCsProj(csProjFilePath);
+            var csProjXml = _fileDetector.FindAndLoadCsProj(args.CsProjFilePath);
             _fileParser.Load(csProjXml);
 
             var semVer = SemVer.FromString(_fileParser.Version);
-            semVer.Bump(bump);
+            semVer.Bump(args.VersionBump, args.SpecificVersionToApply);
             var newVersion = semVer.ToVersionString();
             var patchedCsProjXml = _fileVersionPatcher.Patch(
                 csProjXml,
@@ -61,9 +61,9 @@ namespace Skarp.Version.Cli
             Console.WriteLine($"Bumped {_fileDetector.ResolvedCsProjFile} to version {newVersion}");
         }
 
-        public void DumpVersion(string csProjFilePath = "")
+        public void DumpVersion(VersionCliArgs args)
         {
-            var csProjXml = _fileDetector.FindAndLoadCsProj(csProjFilePath);
+            var csProjXml = _fileDetector.FindAndLoadCsProj(args.CsProjFilePath);
             _fileParser.Load(csProjXml);
 
             Console.WriteLine("Project version is: {0}\t{1}", Environment.NewLine, _fileParser.Version);

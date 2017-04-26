@@ -33,12 +33,12 @@ namespace Skarp.Version.Cli
                 {
                     if (commandLineApplication.RemainingArguments.Count == 0)
                     {
-                        _cli.DumpVersion();
+                        _cli.DumpVersion(new VersionCliArgs());
                         return 0;
                     }
 
                     var cliArgs = GetVersionBumpFromRemainingArgs(commandLineApplication.RemainingArguments);
-                    _cli.Execute(cliArgs.VersionBump);
+                    _cli.Execute(cliArgs);
 
                     return 0;
                 }

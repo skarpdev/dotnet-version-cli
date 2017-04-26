@@ -37,7 +37,7 @@ namespace Skarp.Version.Cli.Test
         {
             A.CallTo(() => _vcsTool.IsVcsToolPresent()).Returns(false);
 
-            var ex = Assert.Throws<OperationCanceledException>(() => _cli.Execute(VersionBump.Major));
+            var ex = Assert.Throws<OperationCanceledException>(() => _cli.Execute(new VersionCliArgs{VersionBump = VersionBump.Major}));
             Assert.Equal("Unable to find the vcs tool _FAKE_ in your path", ex.Message);
         }
 
@@ -47,7 +47,7 @@ namespace Skarp.Version.Cli.Test
             A.CallTo(() => _vcsTool.IsVcsToolPresent()).Returns(true);
             A.CallTo(() => _vcsTool.IsRepositoryClean()).Returns(false);
 
-            var ex = Assert.Throws<OperationCanceledException>(() => _cli.Execute(VersionBump.Major));
+            var ex = Assert.Throws<OperationCanceledException>(() => _cli.Execute(new VersionCliArgs{VersionBump = VersionBump.Major}));
             Assert.Equal("You currently have uncomitted changes in your repository, please commit these and try again",
                 ex.Message);
         }
@@ -69,7 +69,7 @@ namespace Skarp.Version.Cli.Test
             A.CallTo(() => _fileParser.Version).Returns("1.2.1");
 
             // Act
-            _cli.Execute(VersionBump.Major);
+            _cli.Execute(new VersionCliArgs{VersionBump = VersionBump.Major});
 
             // Verify
             A.CallTo(() => _filePatcher.Patch(

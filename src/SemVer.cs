@@ -11,7 +11,8 @@ namespace Skarp.Version.Cli
         /// Bump the currently parsed version information with the specified <paramref name="bump"/>
         /// </summary>
         /// <param name="bump">The bump to apply to the version</param>
-        public void Bump(VersionBump bump)
+        /// <param name="specificVersionToApply">The specific version to apply if bump is Specific</param>
+        public void Bump(VersionBump bump, string specificVersionToApply = "")
         {
             switch(bump)
             {
