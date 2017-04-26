@@ -11,7 +11,8 @@ namespace Skarp.Version.Cli
         /// Bump the currently parsed version information with the specified <paramref name="bump"/>
         /// </summary>
         /// <param name="bump">The bump to apply to the version</param>
-        public void Bump(VersionBump bump)
+        /// <param name="specificVersionToApply">The specific version to apply if bump is Specific</param>
+        public void Bump(VersionBump bump, string specificVersionToApply = "")
         {
             switch(bump)
             {
@@ -31,6 +32,18 @@ namespace Skarp.Version.Cli
                 case VersionBump.Patch:
                 {
                     Patch += 1;
+                    break;
+                }
+                case VersionBump.Specific:
+                {
+                    if (string.IsNullOrEmpty(specificVersionToApply))
+                    {
+                        throw new ArgumentException($"When bump is specific, specificVersionToApply must be provided");
+                    }
+                    var specific = SemVer.FromString(specificVersionToApply);
+                    Major = specific.Major;
+                    Minor = specific.Minor;
+                    Patch = specific.Patch;
                     break;
                 }
                 default:
@@ -56,7 +69,7 @@ namespace Skarp.Version.Cli
         /// <returns></returns>
         public static SemVer FromString(string versionString)
         {
-            var parts = versionString.Split('.');
+            var parts = versionString.Trim().Split('.');
             if(parts.Length == 0)
             {
                 throw new ArgumentException($"Malformed versionString: {versionString}", nameof(versionString));

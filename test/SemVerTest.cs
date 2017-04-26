@@ -35,10 +35,11 @@ namespace Skarp.Version.Cli.Test
         [InlineData("1.1.0", VersionBump.Major, 2, 0, 0)]
         [InlineData("4.1.3", VersionBump.Minor, 4, 2, 0)]
         [InlineData("2.1", VersionBump.Patch, 2, 1, 1)]
+        [InlineData("3.2.1", VersionBump.Specific, 3, 2, 1)]
         public void CanBumpVersions(string version, VersionBump bump, int expectedMajor, int expectedMinor, int expectedPatch)
         {
             var semver = SemVer.FromString(version);
-            semver.Bump(bump);
+            semver.Bump(bump, version);
 
             Assert.Equal(expectedMajor, semver.Major);
             Assert.Equal(expectedMinor, semver.Minor);

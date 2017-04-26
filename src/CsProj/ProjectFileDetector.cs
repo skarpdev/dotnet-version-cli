@@ -26,7 +26,7 @@ namespace Skarp.Version.Cli.CsProj
         /// </remarks>
         /// <param name="bootstrapPath"></param>
         /// <returns></returns>
-        public string FindAndLoadCsProj(string bootstrapPath)
+        public virtual string FindAndLoadCsProj(string bootstrapPath)
         {
             var path = bootstrapPath;
             string csProjFile;
@@ -69,6 +69,6 @@ namespace Skarp.Version.Cli.CsProj
             return xml;
         }
 
-        public string ResolvedCsProjFile { get; private set; }
+        public virtual string ResolvedCsProjFile { get; private set; }
     }
 }

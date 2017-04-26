@@ -33,12 +33,12 @@ namespace Skarp.Version.Cli
                 {
                     if (commandLineApplication.RemainingArguments.Count == 0)
                     {
-                        _cli.DumpVersion();
+                        _cli.DumpVersion(new VersionCliArgs());
                         return 0;
                     }
 
-                    var versionBump = GetVersionBumpFromRemainingArgs(commandLineApplication.RemainingArguments);
-                    _cli.Execute(versionBump);
+                    var cliArgs = GetVersionBumpFromRemainingArgs(commandLineApplication.RemainingArguments);
+                    _cli.Execute(cliArgs);
 
                     return 0;
                 }
@@ -63,26 +63,28 @@ namespace Skarp.Version.Cli
             commandLineApplication.Execute(args);
         }
 
-        internal static VersionBump GetVersionBumpFromRemainingArgs(List<string> remainingArguments)
+        internal static VersionCliArgs GetVersionBumpFromRemainingArgs(List<string> remainingArguments)
         {
             if (remainingArguments == null || !remainingArguments.Any())
             {
-                var msgEx = "No version bump specified, please specify one of:\n\tmajor | minor | patch";
+                var msgEx = "No version bump specified, please specify one of:\n\tmajor | minor | patch | <specific version>";
                 // ReSharper disable once NotResolvedInText
                 throw new ArgumentException(msgEx, "versionBump");
             }
 
-            VersionBump bump = VersionBump.Patch;
+            var args = new VersionCliArgs();
+            var bump = VersionBump.Patch;
+
             foreach (var arg in remainingArguments)
             {
                 if (Enum.TryParse(arg, true, out bump)) break;
 
-                var msg = $"Invalid version bump specified: {arg}";
-                // ReSharper disable once NotResolvedInText
-                throw new ArgumentException(msg, "versionBump");
+                var ver = SemVer.FromString(arg);
+                args.SpecificVersionToApply = ver.ToVersionString();
+                bump = VersionBump.Specific;
             }
-
-            return bump;
+            args.VersionBump = bump;
+            return args;
         }
 
         private static void SetUpLogging()
