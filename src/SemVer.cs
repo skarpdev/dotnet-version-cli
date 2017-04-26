@@ -69,7 +69,7 @@ namespace Skarp.Version.Cli
         /// <returns></returns>
         public static SemVer FromString(string versionString)
         {
-            var parts = versionString.Split('.');
+            var parts = versionString.Trim().Split('.');
             if(parts.Length == 0)
             {
                 throw new ArgumentException($"Malformed versionString: {versionString}", nameof(versionString));
