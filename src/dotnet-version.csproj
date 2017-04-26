@@ -17,7 +17,6 @@
     <Company>SKARP ApS</Company>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Colorful.Console" Version="1.0.7" />
     <PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="1.1.0" />
     <DotNetCliToolReference Include="dotnet-version-cli" Version="0.1.2" />
   </ItemGroup>

@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using Microsoft.Extensions.CommandLineUtils;
 using Skarp.Version.Cli.CsProj;
 using Skarp.Version.Cli.CsProj.FileSystem;
 using Skarp.Version.Cli.Vcs.Git;
-using Console = Colorful.Console;
 
 namespace Skarp.Version.Cli
 {
@@ -46,19 +44,19 @@ namespace Skarp.Version.Cli
                 }
                 catch (ArgumentException ex)
                 {
-                    Console.WriteLine($"ERR: {ex.Message}", Color.Red);
+                    Console.WriteLine($"ERR: {ex.Message}");
                     return 1;
                 }
 
                 catch (OperationCanceledException oce)
                 {
-                    Console.WriteLine($"ERR {oce.Message}", Color.Red);
+                    Console.WriteLine($"ERR {oce.Message}");
                     return 1;
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("ERR Something went completly haywire, developer zen:", Color.Red);
-                    Console.WriteLine($"\t{e.Message} STACK: {Environment.NewLine}{e.StackTrace}", Color.Red);
+                    Console.WriteLine("ERR Something went completly haywire, developer zen:");
+                    Console.WriteLine($"\t{e.Message} STACK: {Environment.NewLine}{e.StackTrace}");
                     return 1;
                 }
             });
