@@ -34,6 +34,18 @@ namespace Skarp.Version.Cli
                     Patch += 1;
                     break;
                 }
+                case VersionBump.Specific:
+                {
+                    if (string.IsNullOrEmpty(specificVersionToApply))
+                    {
+                        throw new ArgumentException($"When bump is specific, specificVersionToApply must be provided");
+                    }
+                    var specific = SemVer.FromString(specificVersionToApply);
+                    Major = specific.Major;
+                    Minor = specific.Minor;
+                    Patch = specific.Patch;
+                    break;
+                }
                 default:
                 {
                     throw new ArgumentOutOfRangeException($"VersionBump : {bump} not supported");
