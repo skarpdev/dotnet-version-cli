@@ -3,7 +3,7 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp1.0</TargetFramework>
     <RootNamespace>Skarp.Version.Cli</RootNamespace>
-    <Version>0.2.0</Version>
+    <Version>0.2.1</Version>
     <Title>dotnet-version-cli</Title>
     <Authors>nover</Authors>
     <Description>A dotnet core CliTool for changing your csproj Version and automatically comitting and tagging - npm version style.</Description>
