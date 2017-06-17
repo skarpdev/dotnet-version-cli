@@ -5,7 +5,7 @@ namespace Skarp.Version.Cli
 {
     public class SemVer
     {
-        private static readonly Regex VersionPartRegex = new Regex(@"^\d$", RegexOptions.Compiled);
+        private static readonly Regex VersionPartRegex = new Regex(@"^\d+$", RegexOptions.Compiled);
 
         /// <summary>
         /// Bump the currently parsed version information with the specified <paramref name="bump"/>
