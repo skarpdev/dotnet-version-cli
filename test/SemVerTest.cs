@@ -8,7 +8,11 @@ namespace Skarp.Version.Cli.Test
 
         [Theory]
         [InlineData("1.0.0", 1, 0, 0)]
+        [InlineData("0.10.0", 0, 10, 0)]
+        [InlineData("1.12.99", 1, 12, 99)]
+        [InlineData("4.99.43245", 4, 99, 43245)]
         [InlineData("4.1.3", 4, 1, 3)]
+        [InlineData("42.4.554", 42, 4, 554)]
         [InlineData("2.1", 2, 1, 0)]
         [InlineData("2", 2, 0, 0)]
         [InlineData("4.1.3.6.7.8.9", 4, 1, 3)] // too many version numbers
