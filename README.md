@@ -1,6 +1,8 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/r50rbldhoil6pqk6/branch/master?svg=true)](https://ci.appveyor.com/project/nover/dotnet-version-cli/branch/master)
+[![nuget version][nuget-image]][nuget-url]
+
 # dotnet-version-cli
 
-[![Build status](https://ci.appveyor.com/api/projects/status/r50rbldhoil6pqk6/branch/master?svg=true)](https://ci.appveyor.com/project/nover/dotnet-version-cli/branch/master)
 
 This repository contains the source code for an [npm version][1] inspired cli tool for the dotnet core SDK 1.0.1 (csproj based).
 
@@ -22,7 +24,7 @@ To install the cli tool add it to the `csproj` file of your library / applicatio
 
 ```xml
 <ItemGroup>
-    <DotNetCliToolReference Include="dotnet-version-cli" Version="0.3.1" />
+    <DotNetCliToolReference Include="dotnet-version-cli" Version="0.4.0" />
 </ItemGroup>
 ```
 
@@ -67,3 +69,5 @@ dotnet version "1.0.$revCount"
 ```
 
 [1]: https://docs.npmjs.com/cli/version
+[nuget-image]: https://img.shields.io/nuget/v/dotnet-version-cli.svg
+[nuget-url]: https://www.nuget.org/packages/dotnet-version-cli
