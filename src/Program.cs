@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Microsoft.Extensions.CommandLineUtils;
 using Skarp.Version.Cli.CsProj;
 using Skarp.Version.Cli.CsProj.FileSystem;
@@ -42,7 +43,7 @@ namespace Skarp.Version.Cli
 
                     if (outputFormat == OutputFormat.Text)
                     {
-                        Console.WriteLine("dotnet-version-cli");
+                        Console.WriteLine($"{ProductInfo.Name} version {ProductInfo.Version}");
                     }
 
                     if (commandLineApplication.RemainingArguments.Count == 0)

@@ -64,10 +64,15 @@ namespace Skarp.Version.Cli
             {
                 var theOutput = new
                 {
+                    Product = new
+                    {
+                        Name = ProductInfo.Name,
+                        Version = ProductInfo.Version
+                    },
                     OldVersion = _fileParser.Version,
                     NewVersion = newVersion,
                     ProjectFile = _fileDetector.ResolvedCsProjFile,
-                    VersionStrategy = args.VersionBump.ToString()
+                    VersionStrategy = args.VersionBump.ToString().ToLowerInvariant()
                 };
 
                 Console.WriteLine(
