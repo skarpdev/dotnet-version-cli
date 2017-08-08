@@ -18,6 +18,9 @@ Effectively this means that issuing a `patch` command will
 
 Similarly for `minor` and `major`, but changing different parts of the version number.
 
+To control the output format the `--output-format` switch can be used - currently supported values are `json` and `text`. **Please beware** that output is only reformatted for success-cases, so if something is wrong you will get a non 0 exit code and text output!
+Changing output format works for both "version bumping" and the "show version" operations of the cli.
+
 ## Installing the cli tool
 
 To install the cli tool add it to the `csproj` file of your library / application:
@@ -41,6 +44,15 @@ dotnet-version-cli
 Project version is:
         1.3.0
 ```
+
+Using json output will produce
+
+```bash
+$ dotnet version --output-format=json
+{"product":{"name":"dotnet-version-cli","version":"0.4.0.0"},"currentVersion":"1.3.0","projectFile":"C:\\your\\stuff\\project.csproj"}
+```
+
+The `product` bit is information about the CLI tool itself.
 
 ## Standard workflow
 
