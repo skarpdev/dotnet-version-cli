@@ -1,9 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp1.0</TargetFramework>
     <RootNamespace>Skarp.Version.Cli</RootNamespace>
-    <Version>0.3.1</Version>
+    <Version>0.4.0</Version>
     <Title>dotnet-version-cli</Title>
     <Authors>nover</Authors>
     <Description>A dotnet core CliTool for changing your csproj Version and automatically comitting and tagging - npm version style.</Description>
