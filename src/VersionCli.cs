@@ -75,12 +75,7 @@ namespace Skarp.Version.Cli
                     VersionStrategy = args.VersionBump.ToString().ToLowerInvariant()
                 };
 
-                Console.WriteLine(
-                    JsonConvert.SerializeObject(
-                        theOutput, new JsonSerializerSettings
-                        {
-                            ContractResolver = new CamelCasePropertyNamesContractResolver()
-                        }));
+                WriteJsonToStdout(theOutput);
             }
             else
             {
@@ -93,7 +88,35 @@ namespace Skarp.Version.Cli
             var csProjXml = _fileDetector.FindAndLoadCsProj(args.CsProjFilePath);
             _fileParser.Load(csProjXml);
 
-            Console.WriteLine("Project version is: {0}\t{1}", Environment.NewLine, _fileParser.Version);
+            if (args.OutputFormat == OutputFormat.Json)
+            {
+                var theOutput = new
+                {
+                    Product = new
+                    {
+                        Name = ProductInfo.Name,
+                        Version = ProductInfo.Version
+                    },
+                    CurrentVersion = _fileParser.Version,
+                    ProjectFile = _fileDetector.ResolvedCsProjFile,
+                };
+                WriteJsonToStdout(theOutput);
+            }
+            else
+            {
+                Console.WriteLine("Project version is: {0}\t{1}", Environment.NewLine, _fileParser.Version);
+            }
         }
+
+        private static void WriteJsonToStdout(object theOutput)
+        {
+            Console.WriteLine(
+                JsonConvert.SerializeObject(
+                    theOutput, new JsonSerializerSettings
+                    {
+                        ContractResolver = new CamelCasePropertyNamesContractResolver()
+                    }));
+        }
+
     }
 }

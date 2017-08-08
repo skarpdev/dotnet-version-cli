@@ -48,7 +48,10 @@ namespace Skarp.Version.Cli
 
                     if (commandLineApplication.RemainingArguments.Count == 0)
                     {
-                        _cli.DumpVersion(new VersionCliArgs());
+                        _cli.DumpVersion(new VersionCliArgs
+                        {
+                            OutputFormat = outputFormat
+                        });
                         return 0;
                     }
 
