@@ -1,4 +1,6 @@
 using System;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using Skarp.Version.Cli.CsProj;
 using Skarp.Version.Cli.Vcs;
 
@@ -58,7 +60,32 @@ namespace Skarp.Version.Cli
             _vcsTool.Commit(_fileDetector.ResolvedCsProjFile, $"v{newVersion}");
             _vcsTool.Tag($"v{newVersion}");
 
-            Console.WriteLine($"Bumped {_fileDetector.ResolvedCsProjFile} to version {newVersion}");
+            if (args.OutputFormat == OutputFormat.Json)
+            {
+                var theOutput = new
+                {
+                    Product = new
+                    {
+                        Name = ProductInfo.Name,
+                        Version = ProductInfo.Version
+                    },
+                    OldVersion = _fileParser.Version,
+                    NewVersion = newVersion,
+                    ProjectFile = _fileDetector.ResolvedCsProjFile,
+                    VersionStrategy = args.VersionBump.ToString().ToLowerInvariant()
+                };
+
+                Console.WriteLine(
+                    JsonConvert.SerializeObject(
+                        theOutput, new JsonSerializerSettings
+                        {
+                            ContractResolver = new CamelCasePropertyNamesContractResolver()
+                        }));
+            }
+            else
+            {
+                Console.WriteLine($"Bumped {_fileDetector.ResolvedCsProjFile} to version {newVersion}");
+            }
         }
 
         public void DumpVersion(VersionCliArgs args)
