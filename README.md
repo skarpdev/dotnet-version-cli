@@ -3,8 +3,7 @@
 
 # dotnet-version-cli
 
-
-This repository contains the source code for an [npm version][1] inspired cli tool for the dotnet core SDK 1.0.1 (csproj based).
+This repository contains the source code for an [npm version][1] inspired cli tool for the dotnet core SDK 1.0.1 or newer (csproj based).
 
 Once installed it provides a `dotnet version` cli extension which allows you to easily bump `patch`, `minor` and `major` versions on your project. Alternatively it allows you to call it with the specific version it should set in the target `csproj`
 
@@ -27,7 +26,7 @@ To install the cli tool add it to the `csproj` file of your library / applicatio
 
 ```xml
 <ItemGroup>
-    <DotNetCliToolReference Include="dotnet-version-cli" Version="0.4.0" />
+    <DotNetCliToolReference Include="dotnet-version-cli" Version="0.5.0" />
 </ItemGroup>
 ```
 
@@ -49,10 +48,10 @@ Using json output will produce
 
 ```bash
 $ dotnet version --output-format=json
-{"product":{"name":"dotnet-version-cli","version":"0.4.0.0"},"currentVersion":"1.3.0","projectFile":"C:\\your\\stuff\\project.csproj"}
+{"product":{"name":"dotnet-version-cli","version":"0.5.0.0"},"currentVersion":"1.3.0","projectFile":"C:\\your\\stuff\\project.csproj"}
 ```
 
-The `product` bit is information about the CLI tool itself.
+The `product` bit is information about the cli tool itself.
 
 ## Standard workflow
 
