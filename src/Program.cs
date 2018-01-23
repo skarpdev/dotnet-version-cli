@@ -30,6 +30,10 @@ namespace Skarp.Version.Cli
             var outputFormatOption = commandLineApplication.Option(
                 "-o | --output-format <format>", "Change output format, allowed values: json, text - default value is text",
                 CommandOptionType.SingleValue);
+            
+            var skipVcsOption = commandLineApplication.Option(
+                "-s | --skip-vcs", "Disable version control system changes - default is to tag and commit new version",
+                CommandOptionType.NoValue);
 
             commandLineApplication.OnExecute(() =>
             {
@@ -46,6 +50,8 @@ namespace Skarp.Version.Cli
                         Console.WriteLine($"{ProductInfo.Name} version {ProductInfo.Version}");
                     }
 
+                    var doVcs = !skipVcsOption.HasValue();
+
                     if (commandLineApplication.RemainingArguments.Count == 0)
                     {
                         _cli.DumpVersion(new VersionCliArgs
@@ -55,7 +61,7 @@ namespace Skarp.Version.Cli
                         return 0;
                     }
 
-                    var cliArgs = GetVersionBumpFromRemainingArgs(commandLineApplication.RemainingArguments, outputFormat);
+                    var cliArgs = GetVersionBumpFromRemainingArgs(commandLineApplication.RemainingArguments, outputFormat, doVcs);
                     _cli.Execute(cliArgs);
 
                     return 0;
@@ -81,7 +87,7 @@ namespace Skarp.Version.Cli
             commandLineApplication.Execute(args);
         }
 
-        internal static VersionCliArgs GetVersionBumpFromRemainingArgs(List<string> remainingArguments, OutputFormat outputFormat)
+        internal static VersionCliArgs GetVersionBumpFromRemainingArgs(List<string> remainingArguments, OutputFormat outputFormat, bool doVcs)
         {
             if (remainingArguments == null || !remainingArguments.Any())
             {
@@ -90,7 +96,7 @@ namespace Skarp.Version.Cli
                 throw new ArgumentException(msgEx, "versionBump");
             }
 
-            var args = new VersionCliArgs { OutputFormat = outputFormat };
+            var args = new VersionCliArgs { OutputFormat = outputFormat, DoVcs = doVcs };
             var bump = VersionBump.Patch;
 
             foreach (var arg in remainingArguments)
