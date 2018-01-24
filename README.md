@@ -28,7 +28,7 @@ To install the cli tool add it to the `csproj` file of your library / applicatio
 
 ```xml
 <ItemGroup>
-    <DotNetCliToolReference Include="dotnet-version-cli" Version="0.5.0" />
+    <DotNetCliToolReference Include="dotnet-version-cli" Version="0.6.0" />
 </ItemGroup>
 ```
 
@@ -50,7 +50,7 @@ Using json output will produce
 
 ```bash
 $ dotnet version --output-format=json
-{"product":{"name":"dotnet-version-cli","version":"0.5.0.0"},"currentVersion":"1.3.0","projectFile":"C:\\your\\stuff\\project.csproj"}
+{"product":{"name":"dotnet-version-cli","version":"0.6.0.0"},"currentVersion":"1.3.0","projectFile":"C:\\your\\stuff\\project.csproj"}
 ```
 
 The `product` bit is information about the cli tool itself.
