@@ -28,13 +28,13 @@ namespace Skarp.Version.Cli
 
         public void Execute(VersionCliArgs args)
         {
-            if (!_vcsTool.IsVcsToolPresent())
+            if (args.DoVcs && !_vcsTool.IsVcsToolPresent())
             {
                 throw new OperationCanceledException(
                     $"Unable to find the vcs tool {_vcsTool.ToolName()} in your path");
             }
 
-            if (!_vcsTool.IsRepositoryClean())
+            if (args.DoVcs && !_vcsTool.IsRepositoryClean())
             {
                 throw new OperationCanceledException(
                     "You currently have uncomitted changes in your repository, please commit these and try again");
@@ -56,9 +56,13 @@ namespace Skarp.Version.Cli
                 _fileDetector.ResolvedCsProjFile
             );
 
-            // Run git commands
-            _vcsTool.Commit(_fileDetector.ResolvedCsProjFile, $"v{newVersion}");
-            _vcsTool.Tag($"v{newVersion}");
+            if (args.DoVcs)
+            {
+                // Run git commands
+                _vcsTool.Commit(_fileDetector.ResolvedCsProjFile, $"v{newVersion}");
+                _vcsTool.Tag($"v{newVersion}");                
+            }
+            
 
             if (args.OutputFormat == OutputFormat.Json)
             {

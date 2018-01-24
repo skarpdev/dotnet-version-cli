@@ -22,6 +22,13 @@ namespace Skarp.Version.Cli.Test
             _fileDetector = A.Fake<ProjectFileDetector>();
             _fileParser = A.Fake<ProjectFileParser>();
             _filePatcher = A.Fake<ProjectFileVersionPatcher>();
+            
+            A.CallTo(() => _fileDetector.FindAndLoadCsProj(A<string>._)).Returns("<Project/>");
+            const string csProjFilePath = "/unit-test/test.csproj";
+            A.CallTo(() => _fileDetector.ResolvedCsProjFile).Returns(csProjFilePath);
+
+            A.CallTo(() => _fileParser.Load(A<string>._)).DoesNothing();
+            A.CallTo(() => _fileParser.Version).Returns("1.2.1");
 
             _cli = new VersionCli(
                     _vcsTool,
@@ -33,23 +40,40 @@ namespace Skarp.Version.Cli.Test
         }
 
         [Fact]
-        public void VersionCli_throws_when_vcs_tool_is_not_present()
+        public void VersionCli_throws_when_vcs_tool_is_not_present_and_doVcs_is_true()
         {
             A.CallTo(() => _vcsTool.IsVcsToolPresent()).Returns(false);
 
-            var ex = Assert.Throws<OperationCanceledException>(() => _cli.Execute(new VersionCliArgs{VersionBump = VersionBump.Major}));
+            var ex = Assert.Throws<OperationCanceledException>(() => _cli.Execute(new VersionCliArgs{VersionBump = VersionBump.Major, DoVcs = true}));
             Assert.Equal("Unable to find the vcs tool _FAKE_ in your path", ex.Message);
+        }
+        
+        [Fact]
+        public void VersionCli_doesNotThrow_when_vcs_tool_is_not_present_if_doVcs_is_false()
+        {
+            A.CallTo(() => _vcsTool.IsVcsToolPresent()).Returns(false);
+
+            _cli.Execute(new VersionCliArgs {VersionBump = VersionBump.Major, DoVcs = false});
         }
 
         [Fact]
-        public void VersionCli_throws_when_repo_is_not_clean()
+        public void VersionCli_throws_when_repo_is_not_clean_and_doVcs_is_true()
         {
             A.CallTo(() => _vcsTool.IsVcsToolPresent()).Returns(true);
             A.CallTo(() => _vcsTool.IsRepositoryClean()).Returns(false);
 
-            var ex = Assert.Throws<OperationCanceledException>(() => _cli.Execute(new VersionCliArgs{VersionBump = VersionBump.Major}));
+            var ex = Assert.Throws<OperationCanceledException>(() => _cli.Execute(new VersionCliArgs{VersionBump = VersionBump.Major, DoVcs = true}));
             Assert.Equal("You currently have uncomitted changes in your repository, please commit these and try again",
                 ex.Message);
+        }
+        
+        [Fact]
+        public void VersionCli_doesNotThrow_when_repo_is_not_clean_if_doVcs_is_false()
+        {
+            A.CallTo(() => _vcsTool.IsVcsToolPresent()).Returns(true);
+            A.CallTo(() => _vcsTool.IsRepositoryClean()).Returns(false);
+
+            _cli.Execute(new VersionCliArgs{VersionBump = VersionBump.Major, DoVcs = false});
         }
 
         [Fact]
@@ -69,7 +93,7 @@ namespace Skarp.Version.Cli.Test
             A.CallTo(() => _fileParser.Version).Returns("1.2.1");
 
             // Act
-            _cli.Execute(new VersionCliArgs{VersionBump = VersionBump.Major});
+            _cli.Execute(new VersionCliArgs{VersionBump = VersionBump.Major, DoVcs = true});
 
             // Verify
             A.CallTo(() => _filePatcher.Patch(
@@ -89,6 +113,40 @@ namespace Skarp.Version.Cli.Test
             A.CallTo(() => _vcsTool.Tag(
                     A<string>.That.Matches(tag => tag == "v2.0.0")))
                 .MustHaveHappened(Repeated.Exactly.Once);
+        }
+        
+        [Fact]
+        public void VersionCli_can_bump_versions_can_skip_vcs()
+        {
+            // Configure
+            A.CallTo(() => _vcsTool.IsRepositoryClean()).Returns(true);
+            A.CallTo(() => _vcsTool.IsVcsToolPresent()).Returns(true);
+            A.CallTo(() => _vcsTool.Commit(A<string>._, A<string>._)).DoesNothing();
+            A.CallTo(() => _vcsTool.Tag(A<string>._)).DoesNothing();
+
+            A.CallTo(() => _fileDetector.FindAndLoadCsProj(A<string>._)).Returns("<Project/>");
+            const string csProjFilePath = "/unit-test/test.csproj";
+            A.CallTo(() => _fileDetector.ResolvedCsProjFile).Returns(csProjFilePath);
+
+            A.CallTo(() => _fileParser.Load(A<string>._)).DoesNothing();
+            A.CallTo(() => _fileParser.Version).Returns("1.2.1");
+
+            // Act
+            _cli.Execute(new VersionCliArgs{VersionBump = VersionBump.Major, DoVcs = false});
+
+            // Verify
+            A.CallTo(() => _filePatcher.Patch(
+                    A<string>.That.Matches(str => str == "<Project/>"),
+                    A<string>.That.Matches(ver => ver == "1.2.1"),
+                    A<string>.That.Matches(newVer => newVer == "2.0.0")
+                ))
+                .MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => _filePatcher.Flush(
+                    A<string>._,
+                    A<string>.That.Matches(path => path == csProjFilePath)))
+                .MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => _vcsTool.Commit(A<string>._, A<string>._)).MustNotHaveHappened();
+            A.CallTo(() => _vcsTool.Tag(A<string>._)).MustNotHaveHappened();
         }
     }
 }

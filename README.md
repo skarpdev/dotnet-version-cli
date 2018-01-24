@@ -20,6 +20,8 @@ Similarly for `minor` and `major`, but changing different parts of the version n
 To control the output format the `--output-format` switch can be used - currently supported values are `json` and `text`. **Please beware** that output is only reformatted for success-cases, so if something is wrong you will get a non 0 exit code and text output!
 Changing output format works for both "version bumping" and the "show version" operations of the cli.
 
+The commit and tag can be disabled via the `--skip-vcs` option.
+
 ## Installing the cli tool
 
 To install the cli tool add it to the `csproj` file of your library / application:
