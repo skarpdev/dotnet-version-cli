@@ -28,12 +28,19 @@ namespace Skarp.Version.Cli
 
             commandLineApplication.HelpOption("-? | -h | --help");
             var outputFormatOption = commandLineApplication.Option(
-                "-o | --output-format <format>", "Change output format, allowed values: json, text - default value is text",
+                "-o | --output-format <format>",
+                "Change output format, allowed values: json, text - default value is text",
                 CommandOptionType.SingleValue);
-            
+
             var skipVcsOption = commandLineApplication.Option(
                 "-s | --skip-vcs", "Disable version control system changes - default is to tag and commit new version",
                 CommandOptionType.NoValue);
+
+            var doDryRun = commandLineApplication.Option(
+                "-d | --dry-run",
+                "Disable all changes to disk and vcs. Use to see what the changes would have been but without changing the csproj file nor committing or tagging.",
+                CommandOptionType.NoValue);
+
 
             commandLineApplication.OnExecute(() =>
             {
@@ -42,7 +49,8 @@ namespace Skarp.Version.Cli
                     var outputFormat = OutputFormat.Text;
                     if (outputFormatOption.HasValue())
                     {
-                        outputFormat = (OutputFormat) Enum.Parse(typeof(OutputFormat), outputFormatOption.Value(), true);
+                        outputFormat =
+                            (OutputFormat) Enum.Parse(typeof(OutputFormat), outputFormatOption.Value(), true);
                     }
 
                     if (outputFormat == OutputFormat.Text)
@@ -51,6 +59,7 @@ namespace Skarp.Version.Cli
                     }
 
                     var doVcs = !skipVcsOption.HasValue();
+                    var dryRunEnabled = doDryRun.HasValue();
 
                     if (commandLineApplication.RemainingArguments.Count == 0)
                     {
@@ -61,7 +70,8 @@ namespace Skarp.Version.Cli
                         return 0;
                     }
 
-                    var cliArgs = GetVersionBumpFromRemainingArgs(commandLineApplication.RemainingArguments, outputFormat, doVcs);
+                    var cliArgs = GetVersionBumpFromRemainingArgs(commandLineApplication.RemainingArguments,
+                        outputFormat, doVcs, dryRunEnabled);
                     _cli.Execute(cliArgs);
 
                     return 0;
@@ -87,16 +97,18 @@ namespace Skarp.Version.Cli
             commandLineApplication.Execute(args);
         }
 
-        internal static VersionCliArgs GetVersionBumpFromRemainingArgs(List<string> remainingArguments, OutputFormat outputFormat, bool doVcs)
+        internal static VersionCliArgs GetVersionBumpFromRemainingArgs(List<string> remainingArguments,
+            OutputFormat outputFormat, bool doVcs, bool dryRunEnabled)
         {
             if (remainingArguments == null || !remainingArguments.Any())
             {
-                var msgEx = "No version bump specified, please specify one of:\n\tmajor | minor | patch | <specific version>";
+                var msgEx =
+                    "No version bump specified, please specify one of:\n\tmajor | minor | patch | <specific version>";
                 // ReSharper disable once NotResolvedInText
                 throw new ArgumentException(msgEx, "versionBump");
             }
 
-            var args = new VersionCliArgs { OutputFormat = outputFormat, DoVcs = doVcs };
+            var args = new VersionCliArgs {OutputFormat = outputFormat, DoVcs = doVcs, DryRun = dryRunEnabled};
             var bump = VersionBump.Patch;
 
             foreach (var arg in remainingArguments)
@@ -107,6 +119,7 @@ namespace Skarp.Version.Cli
                 args.SpecificVersionToApply = ver.ToVersionString();
                 bump = VersionBump.Specific;
             }
+
             args.VersionBump = bump;
             return args;
         }

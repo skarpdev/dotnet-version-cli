@@ -15,5 +15,10 @@
         /// commit and tag.
         /// </summary>
         public bool DoVcs { get; set; }
+
+        /// <summary>
+        /// Whether dry run is enabled and thus all mutations should be disabled
+        /// </summary>
+        public bool DryRun { get; set; }
     }
 }

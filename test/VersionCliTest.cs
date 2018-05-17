@@ -93,7 +93,7 @@ namespace Skarp.Version.Cli.Test
             A.CallTo(() => _fileParser.Version).Returns("1.2.1");
 
             // Act
-            _cli.Execute(new VersionCliArgs{VersionBump = VersionBump.Major, DoVcs = true});
+            _cli.Execute(new VersionCliArgs{VersionBump = VersionBump.Major, DoVcs = true, DryRun = false});
 
             // Verify
             A.CallTo(() => _filePatcher.Patch(
@@ -132,7 +132,7 @@ namespace Skarp.Version.Cli.Test
             A.CallTo(() => _fileParser.Version).Returns("1.2.1");
 
             // Act
-            _cli.Execute(new VersionCliArgs{VersionBump = VersionBump.Major, DoVcs = false});
+            _cli.Execute(new VersionCliArgs{VersionBump = VersionBump.Major, DoVcs = false, DryRun = false});
 
             // Verify
             A.CallTo(() => _filePatcher.Patch(
@@ -145,6 +145,43 @@ namespace Skarp.Version.Cli.Test
                     A<string>._,
                     A<string>.That.Matches(path => path == csProjFilePath)))
                 .MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => _vcsTool.Commit(A<string>._, A<string>._)).MustNotHaveHappened();
+            A.CallTo(() => _vcsTool.Tag(A<string>._)).MustNotHaveHappened();
+        }
+        
+        [Fact]
+        public void VersionCli_can_bump_versions_can_dry_run()
+        {
+            // Configure
+            A.CallTo(() => _vcsTool.IsRepositoryClean()).Returns(true);
+            A.CallTo(() => _vcsTool.IsVcsToolPresent()).Returns(true);
+            A.CallTo(() => _vcsTool.Commit(A<string>._, A<string>._)).DoesNothing();
+            A.CallTo(() => _vcsTool.Tag(A<string>._)).DoesNothing();
+
+            A.CallTo(() => _fileDetector.FindAndLoadCsProj(A<string>._)).Returns("<Project/>");
+            const string csProjFilePath = "/unit-test/test.csproj";
+            A.CallTo(() => _fileDetector.ResolvedCsProjFile).Returns(csProjFilePath);
+
+            A.CallTo(() => _fileParser.Load(A<string>._)).DoesNothing();
+            A.CallTo(() => _fileParser.Version).Returns("1.2.1");
+
+            // Act
+            var info = _cli.Execute(new VersionCliArgs{VersionBump = VersionBump.Major, DoVcs = true, DryRun = true});
+
+            Assert.NotEqual(info.OldVersion, info.NewVersion);
+            Assert.Equal(info.NewVersion, "2.0.0");
+            
+            // Verify
+            A.CallTo(() => _filePatcher.Patch(
+                    A<string>.That.Matches(str => str == "<Project/>"),
+                    A<string>.That.Matches(ver => ver == "1.2.1"),
+                    A<string>.That.Matches(newVer => newVer == "2.0.0")
+                ))
+                .MustNotHaveHappened();
+            A.CallTo(() => _filePatcher.Flush(
+                    A<string>._,
+                    A<string>.That.Matches(path => path == csProjFilePath)))
+                .MustNotHaveHappened();
             A.CallTo(() => _vcsTool.Commit(A<string>._, A<string>._)).MustNotHaveHappened();
             A.CallTo(() => _vcsTool.Tag(A<string>._)).MustNotHaveHappened();
         }
