@@ -22,13 +22,15 @@ Changing output format works for both "version bumping" and the "show version" o
 
 The commit and tag can be disabled via the `--skip-vcs` option.
 
+A completely dry run where nothing will be changed but the new version number is output can be enabled with the `--dry-run` switch. Performing a dry run also implies `skip vcs`.
+
 ## Installing the cli tool
 
 To install the cli tool add it to the `csproj` file of your library / application:
 
 ```xml
 <ItemGroup>
-    <DotNetCliToolReference Include="dotnet-version-cli" Version="0.6.0" />
+    <DotNetCliToolReference Include="dotnet-version-cli" Version="0.7.0" />
 </ItemGroup>
 ```
 
@@ -50,7 +52,7 @@ Using json output will produce
 
 ```bash
 $ dotnet version --output-format=json
-{"product":{"name":"dotnet-version-cli","version":"0.6.0.0"},"currentVersion":"1.3.0","projectFile":"C:\\your\\stuff\\project.csproj"}
+{"product":{"name":"dotnet-version-cli","version":"0.7.0.0"},"currentVersion":"1.3.0","projectFile":"C:\\your\\stuff\\project.csproj"}
 ```
 
 The `product` bit is information about the cli tool itself.
