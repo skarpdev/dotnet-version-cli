@@ -2,6 +2,7 @@ using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Skarp.Version.Cli.CsProj;
+using Skarp.Version.Cli.Model;
 using Skarp.Version.Cli.Vcs;
 
 namespace Skarp.Version.Cli
@@ -26,15 +27,15 @@ namespace Skarp.Version.Cli
             _fileVersionPatcher = fileVersionPatcher;
         }
 
-        public void Execute(VersionCliArgs args)
+        public VersionInfo Execute(VersionCliArgs args)
         {
-            if (args.DoVcs && !_vcsTool.IsVcsToolPresent())
+            if (!args.DryRun && args.DoVcs && !_vcsTool.IsVcsToolPresent())
             {
                 throw new OperationCanceledException(
                     $"Unable to find the vcs tool {_vcsTool.ToolName()} in your path");
             }
 
-            if (args.DoVcs && !_vcsTool.IsRepositoryClean())
+            if (!args.DryRun && args.DoVcs && !_vcsTool.IsRepositoryClean())
             {
                 throw new OperationCanceledException(
                     "You currently have uncomitted changes in your repository, please commit these and try again");
@@ -46,45 +47,51 @@ namespace Skarp.Version.Cli
             var semVer = SemVer.FromString(_fileParser.Version);
             semVer.Bump(args.VersionBump, args.SpecificVersionToApply);
             var newVersion = semVer.ToVersionString();
-            var patchedCsProjXml = _fileVersionPatcher.Patch(
-                csProjXml,
-                _fileParser.Version,
-                newVersion
-            );
-            _fileVersionPatcher.Flush(
-                patchedCsProjXml,
-                _fileDetector.ResolvedCsProjFile
-            );
 
-            if (args.DoVcs)
+            if (!args.DryRun) // if we are not in dry run mode, then we should go ahead
             {
-                // Run git commands
-                _vcsTool.Commit(_fileDetector.ResolvedCsProjFile, $"v{newVersion}");
-                _vcsTool.Tag($"v{newVersion}");                
+                var patchedCsProjXml = _fileVersionPatcher.Patch(
+                    csProjXml,
+                    _fileParser.Version,
+                    newVersion
+                );
+                _fileVersionPatcher.Flush(
+                    patchedCsProjXml,
+                    _fileDetector.ResolvedCsProjFile
+                );
+
+                if (args.DoVcs)
+                {
+                    // Run git commands
+                    _vcsTool.Commit(_fileDetector.ResolvedCsProjFile, $"v{newVersion}");
+                    _vcsTool.Tag($"v{newVersion}");
+                }
             }
-            
+
+            var theOutput = new VersionInfo
+            {
+                Product = new ProductOutputInfo
+                {
+                    Name = ProductInfo.Name,
+                    Version = ProductInfo.Version
+                },
+                OldVersion = _fileParser.Version,
+                NewVersion = newVersion,
+                ProjectFile = _fileDetector.ResolvedCsProjFile,
+                VersionStrategy = args.VersionBump.ToString().ToLowerInvariant()
+            };
+
 
             if (args.OutputFormat == OutputFormat.Json)
             {
-                var theOutput = new
-                {
-                    Product = new
-                    {
-                        Name = ProductInfo.Name,
-                        Version = ProductInfo.Version
-                    },
-                    OldVersion = _fileParser.Version,
-                    NewVersion = newVersion,
-                    ProjectFile = _fileDetector.ResolvedCsProjFile,
-                    VersionStrategy = args.VersionBump.ToString().ToLowerInvariant()
-                };
-
                 WriteJsonToStdout(theOutput);
             }
             else
             {
                 Console.WriteLine($"Bumped {_fileDetector.ResolvedCsProjFile} to version {newVersion}");
             }
+
+            return theOutput;
         }
 
         public void DumpVersion(VersionCliArgs args)
@@ -121,6 +128,5 @@ namespace Skarp.Version.Cli
                         ContractResolver = new CamelCasePropertyNamesContractResolver()
                     }));
         }
-
     }
 }
