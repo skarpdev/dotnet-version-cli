@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp1.0;netcoreapp2.0;netcoreapp2.1</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.1</TargetFrameworks>
     <RootNamespace>Skarp.Version.Cli.Test</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
@@ -12,8 +12,5 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\src\dotnet-version.csproj" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)'!='netcoreapp2.1'">
-    <DotNetCliToolReference Include="Microsoft.DotNet.Watcher.Tools" Version="1.0.0" />
   </ItemGroup>
 </Project>
