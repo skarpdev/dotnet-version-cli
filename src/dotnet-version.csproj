@@ -3,7 +3,7 @@
     <OutputType>Exe</OutputType>
     <TargetFrameworks>netcoreapp2.1</TargetFrameworks>
     <PackAsTool>true</PackAsTool>
-    <ToolCommandName>version</ToolCommandName>
+    <ToolCommandName>dotnet-version</ToolCommandName>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <RootNamespace>Skarp.Version.Cli</RootNamespace>
     <Version>0.7.0</Version>
