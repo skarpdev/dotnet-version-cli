@@ -40,6 +40,10 @@ namespace Skarp.Version.Cli
                 "Disable all changes to disk and vcs. Use to see what the changes would have been but without changing the csproj file nor committing or tagging.",
                 CommandOptionType.NoValue);
 
+            var csProjectFileOption = commandLineApplication.Option(
+                "-f | --project-file <path/to/csproj>",
+                "The project file to work on. Defaults to auto-locating in current directory",
+                CommandOptionType.SingleValue);
 
             commandLineApplication.OnExecute(() =>
             {
@@ -64,13 +68,19 @@ namespace Skarp.Version.Cli
                     {
                         _cli.DumpVersion(new VersionCliArgs
                         {
-                            OutputFormat = outputFormat
+                            OutputFormat = outputFormat,
+                            CsProjFilePath = csProjectFileOption.Value(),
                         });
                         return 0;
                     }
 
-                    var cliArgs = GetVersionBumpFromRemainingArgs(commandLineApplication.RemainingArguments,
-                        outputFormat, doVcs, dryRunEnabled);
+                    var cliArgs = GetVersionBumpFromRemainingArgs(
+                        commandLineApplication.RemainingArguments,
+                        outputFormat,
+                        doVcs,
+                        dryRunEnabled,
+                        csProjectFileOption.Value()
+                    );
                     _cli.Execute(cliArgs);
 
                     return 0;
@@ -96,8 +106,12 @@ namespace Skarp.Version.Cli
             commandLineApplication.Execute(args);
         }
 
-        internal static VersionCliArgs GetVersionBumpFromRemainingArgs(List<string> remainingArguments,
-            OutputFormat outputFormat, bool doVcs, bool dryRunEnabled)
+        internal static VersionCliArgs GetVersionBumpFromRemainingArgs(
+            List<string> remainingArguments,
+            OutputFormat outputFormat,
+            bool doVcs,
+            bool dryRunEnabled,
+            string userSpecifiedCsProjFilePath)
         {
             if (remainingArguments == null || !remainingArguments.Any())
             {
@@ -120,6 +134,8 @@ namespace Skarp.Version.Cli
             }
 
             args.VersionBump = bump;
+            args.CsProjFilePath = userSpecifiedCsProjFilePath;
+
             return args;
         }
 
