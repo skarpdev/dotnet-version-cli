@@ -19,9 +19,6 @@
     <PackageId>dotnet-version-cli</PackageId>
     <Company>SKARP ApS</Company>
   </PropertyGroup>
-  <ItemGroup Condition="'$(TargetFramework)'!='netcoreapp2.1'">
-    <DotNetCliToolReference Include="dotnet-version-cli" Version="0.5.0" />
-  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="1.1.1" />
