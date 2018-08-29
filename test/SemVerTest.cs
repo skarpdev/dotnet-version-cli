@@ -31,7 +31,7 @@ namespace Skarp.Version.Cli.Test
         public void BailsOnInvalidSemVers(string version)
         {
             var ex = Assert.Throws<ArgumentException>(() => SemVer.FromString(version));
-            Assert.Equal(ex.ParamName, "versionString");
+            Assert.Equal("versionString", ex.ParamName);
             Assert.Equal(ex.Message, $"Malformed version part: {version}{Environment.NewLine}Parameter name: versionString");
         }
 

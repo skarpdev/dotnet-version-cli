@@ -28,7 +28,7 @@ namespace Skarp.Version.Cli.Test.CsProj
             var newXml = _patcher.Patch(_projectXml, "1.0.0", "1.1.0");
 
             Assert.NotEqual(_projectXml, newXml);
-            Assert.True(newXml.Contains("<Version>1.1.0</Version>"));
+            Assert.Contains("<Version>1.1.0</Version>", newXml);
         }
     }
 }

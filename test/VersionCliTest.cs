@@ -169,7 +169,7 @@ namespace Skarp.Version.Cli.Test
             var info = _cli.Execute(new VersionCliArgs{VersionBump = VersionBump.Major, DoVcs = true, DryRun = true});
 
             Assert.NotEqual(info.OldVersion, info.NewVersion);
-            Assert.Equal(info.NewVersion, "2.0.0");
+            Assert.Equal("2.0.0", info.NewVersion);
             
             // Verify
             A.CallTo(() => _filePatcher.Patch(
