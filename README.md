@@ -3,9 +3,12 @@
 
 # dotnet-version-cli
 
-This repository contains the source code for an [npm version][1] inspired cli tool for the dotnet core SDK 1.0.1 or newer (csproj based).
+This repository contains the source code for an [npm version][1] inspired dotnet global tool for dotnet core 2.1 or newer.
 
-Once installed it provides a `dotnet version` cli extension which allows you to easily bump `patch`, `minor` and `major` versions on your project. Alternatively it allows you to call it with the specific version it should set in the target `csproj`
+This used to be a dotnet csproj installable `cli tool` - if you are not ready for the move to dotnet 2.1 global tools, please take a look at the last [0.7.0 release that supports csproj installation](https://github.com/skarpdev/dotnet-version-cli/blob/v0.7.0/README.md).
+
+Once installed it provides a `dotnet version` command which allows you to easily bump `patch`, `minor` and `major` versions on your project.
+Alternatively it allows you to call it with the specific version it should set in the target `csproj`.
 
 We do not aim to be 100% feature compatible with `npm version` but provide the bare minimum for working with version numbers on your libraries and applications.
 
@@ -26,23 +29,22 @@ A completely dry run where nothing will be changed but the new version number is
 
 ## Installing the cli tool
 
-To install the cli tool add it to the `csproj` file of your library / application:
+To install the tool simply issue
 
-```xml
-<ItemGroup>
-    <DotNetCliToolReference Include="dotnet-version-cli" Version="0.7.0" />
-</ItemGroup>
+```bash
+dotnet tool install -g dotnet-version-cli
 ```
 
-And issue `dotnet restore`. To check if the tool works, run the command (in the same folder as your `csproj` file)
+Now it should be available as
 
 ```bash
 dotnet version
 ```
 
-Which should produce output similar to
+It can also be executed directly as `dotnet-version` - both should produce output similar to
 
 ```text
+$ dotnet version
 dotnet-version-cli
 Project version is:
         1.3.0
@@ -63,7 +65,7 @@ You have just merged a PR with a bugfix onto master and you are ready to release
 
 ```bash
 $ git pull
-$ dotnet version patch
+$ dotnet version patch -f ./src/my.csproj
 $ git push && git push --tags
 ```
 
