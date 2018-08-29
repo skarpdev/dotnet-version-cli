@@ -46,7 +46,7 @@ namespace Skarp.Version.Cli.CsProj
                 var projFiles = csProjFiles as IList<string> ?? csProjFiles.ToList();
                 if (projFiles.Count == 0)
                 {
-                    throw new OperationCanceledException("No csproj file could be found in path - ensure that you are running `dotnet version` next to the project file");
+                    throw new OperationCanceledException("No csproj file could be found in path - ensure that you are running `dotnet version` next to the project file, or use -f to specify a target csproj file");
                 }
 
                 if (projFiles.Count > 1)
