@@ -65,7 +65,7 @@ You have just merged a PR with a bugfix onto master and you are ready to release
 
 ```bash
 $ git pull
-$ dotnet version patch -f ./src/my.csproj
+$ dotnet version -f ./src/my.csproj patch
 $ git push && git push --tags
 ```
 
