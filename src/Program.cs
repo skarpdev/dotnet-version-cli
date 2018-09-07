@@ -87,13 +87,17 @@ namespace Skarp.Version.Cli
                 }
                 catch (ArgumentException ex)
                 {
-                    Console.WriteLine($"ERR: {ex.Message}");
+                    Console.WriteLine($"ERR {ex.Message}");
+
+                    commandLineApplication.ShowHelp();
                     return 1;
                 }
 
                 catch (OperationCanceledException oce)
                 {
                     Console.WriteLine($"ERR {oce.Message}");
+
+                    commandLineApplication.ShowHelp();
                     return 1;
                 }
                 catch (Exception e)
