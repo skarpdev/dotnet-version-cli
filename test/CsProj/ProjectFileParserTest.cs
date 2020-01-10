@@ -45,7 +45,7 @@ namespace Skarp.Version.Cli.Test.CsProj
                 parser.Load(csProjXml)
             );
             
-            Assert.Equal($"Provided csproj file does not contain a <Version>{Environment.NewLine}Parameter name: version", ex.Message);
+            Assert.Contains($"Provided csproj file does not contain a <Version>", ex.Message);
             Assert.Equal("version", ex.ParamName);
         }
 
@@ -64,7 +64,7 @@ namespace Skarp.Version.Cli.Test.CsProj
                 parser.Load(csProjXml)
             );
             
-            Assert.Equal($"The provided csproj file seems malformed - no <Project> in the root{Environment.NewLine}Parameter name: project", ex.Message);
+            Assert.Contains($"The provided csproj file seems malformed - no <Project> in the root", ex.Message);
             Assert.Equal("project", ex.ParamName);
         }
     }
