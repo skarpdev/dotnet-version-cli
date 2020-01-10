@@ -32,8 +32,8 @@ namespace Skarp.Version.Cli.Test
             var ex = Assert.Throws<ArgumentException>(() =>
                 Program.GetVersionBumpFromRemainingArgs(new List<string>(), OutputFormat.Text, true, true,
                     string.Empty));
-            Assert.Equal(
-                $"No version bump specified, please specify one of:\n\tmajor | minor | patch | <specific version>{Environment.NewLine}Parameter name: versionBump",
+            Assert.Contains(
+                $"No version bump specified, please specify one of:\n\tmajor | minor | patch | <specific version>",
                 ex.Message);
             Assert.Equal("versionBump", ex.ParamName);
         }
@@ -46,7 +46,7 @@ namespace Skarp.Version.Cli.Test
             var ex = Assert.Throws<ArgumentException>(() =>
                 Program.GetVersionBumpFromRemainingArgs(new List<string> {invalidVersion}, OutputFormat.Text, true,
                     true, string.Empty));
-            Assert.Equal($"Malformed version part: {invalidVersion}{Environment.NewLine}Parameter name: versionString",
+            Assert.Contains($"Malformed version part: {invalidVersion}",
                 ex.Message);
             Assert.Equal("versionString", ex.ParamName);
         }

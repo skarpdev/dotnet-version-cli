@@ -32,7 +32,7 @@ namespace Skarp.Version.Cli.Test
         {
             var ex = Assert.Throws<ArgumentException>(() => SemVer.FromString(version));
             Assert.Equal("versionString", ex.ParamName);
-            Assert.Equal(ex.Message, $"Malformed version part: {version}{Environment.NewLine}Parameter name: versionString");
+            Assert.Contains($"Malformed version part: {version}", ex.Message);
         }
 
         [Theory]
