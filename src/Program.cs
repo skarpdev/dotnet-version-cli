@@ -102,7 +102,7 @@ namespace Skarp.Version.Cli
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("ERR Something went completly haywire, developer zen:");
+                    Console.WriteLine("ERR Something went completely haywire, developer zen:");
                     Console.WriteLine($"\t{e.Message} STACK: {Environment.NewLine}{e.StackTrace}");
                     return 1;
                 }
