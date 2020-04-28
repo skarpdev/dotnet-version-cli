@@ -33,3 +33,5 @@ msbuild.wrn
 
 # Rider
 .idea/
+.fake
+.ionide
