@@ -133,7 +133,7 @@ namespace Skarp.Version.Cli
                 if (Enum.TryParse(arg, true, out bump)) break;
 
                 var ver = SemVer.FromString(arg);
-                args.SpecificVersionToApply = ver.ToVersionString();
+                args.SpecificVersionToApply = ver.ToSemVerVersionString();
                 bump = VersionBump.Specific;
             }
 

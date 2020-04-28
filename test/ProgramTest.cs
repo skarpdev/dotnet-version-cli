@@ -46,7 +46,7 @@ namespace Skarp.Version.Cli.Test
             var ex = Assert.Throws<ArgumentException>(() =>
                 Program.GetVersionBumpFromRemainingArgs(new List<string> {invalidVersion}, OutputFormat.Text, true,
                     true, string.Empty));
-            Assert.Contains($"Malformed version part: {invalidVersion}",
+            Assert.Contains($"Invalid SemVer version string: {invalidVersion}",
                 ex.Message);
             Assert.Equal("versionString", ex.ParamName);
         }
