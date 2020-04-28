@@ -87,7 +87,7 @@ namespace Skarp.Version.Cli
                 }
                 catch (ArgumentException ex)
                 {
-                    Console.WriteLine($"ERR {ex.Message}");
+                    Console.Error.WriteLine($"ERR {ex.Message}");
 
                     commandLineApplication.ShowHelp();
                     return 1;
@@ -95,15 +95,15 @@ namespace Skarp.Version.Cli
 
                 catch (OperationCanceledException oce)
                 {
-                    Console.WriteLine($"ERR {oce.Message}");
+                    Console.Error.WriteLine($"ERR {oce.Message}");
 
                     commandLineApplication.ShowHelp();
                     return 1;
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("ERR Something went completely haywire, developer zen:");
-                    Console.WriteLine($"\t{e.Message} STACK: {Environment.NewLine}{e.StackTrace}");
+                    Console.Error.WriteLine("ERR Something went completely haywire, developer zen:");
+                    Console.Error.WriteLine($"\t{e.Message} STACK: {Environment.NewLine}{e.StackTrace}");
                     return 1;
                 }
             });
