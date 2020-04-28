@@ -38,7 +38,7 @@ namespace Skarp.Version.Cli.Vcs.Git
         /// <returns></returns>
         public bool IsVcsToolPresent()
         {
-            // launching `git --help` returns exit code 0 where as `git` returns 1 as git wants a cmd line argument 
+            // launching `git --help` returns exit code 0 where as `git` returns 1 as git wants a cmd line argument
             return LaunchGitWithArgs("--help");
         }
 
@@ -66,7 +66,7 @@ namespace Skarp.Version.Cli.Vcs.Git
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.Error.WriteLine(ex.Message);
                 return false;
             }
         }
