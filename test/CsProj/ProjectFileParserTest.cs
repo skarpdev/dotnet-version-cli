@@ -23,15 +23,16 @@ namespace Skarp.Version.Cli.Test.CsProj
                                      "<RootNamespace>Unit.For.The.Win</RootNamespace>" +
                                      "<PackageId>Unit.Testing.Library</PackageId>" +
                                      "<Version>1.0.0</Version>" +
+                                     "<PackageVersion>1.0.0-1+master</PackageVersion>" +
                                      "</PropertyGroup>" +
                                      "</Project>";
 
             parser.Load(csProjXml);
             Assert.Equal("1.0.0", parser.Version);
-        }
-
+            Assert.Equal("1.0.0-1+master", parser.PackageVersion);
+        } 
         [Fact]
-        public void BailsWhenNoVersionIsDefined()
+        public void CanParse_when_version_and_package_version_missing()
         {
             const string csProjXml = "<Project Sdk=\"Microsoft.NET.Sdk\">"+
                                      "<PropertyGroup>" + 
@@ -41,14 +42,11 @@ namespace Skarp.Version.Cli.Test.CsProj
                                      "</PropertyGroup>" +
                                      "</Project>";
 
-            var ex = Assert.Throws<ArgumentException>(() => 
-                parser.Load(csProjXml)
-            );
-            
-            Assert.Contains($"Provided csproj file does not contain a <Version>", ex.Message);
-            Assert.Equal("version", ex.ParamName);
+            parser.Load(csProjXml);
+            Assert.Equal("0.0.0", parser.Version);
+            Assert.Equal("0.0.0", parser.PackageVersion);
         }
-
+        
          [Fact]
         public void BailsOnMalformedProjectFile()
         {

@@ -8,6 +8,8 @@ namespace Skarp.Version.Cli.CsProj
     public class ProjectFileParser
     {
         public virtual string Version { get; private set; }
+        
+        public virtual string PackageVersion { get; private set; }
 
         public virtual void Load(string xmlDocument)
         {
@@ -31,12 +33,14 @@ namespace Skarp.Version.Cli.CsProj
                 where prop.Name == "Version"
                 select prop
             ).FirstOrDefault();
-
-            if(xVersion == null)
-            {
-                throw new ArgumentException("Provided csproj file does not contain a <Version>", paramName: "version");
-            }
-            Version = xVersion.Value;            
+            Version = xVersion?.Value ?? "0.0.0";
+            
+            var xPackageVersion = (
+                from prop in propertyGroup.Elements()
+                where prop.Name == "PackageVersion"
+                select prop
+            ).FirstOrDefault();
+            PackageVersion = xPackageVersion?.Value ?? Version;
         }
     }
 }
