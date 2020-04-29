@@ -44,6 +44,11 @@ namespace Skarp.Version.Cli
                 "-f | --project-file <path/to/csproj>",
                 "The project file to work on. Defaults to auto-locating in current directory",
                 CommandOptionType.SingleValue);
+            
+            var buildMetaOption = commandLineApplication.Option(
+                "-b | --build-meta <the-build-meta>",
+                "Additional build metadata to add to a `premajor`, `preminor` or `prepatch` version bump",
+                CommandOptionType.SingleValue);
 
             commandLineApplication.OnExecute(() =>
             {
@@ -79,7 +84,8 @@ namespace Skarp.Version.Cli
                         outputFormat,
                         doVcs,
                         dryRunEnabled,
-                        csProjectFileOption.Value()
+                        csProjectFileOption.Value(),
+                        buildMetaOption.Value()
                     );
                     _cli.Execute(cliArgs);
 
@@ -110,22 +116,29 @@ namespace Skarp.Version.Cli
             commandLineApplication.Execute(args);
         }
 
-        internal static VersionCliArgs GetVersionBumpFromRemainingArgs(
-            List<string> remainingArguments,
+        internal static VersionCliArgs GetVersionBumpFromRemainingArgs(List<string> remainingArguments,
             OutputFormat outputFormat,
             bool doVcs,
             bool dryRunEnabled,
-            string userSpecifiedCsProjFilePath)
+            string userSpecifiedCsProjFilePath, 
+            string userSpecifiedBuildMeta
+        )
         {
             if (remainingArguments == null || !remainingArguments.Any())
             {
                 var msgEx =
-                    "No version bump specified, please specify one of:\n\tmajor | minor | patch | <specific version>";
+                    "No version bump specified, please specify one of:\n\tmajor | minor | patch | premajor | preminor | prepatch | <specific version>";
                 // ReSharper disable once NotResolvedInText
                 throw new ArgumentException(msgEx, "versionBump");
             }
 
-            var args = new VersionCliArgs {OutputFormat = outputFormat, DoVcs = doVcs, DryRun = dryRunEnabled};
+            var args = new VersionCliArgs
+            {
+                OutputFormat = outputFormat,
+                DoVcs = doVcs,
+                DryRun = dryRunEnabled,
+                BuildMeta =  userSpecifiedBuildMeta,
+            };
             var bump = VersionBump.Patch;
 
             foreach (var arg in remainingArguments)
