@@ -2,6 +2,7 @@
 using FakeItEasy;
 using Skarp.Version.Cli.CsProj;
 using Skarp.Version.Cli.Vcs;
+using Skarp.Version.Cli.Versioning;
 using Xunit;
 
 namespace Skarp.Version.Cli.Test
@@ -34,7 +35,8 @@ namespace Skarp.Version.Cli.Test
                     _vcsTool,
                     _fileDetector,
                     _fileParser,
-                    _filePatcher
+                    _filePatcher,
+                    new SemVerBumper()
                 );
 
         }

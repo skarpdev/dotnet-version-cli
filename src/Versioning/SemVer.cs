@@ -14,122 +14,6 @@ namespace Skarp.Version.Cli.Versioning
             TimeSpan.FromSeconds(2)
         );
 
-        /// <summary>
-        /// Bump the currently parsed version information with the specified <paramref name="bump"/>
-        /// </summary>
-        /// <param name="bump">The bump to apply to the version</param>
-        /// <param name="specificVersionToApply">The specific version to apply if bump is Specific</param>
-        /// <param name="buildMeta"></param>
-        public void Bump(VersionBump bump, string specificVersionToApply = "", string buildMeta = "")
-        {
-            BuildMeta = buildMeta;
-            switch (bump)
-            {
-                case VersionBump.Major:
-                {
-                    if (!IsPreRelease)
-                    {
-                        Major += 1;
-                        Minor = 0;
-                        Patch = 0;
-                    }
-                    else
-                    {
-                        PreRelease = string.Empty;
-                        BuildMeta = string.Empty;
-                    }
-
-                    break;
-                }
-                case VersionBump.PreMajor:
-                {
-                    Major += 1;
-                    Minor = 0;
-                    Patch = 0;
-                    PreRelease = "0";
-                    break;
-                }
-                case VersionBump.Minor:
-                {
-                    if (!IsPreRelease)
-                    {
-                        Minor += 1;
-                        Patch = 0;
-                    }
-                    else
-                    {
-                        PreRelease = string.Empty;
-                        BuildMeta = string.Empty;
-                    }
-
-                    break;
-                }
-                case VersionBump.PreMinor:
-                {
-                    Minor += 1;
-                    Patch = 0;
-                    PreRelease = "0";
-                    break;
-                }
-                case VersionBump.Patch:
-                {
-                    if (!IsPreRelease)
-                    {
-                        Patch += 1;
-                    }
-                    else
-                    {
-                        PreRelease = string.Empty;
-                        BuildMeta = string.Empty;
-                    }
-
-                    break;
-                }
-                case VersionBump.PrePatch:
-                {
-                    Patch += 1;
-                    PreRelease = "0";
-                    break;
-                }
-                case VersionBump.PreRelease:
-                {
-                    if (!IsPreRelease)
-                    {
-                        throw new InvalidOperationException("Cannot Prerelease bump when not already a prerelease. Please use prepatch, preminor or prepatch to prepare");
-                    }
-
-                    if (!int.TryParse(PreRelease, out var preReleaseNumber))
-                    {
-                        throw new ArgumentException("Pre-release part is not numeric, cannot apply automatic prerelease roll");
-                    }
-
-                    preReleaseNumber += 1;
-                    PreRelease = (preReleaseNumber).ToString();
-                    break;
-                }
-                case VersionBump.Specific:
-                {
-                    if (string.IsNullOrEmpty(specificVersionToApply))
-                    {
-                        throw new ArgumentException($"When bump is specific, specificVersionToApply must be provided");
-                    }
-
-                    var specific = FromString(specificVersionToApply);
-                    Major = specific.Major;
-                    Minor = specific.Minor;
-                    Patch = specific.Patch;
-                    PreRelease = specific.PreRelease;
-                    BuildMeta = specific.BuildMeta;
-                    break;
-                }
-                default:
-                {
-                    throw new ArgumentOutOfRangeException($"VersionBump : {bump} not supported");
-                }
-            }
-            
-        }
-
         public bool IsPreRelease => !string.IsNullOrWhiteSpace(PreRelease);
 
         /// <summary>
@@ -190,19 +74,19 @@ namespace Skarp.Version.Cli.Versioning
         /// The parsed major version
         /// </summary>
         /// <returns></returns>
-        public int Major { get; private set; }
+        public int Major { get; set; }
 
         /// <summary>
         /// The parsed minor version
         /// </summary>
         /// <returns></returns>
-        public int Minor { get; private set; }
+        public int Minor { get; set; }
 
         /// <summary>
         /// The parsed patch version
         /// </summary>
         /// <returns></returns>
-        public int Patch { get; private set; }
+        public int Patch { get; set; }
 
         /// <summary>
         /// Pre-release semver 2 information (the stuff added with a dash after version)

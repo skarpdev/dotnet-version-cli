@@ -14,18 +14,21 @@ namespace Skarp.Version.Cli
         private readonly ProjectFileDetector _fileDetector;
         private readonly ProjectFileParser _fileParser;
         private readonly ProjectFileVersionPatcher _fileVersionPatcher;
+        private readonly SemVerBumper _bumper;
 
         public VersionCli(
             IVcs vcsClient,
             ProjectFileDetector fileDetector,
             ProjectFileParser fileParser,
-            ProjectFileVersionPatcher fileVersionPatcher
+            ProjectFileVersionPatcher fileVersionPatcher,
+            SemVerBumper bumper
         )
         {
             _vcsTool = vcsClient;
             _fileDetector = fileDetector;
             _fileParser = fileParser;
             _fileVersionPatcher = fileVersionPatcher;
+            _bumper = bumper;
         }
 
         public VersionInfo Execute(VersionCliArgs args)
@@ -45,8 +48,12 @@ namespace Skarp.Version.Cli
             var csProjXml = _fileDetector.FindAndLoadCsProj(args.CsProjFilePath);
             _fileParser.Load(csProjXml);
 
-            var semVer = SemVer.FromString(_fileParser.PackageVersion);
-            semVer.Bump(args.VersionBump, args.SpecificVersionToApply, args.BuildMeta);
+            var semVer = _bumper.Bump(
+                SemVer.FromString(_fileParser.PackageVersion),
+                args.VersionBump,
+                args.SpecificVersionToApply,
+                args.BuildMeta
+            );
             var newSimpleVersion = semVer.ToSimpleVersionString();
             var newSemVer = semVer.ToSemVerVersionString();
 

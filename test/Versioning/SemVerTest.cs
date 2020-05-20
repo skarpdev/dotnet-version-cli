@@ -60,53 +60,5 @@ namespace Skarp.Version.Cli.Test.Versioning
             Assert.Equal("versionString", ex.ParamName);
             Assert.Contains($"Invalid SemVer version string: {version}", ex.Message);
         }
-
-        [Theory]
-        [InlineData("1.1.0", VersionBump.Major, 2, 0, 0, "", "")]
-        [InlineData("1.1.0", VersionBump.PreMajor, 2, 0, 0, "0", "")]
-        [InlineData("4.1.3", VersionBump.Minor, 4, 2, 0, "", "")]
-        [InlineData("4.1.3", VersionBump.PreMinor, 4, 2, 0, "0", "")]
-        [InlineData("2.1.0", VersionBump.Patch, 2, 1, 1, "", "")]
-        [InlineData("2.1.0", VersionBump.PrePatch, 2, 1, 1, "0", "")]
-        [InlineData("3.2.1", VersionBump.Specific, 3, 2, 1, "", "")]
-        [InlineData("3.2.1-0+master", VersionBump.Specific, 3, 2, 1, "0", "master")]
-        public void CanBumpVersions(
-            string version,
-            VersionBump bump,
-            int expectedMajor,
-            int expectedMinor,
-            int expectedPatch,
-            string expectedPreRelease,
-            string expectedBuildMeta
-        )
-        {
-            var semver = SemVer.FromString(version);
-            semver.Bump(bump, version);
-
-            Assert.Equal(expectedMajor, semver.Major);
-            Assert.Equal(expectedMinor, semver.Minor);
-            Assert.Equal(expectedPatch, semver.Patch);
-            Assert.Equal(expectedPreRelease, semver.PreRelease);
-            Assert.Equal(expectedBuildMeta, semver.BuildMeta);
-        }
-
-        [Theory]
-        [InlineData("1.0.0", VersionBump.Major, "2.0.0")]
-        [InlineData("1.0.0", VersionBump.PreMajor, "2.0.0-0")]
-        [InlineData("4.1.3", VersionBump.Minor, "4.2.0")]
-        [InlineData("4.1.3", VersionBump.PreMinor, "4.2.0-0")]
-        [InlineData("2.1.0", VersionBump.Patch, "2.1.1")]
-        [InlineData("2.1.0", VersionBump.PrePatch, "2.1.1-0")]
-        [InlineData("1.1.1-42", VersionBump.Patch, "1.1.1")] // snap out of pre-release mode
-        [InlineData("1.1.1-42+master", VersionBump.Patch, "1.1.1")] // snap out of pre-release mode
-        [InlineData("1.1.1-42", VersionBump.PreRelease, "1.1.1-43")] // increment prerelease number
-        
-        public void CanBumpAndSerializeStringVersion(string version, VersionBump bump, string expectedVersion)
-        {
-            var semver = SemVer.FromString(version);
-            semver.Bump(bump);
-
-            Assert.Equal(expectedVersion, semver.ToSemVerVersionString());
-        }
     }
 }

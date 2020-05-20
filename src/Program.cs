@@ -171,7 +171,8 @@ namespace Skarp.Version.Cli
                     new DotNetFileSystemProvider()
                 ),
                 new ProjectFileParser(),
-                new ProjectFileVersionPatcher()
+                new ProjectFileVersionPatcher(),
+                new SemVerBumper()
             );
         }
     }
