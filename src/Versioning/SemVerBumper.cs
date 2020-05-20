@@ -10,11 +10,12 @@ namespace Skarp.Version.Cli.Versioning
         /// <param name="bump">The bump to apply to the version</param>
         /// <param name="specificVersionToApply">The specific version to apply if bump is Specific</param>
         /// <param name="buildMeta"></param>
-        public SemVer Bump(SemVer currentVersion, VersionBump bump, string specificVersionToApply = "", string buildMeta = "")
+        public SemVer Bump(SemVer currentVersion, VersionBump bump, string specificVersionToApply = "",
+            string buildMeta = "")
         {
             var newVersion = SemVer.FromString(currentVersion.ToSemVerVersionString());
             newVersion.BuildMeta = buildMeta;
-            
+
             switch (bump)
             {
                 case VersionBump.Major:
@@ -54,7 +55,7 @@ namespace Skarp.Version.Cli.Versioning
                 }
                 case VersionBump.Specific:
                 {
-                    HandleSpeficVersion(specificVersionToApply, newVersion);
+                    HandleSpecificVersion(specificVersionToApply, newVersion);
                     break;
                 }
                 default:
@@ -66,7 +67,7 @@ namespace Skarp.Version.Cli.Versioning
             return newVersion;
         }
 
-        private static void HandleSpeficVersion(string specificVersionToApply, SemVer newVersion)
+        private static void HandleSpecificVersion(string specificVersionToApply, SemVer newVersion)
         {
             if (string.IsNullOrEmpty(specificVersionToApply))
             {
@@ -89,20 +90,36 @@ namespace Skarp.Version.Cli.Versioning
                     "Cannot Prerelease bump when not already a prerelease. Please use prepatch, preminor or prepatch to prepare");
             }
 
+            string preReleaseLabel = "next";
+
             if (!int.TryParse(newVersion.PreRelease, out var preReleaseNumber))
             {
-                throw new ArgumentException(
-                    "Pre-release part is not numeric, cannot apply automatic prerelease roll");
+                // it was not just a number, let's try to split it (pre-release might look like `next.42`)
+                var preReleaseSplit = newVersion.PreRelease.Split(".");
+                if (preReleaseSplit.Length != 2)
+                {
+                    throw new ArgumentException(
+                        $"Pre-release part invalid. Must be either numeric or `label.number`. Got {newVersion.PreRelease}");
+                }
+
+                if (!int.TryParse(preReleaseSplit[1], out preReleaseNumber))
+                {
+                    throw new ArgumentException(
+                        "Second part of pre-release is not numeric, cannot apply automatic prerelease roll. Should follow pattern `label.number`");
+                }
+
+                preReleaseLabel = preReleaseSplit[0];
             }
 
+            // increment the pre-release number
             preReleaseNumber += 1;
-            newVersion.PreRelease = (preReleaseNumber).ToString();
+            newVersion.PreRelease = $"{preReleaseLabel}.{preReleaseNumber}";
         }
 
         private static void HandlePrePatchBump(SemVer newVersion)
         {
             newVersion.Patch += 1;
-            newVersion.PreRelease = "0";
+            newVersion.PreRelease = "next.0";
         }
 
         private void HandlePatchBump(SemVer newVersion)
@@ -122,7 +139,7 @@ namespace Skarp.Version.Cli.Versioning
         {
             newVersion.Minor += 1;
             newVersion.Patch = 0;
-            newVersion.PreRelease = "0";
+            newVersion.PreRelease = "next.0";
         }
 
         private void HandleMinorBump(SemVer newVersion)
@@ -144,7 +161,7 @@ namespace Skarp.Version.Cli.Versioning
             newVersion.Major += 1;
             newVersion.Minor = 0;
             newVersion.Patch = 0;
-            newVersion.PreRelease = "0";
+            newVersion.PreRelease = "next.0";
         }
 
         private void HandleMajorBump(SemVer newVersion)
