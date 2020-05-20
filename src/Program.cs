@@ -5,6 +5,7 @@ using Microsoft.Extensions.CommandLineUtils;
 using Skarp.Version.Cli.CsProj;
 using Skarp.Version.Cli.CsProj.FileSystem;
 using Skarp.Version.Cli.Vcs.Git;
+using Skarp.Version.Cli.Versioning;
 
 namespace Skarp.Version.Cli
 {
@@ -170,7 +171,8 @@ namespace Skarp.Version.Cli
                     new DotNetFileSystemProvider()
                 ),
                 new ProjectFileParser(),
-                new ProjectFileVersionPatcher()
+                new ProjectFileVersionPatcher(),
+                new SemVerBumper()
             );
         }
     }
