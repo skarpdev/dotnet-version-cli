@@ -11,6 +11,7 @@ namespace Skarp.Version.Cli.Test.Versioning
         {
             _bumper = new SemVerBumper();
         }
+
         [Theory]
         [InlineData("1.1.0", VersionBump.Major, 2, 0, 0, "", "")]
         [InlineData("1.1.0", VersionBump.PreMajor, 2, 0, 0, "next.0", "")]
@@ -57,6 +58,21 @@ namespace Skarp.Version.Cli.Test.Versioning
         public void CanBumpAndSerializeStringVersion(string version, VersionBump bump, string expectedVersion)
         {
             var semver = _bumper.Bump(SemVer.FromString(version), bump);
+            Assert.Equal(expectedVersion, semver.ToSemVerVersionString());
+        }
+
+        [Theory]
+        [InlineData("1.0.0", VersionBump.PreMajor, "2.0.0-alpha.0", "alpha")]
+        [InlineData("1.0.0", VersionBump.PreMinor, "1.1.0-beta.0", "beta")]
+        [InlineData("1.0.0", VersionBump.PrePatch, "1.0.1-pre.0", "pre")]
+        public void Respects_custom_pre_release_prefix(
+            string version,
+            VersionBump bump,
+            string expectedVersion,
+            string prefix
+        )
+        {
+            var semver = _bumper.Bump(SemVer.FromString(version), bump, preReleasePrefix: prefix);
             Assert.Equal(expectedVersion, semver.ToSemVerVersionString());
         }
     }

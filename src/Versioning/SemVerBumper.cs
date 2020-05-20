@@ -7,11 +7,18 @@ namespace Skarp.Version.Cli.Versioning
         /// <summary>
         /// Bump the currently parsed version information with the specified <paramref name="bump"/>
         /// </summary>
+        /// <param name="currentVersion"></param>
         /// <param name="bump">The bump to apply to the version</param>
         /// <param name="specificVersionToApply">The specific version to apply if bump is Specific</param>
-        /// <param name="buildMeta"></param>
-        public SemVer Bump(SemVer currentVersion, VersionBump bump, string specificVersionToApply = "",
-            string buildMeta = "")
+        /// <param name="buildMeta">Additional build metadata to add to the final version string</param>
+        /// <param name="preReleasePrefix">Override of default `next` pre-release prefix/label</param>
+        public SemVer Bump(
+            SemVer currentVersion,
+            VersionBump bump, 
+            string specificVersionToApply = "",
+            string buildMeta = "", 
+            string preReleasePrefix = ""
+        )
         {
             var newVersion = SemVer.FromString(currentVersion.ToSemVerVersionString());
             newVersion.BuildMeta = buildMeta;
@@ -25,7 +32,7 @@ namespace Skarp.Version.Cli.Versioning
                 }
                 case VersionBump.PreMajor:
                 {
-                    HandlePreMajorBump(newVersion);
+                    HandlePreMajorBump(newVersion, preReleasePrefix);
                     break;
                 }
                 case VersionBump.Minor:
@@ -35,7 +42,7 @@ namespace Skarp.Version.Cli.Versioning
                 }
                 case VersionBump.PreMinor:
                 {
-                    HandlePreMinorBump(newVersion);
+                    HandlePreMinorBump(newVersion, preReleasePrefix);
                     break;
                 }
                 case VersionBump.Patch:
@@ -45,7 +52,7 @@ namespace Skarp.Version.Cli.Versioning
                 }
                 case VersionBump.PrePatch:
                 {
-                    HandlePrePatchBump(newVersion);
+                    HandlePrePatchBump(newVersion, preReleasePrefix);
                     break;
                 }
                 case VersionBump.PreRelease:
@@ -116,10 +123,14 @@ namespace Skarp.Version.Cli.Versioning
             newVersion.PreRelease = $"{preReleaseLabel}.{preReleaseNumber}";
         }
 
-        private static void HandlePrePatchBump(SemVer newVersion)
+        private static void HandlePrePatchBump(SemVer newVersion, string preReleasePrefix)
         {
+            if (string.IsNullOrWhiteSpace(preReleasePrefix))
+            {
+                preReleasePrefix = "next";
+            }
             newVersion.Patch += 1;
-            newVersion.PreRelease = "next.0";
+            newVersion.PreRelease = $"{preReleasePrefix}.0";
         }
 
         private void HandlePatchBump(SemVer newVersion)
@@ -135,11 +146,16 @@ namespace Skarp.Version.Cli.Versioning
             }
         }
 
-        private void HandlePreMinorBump(SemVer newVersion)
+        private void HandlePreMinorBump(SemVer newVersion, string preReleasePrefix)
         {
+            if (string.IsNullOrWhiteSpace(preReleasePrefix))
+            {
+                preReleasePrefix = "next";
+            }
+            
             newVersion.Minor += 1;
             newVersion.Patch = 0;
-            newVersion.PreRelease = "next.0";
+            newVersion.PreRelease = $"{preReleasePrefix}.0";
         }
 
         private void HandleMinorBump(SemVer newVersion)
@@ -156,12 +172,17 @@ namespace Skarp.Version.Cli.Versioning
             }
         }
 
-        private void HandlePreMajorBump(SemVer newVersion)
+        private void HandlePreMajorBump(SemVer newVersion, string preReleasePrefix)
         {
+            if (string.IsNullOrWhiteSpace(preReleasePrefix))
+            {
+                preReleasePrefix = "next";
+            }
+            
             newVersion.Major += 1;
             newVersion.Minor = 0;
             newVersion.Patch = 0;
-            newVersion.PreRelease = "next.0";
+            newVersion.PreRelease = $"{preReleasePrefix}.0";
         }
 
         private void HandleMajorBump(SemVer newVersion)
