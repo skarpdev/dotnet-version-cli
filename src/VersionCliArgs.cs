@@ -25,5 +25,10 @@
         /// Build meta for a pre-release tag passed via CLI arguments
         /// </summary>
         public string BuildMeta { get; set; }
+
+        /// <summary>
+        /// Override for the default `next` pre-release prefix/label
+        /// </summary>
+        public string PreReleasePrefix  { get; set; }
     }
 }
