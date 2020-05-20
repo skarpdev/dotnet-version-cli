@@ -3,11 +3,13 @@
 
 # dotnet-version-cli
 
-This repository contains the source code for an [npm version][1] inspired dotnet global tool for dotnet core 2.1 or newer.
+This repository contains the source code for an [npm/yarn version][1] inspired dotnet global tool for dotnet core 2.1 or newer with full [SemVer 2.0][semver2] compatibility!
 
 This used to be a dotnet csproj installable `cli tool` - if you are not ready for the move to dotnet 2.1 global tools, please take a look at the last [0.7.0 release that supports csproj installation](https://github.com/skarpdev/dotnet-version-cli/blob/v0.7.0/README.md).
 
-Once installed it provides a `dotnet version` command which allows you to easily bump `patch`, `minor` and `major` versions on your project.
+Once installed it provides a `dotnet version` command which allows you to easily bump `patch`, `minor` and `major` versions on your project. You can also release and manage pre-release
+vesions of your packages by using the `prepatch`, `preminor` and `premajor` commands. Once in pre-release mode you can use the `prerelease` option to update the pre-release number.
+
 Alternatively it allows you to call it with the specific version it should set in the target `csproj`.
 
 We do not aim to be 100% feature compatible with `npm version` but provide the bare minimum for working with version numbers on your libraries and applications.
@@ -20,12 +22,16 @@ Effectively this means that issuing a `patch` command will
 
 Similarly for `minor` and `major`, but changing different parts of the version number.
 
+When working with pre-releases using the `prepatch`, `preminor` and `premajor` options additional build meta can be passed using the `--build-meta` switch.
+
 To control the output format the `--output-format` switch can be used - currently supported values are `json` and `text`. **Please beware** that output is only reformatted for success-cases, so if something is wrong you will get a non 0 exit code and text output!
 Changing output format works for both "version bumping" and the "show version" operations of the cli.
 
 The commit and tag can be disabled via the `--skip-vcs` option.
 
 A completely dry run where nothing will be changed but the new version number is output can be enabled with the `--dry-run` switch. Performing a dry run also implies `skip vcs`.
+
+If the current directory does not contain the `csproj` file to work on the `-f|--project-file` switch can be provided.
 
 ## Installing the cli tool
 
@@ -69,6 +75,33 @@ $ dotnet version -f ./src/my.csproj patch
 $ git push && git push --tags
 ```
 
+## Pre-release workflow
+
+As mentioned in the introduction the version tool allows working with pre-releases. 
+Let's assume you have a library in version `1.2.4` and have made merges to master. You are not sure these changes work in the wild and therefore you require a 
+pre-release. In the simpelest form you can
+
+```bash
+$ dotnet version preminor
+``` 
+
+To get a preminor out. This new version tag would become `1.2.5-0`.
+If additional changes are merged you can roll over the pre-release version number by
+```bash
+$ dotnet version prerelease
+```
+To make the release `1.2.5-1`.
+When ready you can snap out of pre-release mode and deploy the final minor version
+```bash
+$ dotnet version minor
+```
+Resulting in the version `1.2.5`.
+All other command line flags like `-f` apply, and you can also include `build meta` as per SemVer 2.0 spec, like so:
+```bash
+dotnet version --build meta `git rev-parse --short HEAD` preminor # or prerelease etc.
+```
+To have a resulting version string like `1.2.5-1+abcedf`
+
 ## Possible CI workflow
 
 If you do not care that commits and tags are made with the current version of your library, but simply wish to bump the version of your software when building on master, the tool can be used as (powershell example):
@@ -88,3 +121,4 @@ dotnet version "1.0.$revCount"
 [1]: https://docs.npmjs.com/cli/version
 [nuget-image]: https://img.shields.io/nuget/v/dotnet-version-cli.svg
 [nuget-url]: https://www.nuget.org/packages/dotnet-version-cli
+[semver2]: https://semver.org/spec/v2.0.0.html
