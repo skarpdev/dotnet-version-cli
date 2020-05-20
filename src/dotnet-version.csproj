@@ -18,7 +18,7 @@
     <RepositoryUrl>https://github.com/skarpdev/dotnet-version-cli/</RepositoryUrl>
     <PackageId>dotnet-version-cli</PackageId>
     <Company>SKARP ApS</Company>
-    <PackageVersion>2.0.0-next.4</PackageVersion>
+    <PackageVersion>2.0.0-next.5</PackageVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
