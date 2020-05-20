@@ -171,6 +171,52 @@ namespace Skarp.Version.Cli.Test
                     A<string>.That.Matches(tag => tag == "v2.0.0-next.0")))
                 .MustHaveHappened(Repeated.Exactly.Once);
         }  
+        
+        [Fact]
+        public void VersionCli_can_bump_pre_release_with_custom_prefix()
+        {
+            // Configure
+            A.CallTo(() => _vcsTool.IsRepositoryClean()).Returns(true);
+            A.CallTo(() => _vcsTool.IsVcsToolPresent()).Returns(true);
+            A.CallTo(() => _vcsTool.Commit(A<string>._, A<string>._)).DoesNothing();
+            A.CallTo(() => _vcsTool.Tag(A<string>._)).DoesNothing();
+
+            A.CallTo(() => _fileDetector.FindAndLoadCsProj(A<string>._)).Returns("<Project/>");
+            const string csProjFilePath = "/unit-test/test.csproj";
+            A.CallTo(() => _fileDetector.ResolvedCsProjFile).Returns(csProjFilePath);
+
+            A.CallTo(() => _fileParser.Load(A<string>._)).DoesNothing();
+            A.CallTo(() => _fileParser.Version).Returns("1.2.1");
+            A.CallTo(() => _fileParser.PackageVersion).Returns("1.2.1");
+
+            // Act
+            _cli.Execute(new VersionCliArgs{VersionBump = VersionBump.PreMajor, DoVcs = true, DryRun = false, PreReleasePrefix = "beta"});
+
+            // Verify
+            A.CallTo(() => _filePatcher.PatchVersionField(
+                    A<string>._,
+                    A<string>._
+                ))
+                .MustNotHaveHappened();
+
+            A.CallTo(() => _filePatcher.PatchPackageVersionField(
+                    A<string>.That.Matches(ver => ver == "1.2.1"),
+                    "2.0.0-beta.0"
+                ))
+                .MustHaveHappened(Repeated.Exactly.Once);
+            
+            A.CallTo(() => _filePatcher.Flush(
+                    csProjFilePath))
+                .MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => _vcsTool.Commit(
+                    csProjFilePath,
+                    "v2.0.0-beta.0"))
+                .MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => _vcsTool.Tag(
+                    "v2.0.0-beta.0"))
+                .MustHaveHappened(Repeated.Exactly.Once);
+        }  
+        
         [Fact]
         public void VersionCli_can_bump_pre_release_with_build_meta_versions()
         {

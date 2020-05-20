@@ -53,6 +53,11 @@ namespace Skarp.Version.Cli
                 "Additional build metadata to add to a `premajor`, `preminor` or `prepatch` version bump",
                 CommandOptionType.SingleValue);
             
+            var prefixOption = commandLineApplication.Option(
+                "-p | --prefix <the-prerelease-prefix>",
+                "Override the default next prefix/label for a  `premajor`, `preminor` or `prepatch` version bump",
+                CommandOptionType.SingleValue);
+            
             commandLineApplication.OnExecute(() =>
             {
                 try
@@ -88,7 +93,8 @@ namespace Skarp.Version.Cli
                         doVcs,
                         dryRunEnabled,
                         csProjectFileOption.Value(),
-                        buildMetaOption.Value()
+                        buildMetaOption.Value(),
+                        prefixOption.Value()
                     );
                     _cli.Execute(cliArgs);
 
@@ -119,12 +125,14 @@ namespace Skarp.Version.Cli
             commandLineApplication.Execute(args);
         }
 
-        internal static VersionCliArgs GetVersionBumpFromRemainingArgs(List<string> remainingArguments,
+        internal static VersionCliArgs GetVersionBumpFromRemainingArgs(
+            List<string> remainingArguments,
             OutputFormat outputFormat,
             bool doVcs,
             bool dryRunEnabled,
-            string userSpecifiedCsProjFilePath, 
-            string userSpecifiedBuildMeta
+            string userSpecifiedCsProjFilePath,
+            string userSpecifiedBuildMeta, 
+            string preReleasePrefix
         )
         {
             if (remainingArguments == null || !remainingArguments.Any())
@@ -141,6 +149,7 @@ namespace Skarp.Version.Cli
                 DoVcs = doVcs,
                 DryRun = dryRunEnabled,
                 BuildMeta =  userSpecifiedBuildMeta,
+                PreReleasePrefix = preReleasePrefix,
             };
             var bump = VersionBump.Patch;
 

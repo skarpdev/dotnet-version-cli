@@ -52,7 +52,8 @@ namespace Skarp.Version.Cli
                 SemVer.FromString(_fileParser.PackageVersion),
                 args.VersionBump,
                 args.SpecificVersionToApply,
-                args.BuildMeta
+                args.BuildMeta,
+                args.PreReleasePrefix
             );
             var newSimpleVersion = semVer.ToSimpleVersionString();
             var newSemVer = semVer.ToSemVerVersionString();
