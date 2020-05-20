@@ -22,7 +22,7 @@ Effectively this means that issuing a `patch` command will
 
 Similarly for `minor` and `major`, but changing different parts of the version number.
 
-When working with pre-releases using the `prepatch`, `preminor` and `premajor` options additional build meta can be passed using the `--build-meta` switch.
+When working with pre-releases using the `prepatch`, `preminor` and `premajor` options additional build meta can be passed using the `--build-meta` switch and the default `next` prefix can be changed using `--prefix`.
 
 To control the output format the `--output-format` switch can be used - currently supported values are `json` and `text`. **Please beware** that output is only reformatted for success-cases, so if something is wrong you will get a non 0 exit code and text output!
 Changing output format works for both "version bumping" and the "show version" operations of the cli.
@@ -85,22 +85,30 @@ pre-release. In the simpelest form you can
 $ dotnet version preminor
 ``` 
 
-To get a preminor out. This new version tag would become `1.2.5-0`.
+To get a preminor out. This new version tag would become `1.2.5-next.0`.
 If additional changes are merged you can roll over the pre-release version number by
 ```bash
 $ dotnet version prerelease
 ```
-To make the release `1.2.5-1`.
+To make the release `1.2.5-next.1`.
 When ready you can snap out of pre-release mode and deploy the final minor version
 ```bash
 $ dotnet version minor
 ```
 Resulting in the version `1.2.5`.
+
 All other command line flags like `-f` apply, and you can also include `build meta` as per SemVer 2.0 spec, like so:
 ```bash
-dotnet version --build meta `git rev-parse --short HEAD` preminor # or prerelease etc.
+dotnet version --build-meta `git rev-parse --short HEAD` preminor # or prerelease etc.
 ```
-To have a resulting version string like `1.2.5-1+abcedf`
+To have a resulting version string like `1.2.5-next.1+abcedf`
+
+If the default `next` prefix is not desired it can easily be changed using the `--prefix` switch like so:
+```bash
+dotnet version --prefix beta preminor # or prerelease etc.
+```
+
+Resulting in `1.2.4-beta.0`.
 
 ## Possible CI workflow
 
