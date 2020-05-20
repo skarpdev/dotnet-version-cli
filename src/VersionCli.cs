@@ -44,27 +44,32 @@ namespace Skarp.Version.Cli
             var csProjXml = _fileDetector.FindAndLoadCsProj(args.CsProjFilePath);
             _fileParser.Load(csProjXml);
 
-            var semVer = SemVer.FromString(_fileParser.Version);
-            semVer.Bump(args.VersionBump, args.SpecificVersionToApply);
-            var newVersion = semVer.ToVersionString();
+            var semVer = SemVer.FromString(_fileParser.PackageVersion);
+            semVer.Bump(args.VersionBump, args.SpecificVersionToApply, args.BuildMeta);
+            var newSimpleVersion = semVer.ToSimpleVersionString();
+            var newSemVer = semVer.ToSemVerVersionString();
 
             if (!args.DryRun) // if we are not in dry run mode, then we should go ahead
             {
-                var patchedCsProjXml = _fileVersionPatcher.Patch(
-                    csProjXml,
+                _fileVersionPatcher.Load(csProjXml);
+                _fileVersionPatcher.PatchVersionField(
                     _fileParser.Version,
-                    newVersion
+                    newSimpleVersion
                 );
+                _fileVersionPatcher.PatchPackageVersionField(
+                    _fileParser.PackageVersion,
+                    newSemVer
+                );
+                
                 _fileVersionPatcher.Flush(
-                    patchedCsProjXml,
                     _fileDetector.ResolvedCsProjFile
                 );
 
                 if (args.DoVcs)
                 {
                     // Run git commands
-                    _vcsTool.Commit(_fileDetector.ResolvedCsProjFile, $"v{newVersion}");
-                    _vcsTool.Tag($"v{newVersion}");
+                    _vcsTool.Commit(_fileDetector.ResolvedCsProjFile, $"v{newSemVer}");
+                    _vcsTool.Tag($"v{newSemVer}");
                 }
             }
 
@@ -75,8 +80,8 @@ namespace Skarp.Version.Cli
                     Name = ProductInfo.Name,
                     Version = ProductInfo.Version
                 },
-                OldVersion = _fileParser.Version,
-                NewVersion = newVersion,
+                OldVersion = _fileParser.PackageVersion,
+                NewVersion = newSemVer,
                 ProjectFile = _fileDetector.ResolvedCsProjFile,
                 VersionStrategy = args.VersionBump.ToString().ToLowerInvariant()
             };
@@ -88,7 +93,7 @@ namespace Skarp.Version.Cli
             }
             else
             {
-                Console.WriteLine($"Bumped {_fileDetector.ResolvedCsProjFile} to version {newVersion}");
+                Console.WriteLine($"Bumped {_fileDetector.ResolvedCsProjFile} to version {newSemVer}");
             }
 
             return theOutput;
@@ -108,14 +113,14 @@ namespace Skarp.Version.Cli
                         Name = ProductInfo.Name,
                         Version = ProductInfo.Version
                     },
-                    CurrentVersion = _fileParser.Version,
+                    CurrentVersion = _fileParser.PackageVersion,
                     ProjectFile = _fileDetector.ResolvedCsProjFile,
                 };
                 WriteJsonToStdout(theOutput);
             }
             else
             {
-                Console.WriteLine("Project version is: {0}\t{1}", Environment.NewLine, _fileParser.Version);
+                Console.WriteLine("Project version is: {0}\t{1}", Environment.NewLine, _fileParser.PackageVersion);
             }
         }
 

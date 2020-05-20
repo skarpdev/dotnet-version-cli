@@ -9,7 +9,7 @@
         public string CsProjFilePath { get; set; }
 
         public OutputFormat OutputFormat { get; set; }
-        
+
         /// <summary>
         /// Whether or not to do version control changes like
         /// commit and tag.
@@ -20,5 +20,10 @@
         /// Whether dry run is enabled and thus all mutations should be disabled
         /// </summary>
         public bool DryRun { get; set; }
+
+        /// <summary>
+        /// Build meta for a pre-release tag passed via CLI arguments
+        /// </summary>
+        public string BuildMeta { get; set; }
     }
 }
