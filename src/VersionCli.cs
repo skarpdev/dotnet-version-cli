@@ -52,10 +52,18 @@ namespace Skarp.Version.Cli
             if (!args.DryRun) // if we are not in dry run mode, then we should go ahead
             {
                 _fileVersionPatcher.Load(csProjXml);
-                _fileVersionPatcher.PatchVersionField(
-                    _fileParser.Version,
-                    newSimpleVersion
-                );
+                if (!semVer.IsPreRelease)
+                {
+                    // When dealing with pre-releases we do not wish to bump the Version prop
+                    // This gives problems with the nuget API due to it performing version constraint checks
+                    // e.g if we pre-major to 2.0.0-1 and set version 2.0.0 then our PackageVersion is LOWER than our version.
+                    // does not fly.
+                    _fileVersionPatcher.PatchVersionField(
+                        _fileParser.Version,
+                        newSimpleVersion
+                    );
+                }
+                
                 _fileVersionPatcher.PatchPackageVersionField(
                     _fileParser.PackageVersion,
                     newSemVer
