@@ -23,7 +23,9 @@ namespace Skarp.Version.Cli
               "major | minor | patch",
               "The version bump to apply",
               CommandOptionType.NoValue);*/
-
+            commandLineApplication.Name = "dotnet version";
+            
+            commandLineApplication.ExtendedHelpText = $"{Environment.NewLine}Available commands after [options] to control the version bump are: {Environment.NewLine}\tmajor | minor | patch | premajor | preminor | prepatch | prerelease | <specific version>";
 
             commandLineApplication.HelpOption("-? | -h | --help");
             var outputFormatOption = commandLineApplication.Option(
@@ -49,7 +51,7 @@ namespace Skarp.Version.Cli
                 "-b | --build-meta <the-build-meta>",
                 "Additional build metadata to add to a `premajor`, `preminor` or `prepatch` version bump",
                 CommandOptionType.SingleValue);
-
+            
             commandLineApplication.OnExecute(() =>
             {
                 try
