@@ -23,7 +23,6 @@ deploy:
     branch: master
 - provider: NuGet
   name: production
-  server: https://api.nuget.org/v3/index.json
   api_key:
     secure: w/A4alQivPJ3kkiKt6aKnn+gKm0oF5wBfrG6X+EPsiF7hDC/7bVVrp0nFfzHp6ct
   on:
