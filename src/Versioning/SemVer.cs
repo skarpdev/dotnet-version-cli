@@ -1,9 +1,8 @@
 using System;
-using System.Security.Principal;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Skarp.Version.Cli
+namespace Skarp.Version.Cli.Versioning
 {
     public class SemVer
     {

@@ -4,6 +4,7 @@ using Newtonsoft.Json.Serialization;
 using Skarp.Version.Cli.CsProj;
 using Skarp.Version.Cli.Model;
 using Skarp.Version.Cli.Vcs;
+using Skarp.Version.Cli.Versioning;
 
 namespace Skarp.Version.Cli
 {

@@ -1,7 +1,8 @@
 using System;
+using Skarp.Version.Cli.Versioning;
 using Xunit;
 
-namespace Skarp.Version.Cli.Test
+namespace Skarp.Version.Cli.Test.Versioning
 {
     public class SemVerTest
     {
