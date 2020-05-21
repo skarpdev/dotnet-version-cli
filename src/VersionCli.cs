@@ -55,27 +55,15 @@ namespace Skarp.Version.Cli
                 args.BuildMeta,
                 args.PreReleasePrefix
             );
-            var newSimpleVersion = semVer.ToSimpleVersionString();
-            var newSemVer = semVer.ToSemVerVersionString();
+            var versionString = semVer.ToSemVerVersionString();
 
             if (!args.DryRun) // if we are not in dry run mode, then we should go ahead
             {
                 _fileVersionPatcher.Load(csProjXml);
-                if (!semVer.IsPreRelease)
-                {
-                    // When dealing with pre-releases we do not wish to bump the Version prop
-                    // This gives problems with the nuget API due to it performing version constraint checks
-                    // e.g if we pre-major to 2.0.0-1 and set version 2.0.0 then our PackageVersion is LOWER than our version.
-                    // does not fly.
-                    _fileVersionPatcher.PatchVersionField(
-                        _fileParser.Version,
-                        newSimpleVersion
-                    );
-                }
-                
-                _fileVersionPatcher.PatchPackageVersionField(
-                    _fileParser.PackageVersion,
-                    newSemVer
+
+                _fileVersionPatcher.PatchVersionField(
+                    _fileParser.Version,
+                    versionString
                 );
                 
                 _fileVersionPatcher.Flush(
@@ -85,8 +73,8 @@ namespace Skarp.Version.Cli
                 if (args.DoVcs)
                 {
                     // Run git commands
-                    _vcsTool.Commit(_fileDetector.ResolvedCsProjFile, $"v{newSemVer}");
-                    _vcsTool.Tag($"v{newSemVer}");
+                    _vcsTool.Commit(_fileDetector.ResolvedCsProjFile, $"v{versionString}");
+                    _vcsTool.Tag($"v{versionString}");
                 }
             }
 
@@ -98,7 +86,7 @@ namespace Skarp.Version.Cli
                     Version = ProductInfo.Version
                 },
                 OldVersion = _fileParser.PackageVersion,
-                NewVersion = newSemVer,
+                NewVersion = versionString,
                 ProjectFile = _fileDetector.ResolvedCsProjFile,
                 VersionStrategy = args.VersionBump.ToString().ToLowerInvariant()
             };
@@ -110,7 +98,7 @@ namespace Skarp.Version.Cli
             }
             else
             {
-                Console.WriteLine($"Bumped {_fileDetector.ResolvedCsProjFile} to version {newSemVer}");
+                Console.WriteLine($"Bumped {_fileDetector.ResolvedCsProjFile} to version {versionString}");
             }
 
             return theOutput;
