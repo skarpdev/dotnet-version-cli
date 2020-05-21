@@ -27,19 +27,6 @@ namespace Skarp.Version.Cli.CsProj
         }
 
         /// <summary>
-        /// Replace the existing PackageVersion number in the csproj xml file
-        /// </summary>
-        /// <param name="oldVersion">Old version to replace</param>
-        /// <param name="newVersion">New version to insert</param>
-        /// <returns></returns>
-        /// <exception cref="NotSupportedException"></exception>
-        public virtual void PatchPackageVersionField(string oldVersion, string newVersion)
-        {
-            var elementName = "PackageVersion";
-            PatchGenericField(elementName, oldVersion, newVersion);
-        }
-
-        /// <summary>
         /// Helper method for patching up a generic XML field in the loaded XML
         /// </summary>
         /// <param name="elementName">The name to find and update or add it to the tree</param>

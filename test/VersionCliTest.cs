@@ -108,13 +108,7 @@ namespace Skarp.Version.Cli.Test
                     A<string>.That.Matches(newVer => newVer == "2.0.0")
                 ))
                 .MustHaveHappened(Repeated.Exactly.Once);
-            
-            A.CallTo(() => _filePatcher.PatchPackageVersionField(
-                    A<string>.That.Matches(ver => ver == "1.2.1"),
-                    A<string>.That.Matches(newVer => newVer == "2.0.0")
-                ))
-                .MustHaveHappened(Repeated.Exactly.Once);
-            
+
             A.CallTo(() => _filePatcher.Flush(
                     A<string>.That.Matches(path => path == csProjFilePath)))
                 .MustHaveHappened(Repeated.Exactly.Once);
@@ -149,12 +143,6 @@ namespace Skarp.Version.Cli.Test
 
             // Verify
             A.CallTo(() => _filePatcher.PatchVersionField(
-                    A<string>._,
-                    A<string>._
-                ))
-                .MustNotHaveHappened();
-            
-            A.CallTo(() => _filePatcher.PatchPackageVersionField(
                     A<string>.That.Matches(ver => ver == "1.2.1"),
                     A<string>.That.Matches(newVer => newVer == "2.0.0-next.0")
                 ))
@@ -194,12 +182,6 @@ namespace Skarp.Version.Cli.Test
 
             // Verify
             A.CallTo(() => _filePatcher.PatchVersionField(
-                    A<string>._,
-                    A<string>._
-                ))
-                .MustNotHaveHappened();
-
-            A.CallTo(() => _filePatcher.PatchPackageVersionField(
                     A<string>.That.Matches(ver => ver == "1.2.1"),
                     "2.0.0-beta.0"
                 ))
@@ -239,12 +221,6 @@ namespace Skarp.Version.Cli.Test
 
             // Verify
             A.CallTo(() => _filePatcher.PatchVersionField(
-                    A<string>._,
-                    A<string>._
-                ))
-                .MustNotHaveHappened();
-            
-            A.CallTo(() => _filePatcher.PatchPackageVersionField(
                     A<string>.That.Matches(ver => ver == "1.2.1"),
                     A<string>.That.Matches(newVer => newVer == "2.0.0-next.0+master")
                 ))
@@ -324,13 +300,7 @@ namespace Skarp.Version.Cli.Test
                     A<string>.That.Matches(newVer => newVer == "2.0.0")
                 ))
                 .MustNotHaveHappened();
-            
-            A.CallTo(() => _filePatcher.PatchPackageVersionField(
-                    A<string>.That.Matches(ver => ver == "1.2.1"),
-                    A<string>.That.Matches(newVer => newVer == "2.0.0")
-                ))
-                .MustNotHaveHappened();
-            
+
             A.CallTo(() => _filePatcher.Flush(
                     A<string>.That.Matches(path => path == csProjFilePath)))
                 .MustNotHaveHappened();

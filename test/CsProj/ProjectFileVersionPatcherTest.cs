@@ -35,32 +35,12 @@ namespace Skarp.Version.Cli.Test.CsProj
         public void CanPatchVersionOnWellFormedXml()
         {
             _patcher.Load(_projectXml);
-            _patcher.PatchVersionField("1.0.0", "1.1.0");
-            _patcher.PatchPackageVersionField( "1.0.0", "1.1.0-0");
+            _patcher.PatchVersionField("1.0.0", "1.1.0-0");
 
             var newXml = _patcher.ToXml();
             Assert.NotEqual(_projectXml, newXml);
-            Assert.Contains("<Version>1.1.0</Version>", newXml);
-            Assert.Contains("<PackageVersion>1.1.0-0</PackageVersion>", newXml);
+            Assert.Contains("<Version>1.1.0-0</Version>", newXml);
         }
-
-        [Fact]
-        public void CanPatchWhenPackageVersionIsMissing()
-        {
-            var xml = 
-            "<Project Sdk=\"Microsoft.NET.Sdk\">" +
-            "<PropertyGroup>" +
-            "<TargetFramework>netstandard1.6</TargetFramework>" +
-            "<RootNamespace>Unit.For.The.Win</RootNamespace>" +
-            "<PackageId>Unit.Testing.Library</PackageId>" +
-            "</PropertyGroup>" +
-            "</Project>";
-            _patcher.Load(xml);
-            _patcher.PatchPackageVersionField("1.0.0", "2.0.0");
-
-            var newXml = _patcher.ToXml();
-            Assert.Contains("<PackageVersion>2.0.0</PackageVersion>", newXml);
-        }  
         
         [Fact]
         public void CanPatchWhenVersionIsMissing()
