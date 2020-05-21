@@ -13,7 +13,7 @@ namespace Skarp.Version.Cli.CsProj
 
         public virtual void Load(string xmlDocument)
         {
-            var xml = XDocument.Parse(xmlDocument);
+            var xml = XDocument.Parse(xmlDocument, LoadOptions.PreserveWhitespace);
 
             // Project should be root of the document
             var project = xml.Elements("Project");
