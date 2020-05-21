@@ -11,7 +11,7 @@ namespace Skarp.Version.Cli.CsProj
 
         public virtual void Load(string xmlDocument)
         {
-            _doc = XDocument.Parse(xmlDocument);
+            _doc = XDocument.Parse(xmlDocument, LoadOptions.PreserveWhitespace);
         }
 
         /// <summary>
