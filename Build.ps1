@@ -36,6 +36,8 @@ exec { & dotnet restore }
 
 $sonarProjectKey = "skarpdev_dotnet-version-cli"
 $sonarHostUrl = "https://sonarcloud.io"
+$openCoveragePaths = "$Env:APPVEYOR_BUILD_FOLDER/test/coverage.netcoreapp3.1.opencover.xml"
+$trxCoveragePahts = "$Env:APPVEYOR_BUILD_FOLDER/test/TestResults/*.trx"
 
 # initialize Sonar Scanner
 # If the environment variable APPVEYOR_PULL_REQUEST_NUMBER is not present, then this is not a pull request
@@ -46,6 +48,9 @@ if(-not $env:APPVEYOR_PULL_REQUEST_NUMBER) {
             /o:skarp `
             /v:$revision `
             /d:sonar.host.url=$sonarHostUrl `
+            /d:sonar.cs.opencover.reportsPaths=$openCoveragePaths `
+            /d:sonar.cs.vstest.reportsPaths=$trxCoveragePahts `
+            /d:sonar.coverage.exclusions="**Test*.cs" `
             /d:sonar.login="$Env:SONARCLOUD_TOKEN"
     }
 } else {
@@ -55,6 +60,9 @@ if(-not $env:APPVEYOR_PULL_REQUEST_NUMBER) {
             /o:skarp `
             /v:$revision `
             /d:sonar.host.url=$sonarHostUrl `
+            /d:sonar.cs.opencover.reportsPaths=$openCoveragePaths `
+            /d:sonar.cs.vstest.reportsPaths=$trxCoveragePahts `
+            /d:sonar.coverage.exclusions="**Test*.cs" `
             /d:sonar.login="$Env:SONARCLOUD_TOKEN" `
             /d:sonar.pullrequest.branch=$Env:APPVEYOR_PULL_REQUEST_HEAD_REPO_BRANCH `
             /d:sonar.pullrequest.base=$Env:APPVEYOR_REPO_BRANCH `
@@ -64,7 +72,8 @@ if(-not $env:APPVEYOR_PULL_REQUEST_NUMBER) {
 
 exec { & dotnet build -c Release }
 
-exec { & dotnet test .\test\dotnet-version-test.csproj -c Release }
+exec { & dotnet test .\test\dotnet-version-test.csproj -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover --logger trx }
+
 # trigger Sonar Scanner analysis
 exec { & dotnet sonarscanner end /d:sonar.login="$Env:SONARCLOUD_TOKEN" }
 
