@@ -86,10 +86,10 @@ namespace Skarp.Version.Cli.CsProj
         }
 
         /// <summary>
-        /// Get the underlying csproj XML back from the patcher
+        /// Get the underlying csproj XML back from the patcher as a string
         /// </summary>
         /// <returns></returns>
-        public virtual string ToXml()
+        public virtual string ToXmlString()
         {
             return _doc.ToString();
         }

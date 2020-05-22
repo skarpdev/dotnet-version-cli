@@ -37,7 +37,7 @@ namespace Skarp.Version.Cli.Test.CsProj
             _patcher.Load(_projectXml);
             _patcher.PatchVersionField("1.0.0", "1.1.0-0");
 
-            var newXml = _patcher.ToXml();
+            var newXml = _patcher.ToXmlString();
             Assert.NotEqual(_projectXml, newXml);
             Assert.Contains("<Version>1.1.0-0</Version>", newXml);
         }
@@ -56,7 +56,7 @@ namespace Skarp.Version.Cli.Test.CsProj
 
             _patcher.Load(xml);
             _patcher.PatchVersionField("1.0.0", "2.0.0");
-            var newXml = _patcher.ToXml();
+            var newXml = _patcher.ToXmlString();
             Assert.Contains("<Version>2.0.0</Version>", newXml);
         } 
         
@@ -73,7 +73,7 @@ namespace Skarp.Version.Cli.Test.CsProj
 
             _patcher.Load(xml);
             _patcher.PatchVersionField("1.0.0", "2.0.0");
-            var newXml = _patcher.ToXml();
+            var newXml = _patcher.ToXmlString();
             Assert.Contains($"{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}", newXml);
         }
     }
