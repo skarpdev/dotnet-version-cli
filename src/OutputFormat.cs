@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Skarp.Version.Cli
+﻿namespace Skarp.Version.Cli
 {
     public enum OutputFormat
     {

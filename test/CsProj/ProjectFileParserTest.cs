@@ -63,7 +63,7 @@ namespace Skarp.Version.Cli.Test.CsProj
             );
             
             Assert.Contains($"The provided csproj file seems malformed - no <Project> in the root", ex.Message);
-            Assert.Equal("project", ex.ParamName);
+            Assert.Equal("xmlDocument", ex.ParamName);
         }
     }
 }

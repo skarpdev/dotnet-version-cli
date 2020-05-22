@@ -56,7 +56,6 @@ namespace Skarp.Version.Cli.Test
             Assert.Contains(
                 $"No version bump specified, please specify one of:\n\tmajor | minor | patch | premajor | preminor | prepatch | prerelease | <specific version>",
                 ex.Message);
-            Assert.Equal("versionBump", ex.ParamName);
         }
 
         [Fact]

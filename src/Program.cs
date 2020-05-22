@@ -9,24 +9,20 @@ using Skarp.Version.Cli.Versioning;
 
 namespace Skarp.Version.Cli
 {
-    class Program
+    static class Program
     {
         private static VersionCli _cli;
 
         static void Main(string[] args)
         {
-            SetUpLogging();
             SetUpDependencies();
 
-            var commandLineApplication = new CommandLineApplication(throwOnUnexpectedArg: false);
-
-            /*CommandOption versionBump = commandLineApplication.Option(
-              "major | minor | patch",
-              "The version bump to apply",
-              CommandOptionType.NoValue);*/
-            commandLineApplication.Name = "dotnet version";
-            
-            commandLineApplication.ExtendedHelpText = $"{Environment.NewLine}Available commands after [options] to control the version bump are: {Environment.NewLine}\tmajor | minor | patch | premajor | preminor | prepatch | prerelease | <specific version>";
+            var commandLineApplication = new CommandLineApplication(throwOnUnexpectedArg: false)
+            {
+                Name = "dotnet version",
+                ExtendedHelpText =
+                    $"{Environment.NewLine}Available commands after [options] to control the version bump are: {Environment.NewLine}\tmajor | minor | patch | premajor | preminor | prepatch | prerelease | <specific version>"
+            };
 
             commandLineApplication.HelpOption("-? | -h | --help");
             var outputFormatOption = commandLineApplication.Option(
@@ -47,17 +43,17 @@ namespace Skarp.Version.Cli
                 "-f | --project-file <path/to/csproj>",
                 "The project file to work on. Defaults to auto-locating in current directory",
                 CommandOptionType.SingleValue);
-            
+
             var buildMetaOption = commandLineApplication.Option(
                 "-b | --build-meta <the-build-meta>",
                 "Additional build metadata to add to a `premajor`, `preminor` or `prepatch` version bump",
                 CommandOptionType.SingleValue);
-            
+
             var prefixOption = commandLineApplication.Option(
                 "-p | --prefix <the-prerelease-prefix>",
                 "Override the default next prefix/label for a  `premajor`, `preminor` or `prepatch` version bump",
                 CommandOptionType.SingleValue);
-            
+
             commandLineApplication.OnExecute(() =>
             {
                 try
@@ -131,7 +127,7 @@ namespace Skarp.Version.Cli
             bool doVcs,
             bool dryRunEnabled,
             string userSpecifiedCsProjFilePath,
-            string userSpecifiedBuildMeta, 
+            string userSpecifiedBuildMeta,
             string preReleasePrefix
         )
         {
@@ -140,7 +136,7 @@ namespace Skarp.Version.Cli
                 var msgEx =
                     "No version bump specified, please specify one of:\n\tmajor | minor | patch | premajor | preminor | prepatch | prerelease | <specific version>";
                 // ReSharper disable once NotResolvedInText
-                throw new ArgumentException(msgEx, "versionBump");
+                throw new ArgumentException(msgEx);
             }
 
             var args = new VersionCliArgs
@@ -148,7 +144,7 @@ namespace Skarp.Version.Cli
                 OutputFormat = outputFormat,
                 DoVcs = doVcs,
                 DryRun = dryRunEnabled,
-                BuildMeta =  userSpecifiedBuildMeta,
+                BuildMeta = userSpecifiedBuildMeta,
                 PreReleasePrefix = preReleasePrefix,
             };
             var bump = VersionBump.Patch;
@@ -166,10 +162,6 @@ namespace Skarp.Version.Cli
             args.CsProjFilePath = userSpecifiedCsProjFilePath;
 
             return args;
-        }
-
-        private static void SetUpLogging()
-        {
         }
 
         private static void SetUpDependencies()

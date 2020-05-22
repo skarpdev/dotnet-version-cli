@@ -22,7 +22,7 @@ namespace Skarp.Version.Cli.CsProj
             {
                 throw new ArgumentException(
                     "The provided csproj file seems malformed - no <Project> in the root", 
-                    paramName: "project"
+                    paramName: nameof(xmlDocument)
                 );
             }
 
