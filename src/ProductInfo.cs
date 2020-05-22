@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
+﻿using System.Reflection;
 
 namespace Skarp.Version.Cli
 {
@@ -10,11 +7,11 @@ namespace Skarp.Version.Cli
         /// <summary>
         /// The name of the product
         /// </summary>
-        public static string Name = "dotnet-version-cli";
+        public const string Name = "dotnet-version-cli";
 
         /// <summary>
         /// The version of the running product
         /// </summary>
-        public static string Version = Assembly.GetEntryAssembly().GetName().Version.ToString();
+        public static readonly string Version = Assembly.GetEntryAssembly().GetName().Version.ToString();
     }
 }
