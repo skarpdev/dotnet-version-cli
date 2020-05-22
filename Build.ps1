@@ -36,7 +36,7 @@ exec { & dotnet restore }
 
 $sonarProjectKey = "skarpdev_dotnet-version-cli"
 $sonarHostUrl = "https://sonarcloud.io"
-$openCoveragePaths = "$Env:APPVEYOR_BUILD_FOLDER/test/coverage.netcoreapp3.1.opencover.xml"
+$openCoveragePaths = "$Env:APPVEYOR_BUILD_FOLDER/test/coverage.*.opencover.xml"
 $trxCoveragePahts = "$Env:APPVEYOR_BUILD_FOLDER/test/TestResults/*.trx"
 
 # initialize Sonar Scanner
