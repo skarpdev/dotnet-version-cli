@@ -1,5 +1,8 @@
 version: '{build}'
 image: Visual Studio 2019
+environment:
+  SONARCLOUD_TOKEN:
+    secure: zP3yL8OgEY/gjfooti1esakQ0qHOwPl0GOoGugNS+61PxWOphHIndkOP/G3Glq96
 pull_requests:
   do_not_increment_build_number: true
 branches:
