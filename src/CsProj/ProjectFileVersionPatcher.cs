@@ -67,7 +67,7 @@ namespace Skarp.Version.Cli.CsProj
                 if (node == null)
                 {
                     throw new ArgumentException(
-                        "Given XML does not contain PackageVersion and cannot locate PropertyGroup to add it to - is this a valid csproj?");
+                        $"Given XML does not contain {elementName} and cannot locate existing PropertyGroup to add it to - is this a valid csproj file?");
                 }
             }
 
