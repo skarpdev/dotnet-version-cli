@@ -36,16 +36,7 @@ namespace Skarp.Version.Cli.Versioning
 
             return sb.ToString();
         }
-
-        /// <summary>
-        /// Returns a simple version string including only major.minor.patch
-        /// </summary>
-        /// <returns></returns>
-        public string ToSimpleVersionString()
-        {
-            return $"{Major}.{Minor}.{Patch}";
-        }
-
+        
         /// <summary>
         /// Create a new instance of a SemVer based off the version string
         /// </summary>
