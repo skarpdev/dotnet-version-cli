@@ -1,3 +1,4 @@
+.sonarqube/
 *.swp
 *.*~
 project.lock.json
