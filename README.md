@@ -1,5 +1,10 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/r50rbldhoil6pqk6/branch/master?svg=true)](https://ci.appveyor.com/project/nover/dotnet-version-cli/branch/master)
 [![nuget version][nuget-image]][nuget-url]
+[![Sonar Quality][sonarqualitylogo]][sonarqubelink]
+[![Code coverage][sonarcoveragelogo]][sonarqubelink]
+[![Sonar vulnerabilities][sonarvulnerabilitieslogo]][sonarqubelink]
+[![Sonar bugs][sonarbugslogo]][sonarqubelink]
+[![Sonar code smells][sonarcodesmellslogo]][sonarqubelink]
 
 # dotnet-version-cli
 
@@ -130,3 +135,9 @@ dotnet version "1.0.$revCount"
 [nuget-image]: https://img.shields.io/nuget/v/dotnet-version-cli.svg
 [nuget-url]: https://www.nuget.org/packages/dotnet-version-cli
 [semver2]: https://semver.org/spec/v2.0.0.html
+[sonarqubelink]: https://sonarcloud.io/dashboard?id=skarpdev_dotnet-version-cli
+[sonarqualitylogo]: https://sonarcloud.io/api/project_badges/measure?project=skarpdev_dotnet-version-cli&metric=alert_status
+[sonarcoveragelogo]: https://sonarcloud.io/api/project_badges/measure?project=skarpdev_dotnet-version-cli&metric=coverage
+[sonarvulnerabilitieslogo]: https://sonarcloud.io/api/project_badges/measure?project=skarpdev_dotnet-version-cli&metric=vulnerabilities
+[sonarbugslogo]: https://sonarcloud.io/api/project_badges/measure?project=skarpdev_dotnet-version-cli&metric=bugs
+[sonarcodesmellslogo]: https://sonarcloud.io/api/project_badges/measure?project=skarpdev_dotnet-version-cli&metric=code_smells
