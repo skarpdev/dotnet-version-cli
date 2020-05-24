@@ -94,7 +94,7 @@ namespace Skarp.Version.Cli.Versioning
             if (!newVersion.IsPreRelease)
             {
                 throw new InvalidOperationException(
-                    "Cannot Prerelease bump when not already a prerelease. Please use prepatch, preminor or prepatch to prepare");
+                    "Cannot Prerelease bump when not already a prerelease. Please use prepatch, preminor or premajor to prepare");
             }
 
             string preReleaseLabel = "next";
