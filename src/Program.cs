@@ -166,13 +166,14 @@ namespace Skarp.Version.Cli
 
         private static void SetUpDependencies()
         {
+            var dotNetFileSystemProvider = new DotNetFileSystemProvider();
             _cli = new VersionCli(
                 new GitVcs(),
                 new ProjectFileDetector(
-                    new DotNetFileSystemProvider()
+                    dotNetFileSystemProvider
                 ),
                 new ProjectFileParser(),
-                new ProjectFileVersionPatcher(),
+                new ProjectFileVersionPatcher(dotNetFileSystemProvider),
                 new SemVerBumper()
             );
         }

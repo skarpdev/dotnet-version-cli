@@ -1,5 +1,7 @@
 using System;
+using FakeItEasy;
 using Skarp.Version.Cli.CsProj;
+using Skarp.Version.Cli.CsProj.FileSystem;
 using Xunit;
 
 namespace Skarp.Version.Cli.Test.CsProj
@@ -18,10 +20,12 @@ namespace Skarp.Version.Cli.Test.CsProj
                     "</Project>";
 
         private readonly ProjectFileVersionPatcher _patcher;
+        private readonly IFileSystemProvider _fileSystem;
 
         public ProjectFileVersionPatcherTest()
         {
-            _patcher = new ProjectFileVersionPatcher();
+            _fileSystem = A.Fake<IFileSystemProvider>();
+            _patcher = new ProjectFileVersionPatcher(_fileSystem);
         }
 
         [Fact]
@@ -75,6 +79,17 @@ namespace Skarp.Version.Cli.Test.CsProj
             _patcher.PatchVersionField("1.0.0", "2.0.0");
             var newXml = _patcher.ToXmlString();
             Assert.Contains($"{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}", newXml);
+        }
+
+        [Fact]
+        public void Flush_calls_filesystem()
+        {
+            _patcher.Load(_projectXml);
+
+            var thePath = "/some/path.txt";
+            _patcher.Flush(thePath);
+
+            A.CallTo(() => _fileSystem.WriteAllContent(thePath, A<string>._)).MustHaveHappenedOnceExactly();
         }
     }
 }
