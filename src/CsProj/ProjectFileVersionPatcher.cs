@@ -1,14 +1,20 @@
 using System;
-using System.IO;
 using System.Linq;
 using System.Xml.Linq;
+using Skarp.Version.Cli.CsProj.FileSystem;
 
 namespace Skarp.Version.Cli.CsProj
 {
     public class ProjectFileVersionPatcher
     {
+        private readonly IFileSystemProvider _fileSystem;
         private XDocument _doc;
 
+        public ProjectFileVersionPatcher(IFileSystemProvider fileSystem)
+        {
+            _fileSystem = fileSystem;
+        }
+        
         public virtual void Load(string xmlDocument)
         {
             _doc = XDocument.Parse(xmlDocument, LoadOptions.PreserveWhitespace);
@@ -67,7 +73,7 @@ namespace Skarp.Version.Cli.CsProj
                 if (node == null)
                 {
                     throw new ArgumentException(
-                        "Given XML does not contain PackageVersion and cannot locate PropertyGroup to add it to - is this a valid csproj?");
+                        $"Given XML does not contain {elementName} and cannot locate existing PropertyGroup to add it to - is this a valid csproj file?");
                 }
             }
 
@@ -82,7 +88,7 @@ namespace Skarp.Version.Cli.CsProj
         /// <param name="filePath">The path of the csproj to write to</param>
         public virtual void Flush(string filePath)
         {
-            File.WriteAllText(filePath, _doc.ToString());
+            _fileSystem.WriteAllContent(filePath, ToXmlString());
         }
 
         /// <summary>

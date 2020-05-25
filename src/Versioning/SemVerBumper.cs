@@ -67,7 +67,7 @@ namespace Skarp.Version.Cli.Versioning
                 }
                 default:
                 {
-                    throw new ArgumentOutOfRangeException($"VersionBump : {bump} not supported");
+                    throw new ArgumentOutOfRangeException(nameof(bump), $"VersionBump : {bump} not supported");
                 }
             }
 
@@ -160,15 +160,15 @@ namespace Skarp.Version.Cli.Versioning
 
         private void HandleMinorBump(SemVer newVersion)
         {
-            if (!newVersion.IsPreRelease)
-            {
-                newVersion.Minor += 1;
-                newVersion.Patch = 0;
-            }
-            else
+            if (newVersion.IsPreRelease)
             {
                 newVersion.PreRelease = string.Empty;
                 newVersion.BuildMeta = string.Empty;
+            }
+            else
+            {
+                newVersion.Minor += 1;
+                newVersion.Patch = 0;
             }
         }
 
@@ -187,16 +187,16 @@ namespace Skarp.Version.Cli.Versioning
 
         private void HandleMajorBump(SemVer newVersion)
         {
-            if (!newVersion.IsPreRelease)
+            if (newVersion.IsPreRelease)
+            {
+                newVersion.PreRelease = string.Empty;
+                newVersion.BuildMeta = string.Empty;
+            }
+            else
             {
                 newVersion.Major += 1;
                 newVersion.Minor = 0;
                 newVersion.Patch = 0;
-            }
-            else
-            {
-                newVersion.PreRelease = string.Empty;
-                newVersion.BuildMeta = string.Empty;
             }
         }
     }

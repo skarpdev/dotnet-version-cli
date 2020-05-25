@@ -43,5 +43,15 @@ namespace Skarp.Version.Cli.CsProj.FileSystem
         {
             return File.ReadAllText(filePath);
         }
+
+        /// <summary>
+        /// Write all text content to the given filepath
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="data"></param>
+        public void WriteAllContent(string filePath, string data)
+        {
+            File.WriteAllText(filePath, data);
+        }
     }
 }
