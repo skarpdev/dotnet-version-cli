@@ -29,5 +29,13 @@ namespace Skarp.Version.Cli.CsProj.FileSystem
         /// </summary>
         /// <param name="filePath"></param>
         string LoadContent(string filePath);
+
+        /// <summary>
+        /// Writes all the content to the given file as a strings
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        void WriteAllContent(string filePath, string data);
     }
 }
