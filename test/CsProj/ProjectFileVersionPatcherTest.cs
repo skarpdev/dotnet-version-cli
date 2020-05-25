@@ -9,15 +9,15 @@ namespace Skarp.Version.Cli.Test.CsProj
     public class ProjectFileVersionPatcherTest
     {
         private static string _projectXml =
-                    "<Project Sdk=\"Microsoft.NET.Sdk\">" +
-                    "<PropertyGroup>" +
-                    "<TargetFramework>netstandard1.6</TargetFramework>" +
-                    "<RootNamespace>Unit.For.The.Win</RootNamespace>" +
-                    "<PackageId>Unit.Testing.Library</PackageId>" +
-                    "<Version>1.0.0</Version>" +
-                    "<PackageVersion>1.0.0</PackageVersion>" +
-                    "</PropertyGroup>" +
-                    "</Project>";
+            "<Project Sdk=\"Microsoft.NET.Sdk\">" +
+            "<PropertyGroup>" +
+            "<TargetFramework>netstandard1.6</TargetFramework>" +
+            "<RootNamespace>Unit.For.The.Win</RootNamespace>" +
+            "<PackageId>Unit.Testing.Library</PackageId>" +
+            "<Version>1.0.0</Version>" +
+            "<PackageVersion>1.0.0</PackageVersion>" +
+            "</PropertyGroup>" +
+            "</Project>";
 
         private readonly ProjectFileVersionPatcher _patcher;
         private readonly IFileSystemProvider _fileSystem;
@@ -35,6 +35,7 @@ namespace Skarp.Version.Cli.Test.CsProj
 
             Assert.IsAssignableFrom<InvalidOperationException>(ex);
         }
+
         [Fact]
         public void CanPatchVersionOnWellFormedXml()
         {
@@ -45,40 +46,75 @@ namespace Skarp.Version.Cli.Test.CsProj
             Assert.NotEqual(_projectXml, newXml);
             Assert.Contains("<Version>1.1.0-0</Version>", newXml);
         }
-        
+
         [Fact]
         public void CanPatchWhenVersionIsMissing()
         {
-            var xml = 
-            "<Project Sdk=\"Microsoft.NET.Sdk\">" +
-            "<PropertyGroup>" +
-            "<TargetFramework>netstandard1.6</TargetFramework>" +
-            "<RootNamespace>Unit.For.The.Win</RootNamespace>" +
-            "<PackageId>Unit.Testing.Library</PackageId>" +
-            "</PropertyGroup>" +
-            "</Project>";
+            var xml =
+                "<Project Sdk=\"Microsoft.NET.Sdk\">" +
+                "<PropertyGroup>" +
+                "<TargetFramework>netstandard1.6</TargetFramework>" +
+                "<RootNamespace>Unit.For.The.Win</RootNamespace>" +
+                "<PackageId>Unit.Testing.Library</PackageId>" +
+                "</PropertyGroup>" +
+                "</Project>";
 
             _patcher.Load(xml);
             _patcher.PatchVersionField("1.0.0", "2.0.0");
             var newXml = _patcher.ToXmlString();
             Assert.Contains("<Version>2.0.0</Version>", newXml);
-        } 
-        
+        }
+
         [Fact]
         public void PreservesWhiteSpaceWhilePatching()
         {
-            var xml = 
-            "<Project Sdk=\"Microsoft.NET.Sdk\">" +
-            "<PropertyGroup>" +
-            "<Version>1.0.0</Version>" +
-            "</PropertyGroup>" +
-            $"{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}" +
-            "</Project>";
+            var xml =
+                "<Project Sdk=\"Microsoft.NET.Sdk\">" +
+                "<PropertyGroup>" +
+                "<Version>1.0.0</Version>" +
+                "</PropertyGroup>" +
+                $"{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}" +
+                "</Project>";
 
             _patcher.Load(xml);
             _patcher.PatchVersionField("1.0.0", "2.0.0");
             var newXml = _patcher.ToXmlString();
-            Assert.Contains($"{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}", newXml);
+            Assert.Contains($"{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}",
+                newXml);
+        }
+
+        [Fact]
+        public void HandlesMissingVersionWhenTargetFrameworksField()
+        {
+            var xml =
+                "<Project Sdk=\"Microsoft.NET.Sdk\">" +
+                "<PropertyGroup>" +
+                "<TargetFrameworks>netstandard1.6;dotnet462</TargetFrameworks>" +
+                "</PropertyGroup>" +
+                "</Project>";
+
+            _patcher.Load(xml);
+            _patcher.PatchVersionField("1.0.0", "2.0.0");
+            var newXml = _patcher.ToXmlString();
+            Assert.Contains("<Version>2.0.0</Version>", newXml);
+        }
+
+        [Fact]
+        public void BailsWhenUnableToLocatePropertyGroup()
+        {
+            var xml =
+                "<Project Sdk=\"Microsoft.NET.Sdk\">" +
+                "</Project>";
+
+            _patcher.Load(xml);
+            var ex = Record.Exception(() => _patcher.PatchVersionField("1.0.0", "2.0.0"));
+
+            var aex = Assert.IsAssignableFrom<ArgumentException>(ex);
+
+            Assert.Equal(
+                "Given XML does not contain Version and cannot locate existing PropertyGroup to add it to - is this a valid csproj file?",
+                aex.Message
+            );
         }
 
         [Fact]
