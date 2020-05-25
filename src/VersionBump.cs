@@ -5,6 +5,9 @@ namespace Skarp.Version.Cli
     /// </summary>
     public enum VersionBump
     {
+        // Not supplied or parsing error or something - we can't bump `unknown`
+        Unknown, 
+        
         Major,
 
         Minor,
