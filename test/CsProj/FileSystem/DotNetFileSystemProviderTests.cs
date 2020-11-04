@@ -37,7 +37,7 @@ namespace Skarp.Version.Cli.Test.CsProj.FileSystem
         public void Cwd_works()
         {
             var cwd = _provider.Cwd();
-            Assert.Contains($"netcoreapp", cwd);
+            Assert.Contains($"Debug{Path.DirectorySeparatorChar}net", cwd);
         }
 
         [Fact]
