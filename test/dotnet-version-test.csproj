@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.1;netcoreapp2.2;netcoreapp3.0;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.1;netcoreapp2.2;netcoreapp3.0;netcoreapp3.1;net5.0</TargetFrameworks>
     <RootNamespace>Skarp.Version.Cli.Test</RootNamespace>
     <ProjectGuid>fb420acf-9e12-42b6-b724-1eee9cbf251e</ProjectGuid>
   </PropertyGroup>
