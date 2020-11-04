@@ -1,5 +1,10 @@
 version: '{build}'
-image: Visual Studio 2019
+image: Visual Studio 2019 Preview
+install:
+  - ps: >-
+      Invoke-WebRequest https://dot.net/v1/dotnet-install.ps1 -OutFile dotnet-install.ps1
+
+      ./dotnet-install.ps1 --Version 5.0.100-rc.2.20479.15 -InstallDir 'C:\Program Files\dotnet'
 environment:
   SONARCLOUD_TOKEN:
     secure: zP3yL8OgEY/gjfooti1esakQ0qHOwPl0GOoGugNS+61PxWOphHIndkOP/G3Glq96
