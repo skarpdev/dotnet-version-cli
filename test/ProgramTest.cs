@@ -30,6 +30,7 @@ namespace Skarp.Version.Cli.Test
                 true,
                 string.Empty,
                 string.Empty,
+                string.Empty,
                 string.Empty
             );
             Assert.Equal(expectedBump, args.VersionBump);
@@ -48,6 +49,7 @@ namespace Skarp.Version.Cli.Test
                     OutputFormat.Text,
                     true,
                     true,
+                    string.Empty,
                     string.Empty,
                     string.Empty,
                     string.Empty
@@ -69,6 +71,7 @@ namespace Skarp.Version.Cli.Test
                     OutputFormat.Text,
                     true,
                     true,
+                    string.Empty,
                     string.Empty,
                     string.Empty,
                     string.Empty
