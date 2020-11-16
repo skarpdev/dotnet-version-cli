@@ -11,6 +11,8 @@ namespace Skarp.Version.Cli.CsProj
         
         public virtual string PackageVersion { get; private set; }
 
+        public virtual string PackageName { get; private set; }
+
         public virtual void Load(string xmlDocument)
         {
             var xml = XDocument.Parse(xmlDocument, LoadOptions.PreserveWhitespace);
@@ -41,6 +43,27 @@ namespace Skarp.Version.Cli.CsProj
                 select prop
             ).FirstOrDefault();
             PackageVersion = xPackageVersion?.Value ?? Version;
+
+            var packageId = (
+                from prop in propertyGroup.Elements()
+                where prop.Name == "PackageId"
+                select prop
+            ).FirstOrDefault();
+
+            var title = (
+                from prop in propertyGroup.Elements()
+                where prop.Name == "Title"
+                select prop
+            ).FirstOrDefault();
+            PackageName = title?.Value ?? packageId.Value;
+
+            if (string.IsNullOrEmpty(PackageName))
+            {
+                throw new ArgumentException(
+                    "The provided csproj file seems malformed - no <Title> or <PackageId> in the <PropertyGroup>",
+                    paramName: nameof(xmlDocument)
+                );
+            }
         }
     }
 }
