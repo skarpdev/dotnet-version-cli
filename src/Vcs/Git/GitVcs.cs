@@ -70,6 +70,7 @@ namespace Skarp.Version.Cli.Vcs.Git
                 return false;
             }
         }
+
         private static ProcessStartInfo CreateGitShellStartInfo(string args)
         {
             return new ProcessStartInfo("git")
