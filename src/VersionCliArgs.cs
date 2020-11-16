@@ -30,5 +30,15 @@
         /// Override for the default `next` pre-release prefix/label
         /// </summary>
         public string PreReleasePrefix  { get; set; }
+
+        /// <summary>
+        /// Set commit's message
+        /// </summary>
+        public string CommitMessage { get; set; }
+
+        /// <summary>
+        /// Override for the default `v<version>` vcs tag
+        /// </summary>
+        public string VersionControlTag { get; set; }
     }
 }

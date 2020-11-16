@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.Extensions.CommandLineUtils;
 using Skarp.Version.Cli.CsProj;
 using Skarp.Version.Cli.CsProj.FileSystem;
+using Skarp.Version.Cli.Vcs;
 using Skarp.Version.Cli.Vcs.Git;
 using Skarp.Version.Cli.Versioning;
 
@@ -54,6 +55,16 @@ namespace Skarp.Version.Cli
                 "Override the default next prefix/label for a  `premajor`, `preminor` or `prepatch` version bump",
                 CommandOptionType.SingleValue);
 
+            var commitMessage = commandLineApplication.Option(
+                "-m | --message <the-commit-message>",
+                "Set commit's message - default is 'v<version>'. Available variables: $projName, $oldVer, $newVer",
+                CommandOptionType.SingleValue);
+
+            var vcsTag = commandLineApplication.Option(
+                "-t | --tag <git-tag>",
+                "Override the default version control system tag when is not disabled - default is 'v<version>'. Available variables: $projName, $oldVer, $newVer",
+                CommandOptionType.SingleValue);
+
             commandLineApplication.OnExecute(() =>
             {
                 try
@@ -90,7 +101,9 @@ namespace Skarp.Version.Cli
                         dryRunEnabled,
                         csProjectFileOption.Value(),
                         buildMetaOption.Value(),
-                        prefixOption.Value()
+                        prefixOption.Value(),
+                        commitMessage.Value(),
+                        vcsTag.Value()
                     );
                     _cli.Execute(cliArgs);
 
@@ -128,7 +141,9 @@ namespace Skarp.Version.Cli
             bool dryRunEnabled,
             string userSpecifiedCsProjFilePath,
             string userSpecifiedBuildMeta,
-            string preReleasePrefix
+            string preReleasePrefix,
+            string commitMessage,
+            string vcsTag
         )
         {
             if (remainingArguments == null || !remainingArguments.Any())
@@ -146,6 +161,8 @@ namespace Skarp.Version.Cli
                 DryRun = dryRunEnabled,
                 BuildMeta = userSpecifiedBuildMeta,
                 PreReleasePrefix = preReleasePrefix,
+                CommitMessage = commitMessage,
+                VersionControlTag = vcsTag,
             };
             var bump = VersionBump.Patch;
 
@@ -173,6 +190,7 @@ namespace Skarp.Version.Cli
                     dotNetFileSystemProvider
                 ),
                 new ProjectFileParser(),
+                new VcsParser(),
                 new ProjectFileVersionPatcher(dotNetFileSystemProvider),
                 new SemVerBumper()
             );
