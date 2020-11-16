@@ -131,6 +131,48 @@ $revCount = & git rev-list HEAD --count | Out-String
 dotnet version "1.0.$revCount"
 ```
 
+## Change commit message
+
+If you want to change defaults commit message, you can use the flag `-m` or `--message`.
+```bash
+$ dotnet version minor -m "Commit message"
+```
+
+There are variables availables to be set in the message
+
+`$projName` will be replaced for package title (or package id if its not defined)
+
+`$oldVer` will be replaced for old version of the package
+
+`$newVer` will be replaced for new version of the package
+```bash
+$ dotnet version minor -m "$projName bumped from v$oldVer to v$newVer"
+# This will be replaced as
+# ProjectName bumped from v1.0.0 to v2.0.0
+```
+
+
+## Change tag message
+
+If you want to change defaults tag message, you can use the flag `-t` or `--tag`.
+```bash
+$ dotnet version minor -t "Tag"
+```
+
+There are variables availables to be set in the tag
+
+`$projName` will be replaced for package title (or package id if its not defined)
+
+`$oldVer` will be replaced for old version of the package
+
+`$newVer` will be replaced for new version of the package
+```bash
+$ dotnet version minor -t "$projName bumped from v$oldVer to v$newVer"
+# This will be replaced as
+# ProjectName bumped from v1.0.0 to v2.0.0
+```
+
+
 [1]: https://docs.npmjs.com/cli/version
 [nuget-image]: https://img.shields.io/nuget/v/dotnet-version-cli.svg
 [nuget-url]: https://www.nuget.org/packages/dotnet-version-cli
