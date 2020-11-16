@@ -54,6 +54,11 @@ namespace Skarp.Version.Cli
                 "Override the default next prefix/label for a  `premajor`, `preminor` or `prepatch` version bump",
                 CommandOptionType.SingleValue);
 
+            var commitMessage = commandLineApplication.Option(
+                "-m | --message <the-commit-message>",
+                "Set commit's message. Defaults to 'v<version>'",
+                CommandOptionType.SingleValue);
+
             commandLineApplication.OnExecute(() =>
             {
                 try
@@ -90,7 +95,8 @@ namespace Skarp.Version.Cli
                         dryRunEnabled,
                         csProjectFileOption.Value(),
                         buildMetaOption.Value(),
-                        prefixOption.Value()
+                        prefixOption.Value(),
+                        commitMessage.Value()
                     );
                     _cli.Execute(cliArgs);
 
@@ -128,7 +134,8 @@ namespace Skarp.Version.Cli
             bool dryRunEnabled,
             string userSpecifiedCsProjFilePath,
             string userSpecifiedBuildMeta,
-            string preReleasePrefix
+            string preReleasePrefix,
+            string commitMessage
         )
         {
             if (remainingArguments == null || !remainingArguments.Any())
@@ -146,6 +153,7 @@ namespace Skarp.Version.Cli
                 DryRun = dryRunEnabled,
                 BuildMeta = userSpecifiedBuildMeta,
                 PreReleasePrefix = preReleasePrefix,
+                CommitMessage = commitMessage
             };
             var bump = VersionBump.Patch;
 

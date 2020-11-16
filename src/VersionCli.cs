@@ -65,7 +65,7 @@ namespace Skarp.Version.Cli
                     _fileParser.Version,
                     versionString
                 );
-                
+
                 _fileVersionPatcher.Flush(
                     _fileDetector.ResolvedCsProjFile
                 );
@@ -73,7 +73,15 @@ namespace Skarp.Version.Cli
                 if (args.DoVcs)
                 {
                     // Run git commands
-                    _vcsTool.Commit(_fileDetector.ResolvedCsProjFile, $"v{versionString}");
+                    if (string.IsNullOrEmpty(args.CommitMessage))
+                    {
+                        _vcsTool.Commit(_fileDetector.ResolvedCsProjFile, $"v{versionString}");
+                    }
+                    else
+                    {
+                        _vcsTool.Commit(_fileDetector.ResolvedCsProjFile, args.CommitMessage);
+                    }
+
                     _vcsTool.Tag($"v{versionString}");
                 }
             }
