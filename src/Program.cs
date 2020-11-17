@@ -62,7 +62,7 @@ namespace Skarp.Version.Cli
 
             var vcsTag = commandLineApplication.Option(
                 "-t | --tag <git-tag>",
-                "Override the default version control system tag when is not disabled - default is 'v<version>'. Available variables: $projName, $oldVer, $newVer",
+                "Set tag's name - default is 'v<version>'. Available variables: $projName, $oldVer, $newVer",
                 CommandOptionType.SingleValue);
 
             commandLineApplication.OnExecute(() =>
