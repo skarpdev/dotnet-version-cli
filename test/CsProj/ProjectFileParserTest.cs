@@ -27,7 +27,7 @@ namespace Skarp.Version.Cli.Test.CsProj
                                      "</PropertyGroup>" +
                                      "</Project>";
 
-            parser.Load(csProjXml);
+            parser.Load(csProjXml, ProjectFileProperty.Version, ProjectFileProperty.PackageVersion);
             Assert.Equal("1.0.0", parser.Version);
             Assert.Equal("1.0.0-1+master", parser.PackageVersion);
         } 
@@ -42,7 +42,7 @@ namespace Skarp.Version.Cli.Test.CsProj
                                      "</PropertyGroup>" +
                                      "</Project>";
 
-            parser.Load(csProjXml);
+            parser.Load(csProjXml, ProjectFileProperty.Version, ProjectFileProperty.PackageVersion);
             Assert.Equal("0.0.0", parser.Version);
             Assert.Equal("0.0.0", parser.PackageVersion);
         }

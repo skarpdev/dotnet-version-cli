@@ -7,63 +7,85 @@ namespace Skarp.Version.Cli.CsProj
 {
     public class ProjectFileParser
     {
-        public virtual string Version { get; private set; }
+        public virtual string PackageName { get; private set; }
         
         public virtual string PackageVersion { get; private set; }
+        
+        public virtual string Version { get; private set; }
+        
+        private IEnumerable<XElement> _propertyGroup { get; set; }
 
-        public virtual string PackageName { get; private set; }
-
-        public virtual void Load(string xmlDocument)
+        public virtual void Load(string xmlDocument, ProjectFileProperty property)
         {
+            LoadPropertyGroup(xmlDocument);
+
+            var propertyElement = LoadProperty(property);
+            
+            switch(property)
+            {
+                case ProjectFileProperty.Version:
+                    Version = propertyElement?.Value ?? "0.0.0";
+                    break;
+                case ProjectFileProperty.PackageVersion:
+                    PackageVersion = propertyElement?.Value ?? Version;
+                    break;
+                case ProjectFileProperty.Title:
+                    var defaultPropertyElement = LoadProperty(ProjectFileProperty.PackageId);
+                    PackageName = propertyElement?.Value ?? defaultPropertyElement.Value;
+
+                    if (string.IsNullOrEmpty(PackageName))
+                    {
+                        throw new ArgumentException(
+                            "The provided csproj file seems malformed - no <Title> or <PackageId> in the <PropertyGroup>",
+                            paramName: nameof(xmlDocument)
+                        );
+                    }
+
+                    break;
+            }
+        }
+
+        public virtual void Load(string xmlDocument, params ProjectFileProperty[] properties)
+        {
+            // Try to load xmlDocument even if there is no properties to be loaded
+            // in order to verify if project file is well formed
+            LoadPropertyGroup(xmlDocument);
+
+            foreach (var property in properties)
+            {
+                Load(xmlDocument, property);
+            }
+        }
+
+        private XElement LoadProperty(ProjectFileProperty property)
+        {
+            var propertyElement = (
+                from prop in _propertyGroup.Elements()
+                where prop.Name == property.ToString("g")
+                select prop
+            ).FirstOrDefault();
+            return propertyElement;
+        }
+
+        private void LoadPropertyGroup(string xmlDocument)
+        {
+            // Check if it has been already loaded
+            if (_propertyGroup != null) return;
+
             var xml = XDocument.Parse(xmlDocument, LoadOptions.PreserveWhitespace);
 
             // Project should be root of the document
             var project = xml.Elements("Project");
             var xProject = project as IList<XElement> ?? project.ToList();
-            if(!xProject.Any())
+            if (!xProject.Any())
             {
                 throw new ArgumentException(
-                    "The provided csproj file seems malformed - no <Project> in the root", 
+                    "The provided csproj file seems malformed - no <Project> in the root",
                     paramName: nameof(xmlDocument)
                 );
             }
 
-            var propertyGroup = xProject.Elements("PropertyGroup");
-            
-            var xVersion = (
-                from prop in propertyGroup.Elements()
-                where prop.Name == "Version"
-                select prop
-            ).FirstOrDefault();
-            Version = xVersion?.Value ?? "0.0.0";
-            
-            var xPackageVersion = (
-                from prop in propertyGroup.Elements()
-                where prop.Name == "PackageVersion"
-                select prop
-            ).FirstOrDefault();
-            PackageVersion = xPackageVersion?.Value ?? Version;
-
-            var packageId = (
-                from prop in propertyGroup.Elements()
-                where prop.Name == "PackageId"
-                select prop
-            ).FirstOrDefault();
-
-            var title = (
-                from prop in propertyGroup.Elements()
-                where prop.Name == "Title"
-                select prop
-            ).FirstOrDefault();
-            PackageName = title?.Value ?? packageId.Value;
-
-            if (string.IsNullOrEmpty(PackageName))
-            {
-                throw new ArgumentException(
-                    "The provided csproj file seems malformed - no <Title> or <PackageId> in the <PropertyGroup>",
-                    paramName: nameof(xmlDocument)
-                );
-            }
+            _propertyGroup = xProject.Elements("PropertyGroup");
         }
     }
 }

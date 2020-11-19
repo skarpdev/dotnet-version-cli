@@ -49,7 +49,7 @@ namespace Skarp.Version.Cli
             }
 
             var csProjXml = _fileDetector.FindAndLoadCsProj(args.CsProjFilePath);
-            _fileParser.Load(csProjXml);
+            _fileParser.Load(csProjXml, ProjectFileProperty.Version, ProjectFileProperty.PackageVersion);
 
             var semVer = _bumper.Bump(
                 SemVer.FromString(_fileParser.PackageVersion),
@@ -88,6 +88,7 @@ namespace Skarp.Version.Cli
 
                 if (args.DoVcs)
                 {
+                    _fileParser.Load(csProjXml, ProjectFileProperty.Title);
                     // Run git commands
                     _vcsTool.Commit(_fileDetector.ResolvedCsProjFile, _vcsParser.Commit(theOutput, _fileParser, args.CommitMessage));
                     _vcsTool.Tag(_vcsParser.Tag(theOutput, _fileParser, args.VersionControlTag));
