@@ -13,6 +13,7 @@ namespace Skarp.Version.Cli
         private readonly IVcs _vcsTool;
         private readonly ProjectFileDetector _fileDetector;
         private readonly ProjectFileParser _fileParser;
+        private readonly VcsParser _vcsParser;
         private readonly ProjectFileVersionPatcher _fileVersionPatcher;
         private readonly SemVerBumper _bumper;
 
@@ -20,6 +21,7 @@ namespace Skarp.Version.Cli
             IVcs vcsClient,
             ProjectFileDetector fileDetector,
             ProjectFileParser fileParser,
+            VcsParser vcsParser,
             ProjectFileVersionPatcher fileVersionPatcher,
             SemVerBumper bumper
         )
@@ -27,6 +29,7 @@ namespace Skarp.Version.Cli
             _vcsTool = vcsClient;
             _fileDetector = fileDetector;
             _fileParser = fileParser;
+            _vcsParser = vcsParser;
             _fileVersionPatcher = fileVersionPatcher;
             _bumper = bumper;
         }
@@ -46,7 +49,7 @@ namespace Skarp.Version.Cli
             }
 
             var csProjXml = _fileDetector.FindAndLoadCsProj(args.CsProjFilePath);
-            _fileParser.Load(csProjXml);
+            _fileParser.Load(csProjXml, ProjectFileProperty.Version, ProjectFileProperty.PackageVersion);
 
             var semVer = _bumper.Bump(
                 SemVer.FromString(_fileParser.PackageVersion),
@@ -56,27 +59,6 @@ namespace Skarp.Version.Cli
                 args.PreReleasePrefix
             );
             var versionString = semVer.ToSemVerVersionString();
-
-            if (!args.DryRun) // if we are not in dry run mode, then we should go ahead
-            {
-                _fileVersionPatcher.Load(csProjXml);
-
-                _fileVersionPatcher.PatchVersionField(
-                    _fileParser.Version,
-                    versionString
-                );
-                
-                _fileVersionPatcher.Flush(
-                    _fileDetector.ResolvedCsProjFile
-                );
-
-                if (args.DoVcs)
-                {
-                    // Run git commands
-                    _vcsTool.Commit(_fileDetector.ResolvedCsProjFile, $"v{versionString}");
-                    _vcsTool.Tag($"v{versionString}");
-                }
-            }
 
             var theOutput = new VersionInfo
             {
@@ -91,6 +73,27 @@ namespace Skarp.Version.Cli
                 VersionStrategy = args.VersionBump.ToString().ToLowerInvariant()
             };
 
+            if (!args.DryRun) // if we are not in dry run mode, then we should go ahead
+            {
+                _fileVersionPatcher.Load(csProjXml);
+
+                _fileVersionPatcher.PatchVersionField(
+                    _fileParser.Version,
+                    versionString
+                );
+
+                _fileVersionPatcher.Flush(
+                    _fileDetector.ResolvedCsProjFile
+                );
+
+                if (args.DoVcs)
+                {
+                    _fileParser.Load(csProjXml, ProjectFileProperty.Title);
+                    // Run git commands
+                    _vcsTool.Commit(_fileDetector.ResolvedCsProjFile, _vcsParser.Commit(theOutput, _fileParser, args.CommitMessage));
+                    _vcsTool.Tag(_vcsParser.Tag(theOutput, _fileParser, args.VersionControlTag));
+                }
+            }
 
             if (args.OutputFormat == OutputFormat.Json)
             {
