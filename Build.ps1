@@ -53,7 +53,8 @@ if(-not $env:APPVEYOR_PULL_REQUEST_NUMBER) {
             /d:sonar.coverage.exclusions="**Test*.cs" `
             /d:sonar.login="$Env:SONARCLOUD_TOKEN"
     }
-} else {
+} 
+if ($env:SONARCLOUD_TOKEN) {
     exec {
         & dotnet sonarscanner begin `
             /k:$sonarProjectKey `
@@ -63,10 +64,10 @@ if(-not $env:APPVEYOR_PULL_REQUEST_NUMBER) {
             /d:sonar.cs.opencover.reportsPaths=$openCoveragePaths `
             /d:sonar.cs.vstest.reportsPaths=$trxCoveragePahts `
             /d:sonar.coverage.exclusions="**Test*.cs" `
-            /d:sonar.login="$Env:SONARCLOUD_TOKEN" `
-            /d:sonar.pullrequest.branch=$Env:APPVEYOR_PULL_REQUEST_HEAD_REPO_BRANCH `
-            /d:sonar.pullrequest.base=$Env:APPVEYOR_REPO_BRANCH `
-            /d:sonar.pullrequest.key=$Env:APPVEYOR_PULL_REQUEST_NUMBER
+            /d:sonar.login="$env:SONARCLOUD_TOKEN" `
+            /d:sonar.pullrequest.branch=$env:APPVEYOR_PULL_REQUEST_HEAD_REPO_BRANCH `
+            /d:sonar.pullrequest.base=$env:APPVEYOR_REPO_BRANCH `
+            /d:sonar.pullrequest.key=$env:APPVEYOR_PULL_REQUEST_NUMBER
     }
 }
 
@@ -75,7 +76,8 @@ exec { & dotnet build -c Release }
 exec { & dotnet test .\test\dotnet-version-test.csproj -c Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover --logger trx }
 
 # trigger Sonar Scanner analysis
-exec { & dotnet sonarscanner end /d:sonar.login="$Env:SONARCLOUD_TOKEN" }
-
+if ($env:SONARCLOUD_TOKEN) {
+    exec { & dotnet sonarscanner end /d:sonar.login="$env:SONARCLOUD_TOKEN" }
+}
 # pack up everything
 exec { & dotnet pack .\src\dotnet-version.csproj -c Release -o ..\artifacts --include-source }
