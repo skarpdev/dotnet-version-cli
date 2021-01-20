@@ -10,6 +10,11 @@
         /// <summary>
         /// json output
         /// </summary>
-        Json
+        Json,
+        
+        /// <summary>
+        /// Bare output without extraneous information
+        /// </summary>
+        Bare
     }
 }
