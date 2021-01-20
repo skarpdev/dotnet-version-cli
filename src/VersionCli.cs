@@ -99,6 +99,10 @@ namespace Skarp.Version.Cli
             {
                 WriteJsonToStdout(theOutput);
             }
+            else if (args.OutputFormat == OutputFormat.Bare)
+            {
+                Console.WriteLine(versionString);
+            }
             else
             {
                 Console.WriteLine($"Bumped {_fileDetector.ResolvedCsProjFile} to version {versionString}");
