@@ -47,6 +47,16 @@ namespace Skarp.Version.Cli.CsProj
 
         public virtual void Load(string xmlDocument, params ProjectFileProperty[] properties)
         {
+            if (properties == null || !properties.Any())
+            {
+                properties = new[]
+                {
+                    ProjectFileProperty.Title,
+                    ProjectFileProperty.Version,
+                    ProjectFileProperty.PackageId,
+                    ProjectFileProperty.PackageVersion,
+                };
+            } 
             // Try to load xmlDocument even if there is no properties to be loaded
             // in order to verify if project file is well formed
             LoadPropertyGroup(xmlDocument);
