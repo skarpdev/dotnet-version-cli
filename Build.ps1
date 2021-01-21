@@ -54,7 +54,7 @@ if(-not $env:APPVEYOR_PULL_REQUEST_NUMBER) {
             /d:sonar.login="$Env:SONARCLOUD_TOKEN"
     }
 } 
-if ($env:SONARCLOUD_TOKEN) {
+elseif ($env:SONARCLOUD_TOKEN) {
     exec {
         & dotnet sonarscanner begin `
             /k:$sonarProjectKey `
