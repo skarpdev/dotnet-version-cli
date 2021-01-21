@@ -99,6 +99,10 @@ namespace Skarp.Version.Cli
             {
                 WriteJsonToStdout(theOutput);
             }
+            else if (args.OutputFormat == OutputFormat.Bare)
+            {
+                Console.WriteLine(versionString);
+            }
             else
             {
                 Console.WriteLine($"Bumped {_fileDetector.ResolvedCsProjFile} to version {versionString}");
@@ -110,7 +114,7 @@ namespace Skarp.Version.Cli
         public void DumpVersion(VersionCliArgs args)
         {
             var csProjXml = _fileDetector.FindAndLoadCsProj(args.CsProjFilePath);
-            _fileParser.Load(csProjXml);
+            _fileParser.Load(csProjXml, ProjectFileProperty.Version, ProjectFileProperty.PackageVersion);
 
             if (args.OutputFormat == OutputFormat.Json)
             {
@@ -125,6 +129,10 @@ namespace Skarp.Version.Cli
                     ProjectFile = _fileDetector.ResolvedCsProjFile,
                 };
                 WriteJsonToStdout(theOutput);
+            }
+            if (args.OutputFormat == OutputFormat.Bare)
+            {
+                Console.WriteLine(_fileParser.PackageVersion);
             }
             else
             {
