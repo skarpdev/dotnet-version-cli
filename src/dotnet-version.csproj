@@ -6,7 +6,7 @@
     <ToolCommandName>dotnet-version</ToolCommandName>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <RootNamespace>Skarp.Version.Cli</RootNamespace>
-    <Version>2.1.1</Version>
+    <Version>2.1.2</Version>
     <Title>dotnet-version-cli</Title>
     <Authors>nover</Authors>
     <Description>A dotnet core global tool for changing your csproj version and automatically comitting and tagging - npm version style.</Description>
