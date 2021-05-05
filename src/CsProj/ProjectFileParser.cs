@@ -31,7 +31,7 @@ namespace Skarp.Version.Cli.CsProj
                     break;
                 case ProjectFileProperty.Title:
                     var defaultPropertyElement = LoadProperty(ProjectFileProperty.PackageId);
-                    PackageName = propertyElement?.Value ?? defaultPropertyElement.Value;
+                    PackageName = propertyElement?.Value ?? defaultPropertyElement?.Value ?? string.Empty;
 
                     if (string.IsNullOrEmpty(PackageName))
                     {
