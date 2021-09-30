@@ -82,13 +82,13 @@ $ git push && git push --tags
 
 ## Pre-release workflow
 
-As mentioned in the introduction the version tool allows working with pre-releases. 
-Let's assume you have a library in version `1.2.4` and have made merges to master. You are not sure these changes work in the wild and therefore you require a 
+As mentioned in the introduction the version tool allows working with pre-releases.
+Let's assume you have a library in version `1.2.4` and have made merges to master. You are not sure these changes work in the wild and therefore you require a
 pre-release. In the simpelest form you can
 
 ```bash
 $ dotnet version preminor
-``` 
+```
 
 To get a preminor out. This new version tag would become `1.2.5-next.0`.
 If additional changes are merged you can roll over the pre-release version number by
@@ -172,6 +172,28 @@ $ dotnet version minor -t "$projName bumped from v$oldVer to v$newVer"
 # ProjectName bumped from v1.0.0 to v2.0.0
 ```
 
+## Common Version
+If you want to share a version across multiple csproj files, you can create a `.targets` file and [import](import) it in the csproj files:
+`Common.targets`:
+```xml
+<Project>
+  <PropertyGroup>
+    <Version>2.0.0</Version>
+  </PropertyGroup>
+</Project>
+```
+
+And in your `.csproj` files:
+```xml
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="relative/path/to/Common.targets" />
+</Project>
+```
+
+You can then use `dotnet version` to change the version in `Common.targets`:
+```powershell
+dotnet version -f Common.targets
+```
 
 [1]: https://docs.npmjs.com/cli/version
 [nuget-image]: https://img.shields.io/nuget/v/dotnet-version-cli.svg
@@ -183,3 +205,4 @@ $ dotnet version minor -t "$projName bumped from v$oldVer to v$newVer"
 [sonarvulnerabilitieslogo]: https://sonarcloud.io/api/project_badges/measure?project=skarpdev_dotnet-version-cli&metric=vulnerabilities
 [sonarbugslogo]: https://sonarcloud.io/api/project_badges/measure?project=skarpdev_dotnet-version-cli&metric=bugs
 [sonarcodesmellslogo]: https://sonarcloud.io/api/project_badges/measure?project=skarpdev_dotnet-version-cli&metric=code_smells
+[import]: https://docs.microsoft.com/en-us/visualstudio/msbuild/import-element-msbuild?view=vs-2019
