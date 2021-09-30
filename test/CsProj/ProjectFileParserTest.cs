@@ -75,13 +75,9 @@ namespace Skarp.Version.Cli.Test.CsProj
                                      "<RootNamespace>Unit.For.The.Win</RootNamespace>" +
                                      "</PropertyGroup>" +
                                      "</Project>";
-
-            var ex = Assert.Throws<ArgumentException>(() => 
-                parser.Load(csProjXml)
-            );
             
-            Assert.Contains($"The provided csproj file seems malformed - no <Title> or <PackageId> in the <PropertyGroup>", ex.Message);
-            Assert.Equal("xmlDocument", ex.ParamName);
+            parser.Load(csProjXml);
+            Assert.Empty(parser.PackageName);
         }
     }
 }
