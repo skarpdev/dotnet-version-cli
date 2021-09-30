@@ -16,13 +16,13 @@ namespace Skarp.Version.Cli.CsProj.FileSystem
         }
 
         /// <summary>
-        /// Determines whether the given path is actually a csproj file
+        /// Determines whether the given path is actually a csproj or targets file
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
         public bool IsCsProjectFile(string path)
         {
-            return File.Exists(path) && path.EndsWith(".csproj");
+            return File.Exists(path) && (path.EndsWith(".csproj") || path.EndsWith(".targets"));
         }
 
         /// <summary>
