@@ -32,15 +32,7 @@ namespace Skarp.Version.Cli.CsProj
                 case ProjectFileProperty.Title:
                     var defaultPropertyElement = LoadProperty(ProjectFileProperty.PackageId);
                     PackageName = propertyElement?.Value ?? defaultPropertyElement?.Value ?? string.Empty;
-
-                    if (string.IsNullOrEmpty(PackageName))
-                    {
-                        throw new ArgumentException(
-                            "The provided csproj file seems malformed - no <Title> or <PackageId> in the <PropertyGroup>",
-                            paramName: nameof(xmlDocument)
-                        );
-                    }
-
+                    
                     break;
             }
         }
