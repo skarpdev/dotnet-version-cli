@@ -14,7 +14,7 @@ namespace Skarp.Version.Cli
     {
         private static VersionCli _cli;
 
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
             SetUpDependencies();
 
@@ -131,7 +131,7 @@ namespace Skarp.Version.Cli
                     return 1;
                 }
             });
-            commandLineApplication.Execute(args);
+            return commandLineApplication.Execute(args);
         }
 
         internal static VersionCliArgs GetVersionBumpFromRemainingArgs(
