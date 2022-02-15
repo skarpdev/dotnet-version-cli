@@ -116,27 +116,28 @@ namespace Skarp.Version.Cli
             var csProjXml = _fileDetector.FindAndLoadCsProj(args.CsProjFilePath);
             _fileParser.Load(csProjXml, ProjectFileProperty.Version, ProjectFileProperty.PackageVersion);
 
-            if (args.OutputFormat == OutputFormat.Json)
+            switch (args.OutputFormat)
             {
-                var theOutput = new
-                {
-                    Product = new
+                case OutputFormat.Json:
+                    var theOutput = new
                     {
-                        Name = ProductInfo.Name,
-                        Version = ProductInfo.Version
-                    },
-                    CurrentVersion = _fileParser.PackageVersion,
-                    ProjectFile = _fileDetector.ResolvedCsProjFile,
-                };
-                WriteJsonToStdout(theOutput);
-            }
-            if (args.OutputFormat == OutputFormat.Bare)
-            {
-                Console.WriteLine(_fileParser.PackageVersion);
-            }
-            else
-            {
-                Console.WriteLine("Project version is: {0}\t{1}", Environment.NewLine, _fileParser.PackageVersion);
+                        Product = new
+                        {
+                            Name = ProductInfo.Name,
+                            Version = ProductInfo.Version
+                        },
+                        CurrentVersion = _fileParser.PackageVersion,
+                        ProjectFile = _fileDetector.ResolvedCsProjFile,
+                    };
+                    WriteJsonToStdout(theOutput);
+                    break;
+                case OutputFormat.Bare:
+                    Console.WriteLine(_fileParser.PackageVersion);
+                    break;
+                case OutputFormat.Text:
+                default:
+                    Console.WriteLine("Project version is: {0}\t{1}", Environment.NewLine, _fileParser.PackageVersion);
+                    break;
             }
         }
 
