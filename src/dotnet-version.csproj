@@ -1,12 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>netcoreapp2.1;netcoreapp2.2;netcoreapp3.0;netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.1;netcoreapp2.2;netcoreapp3.0;netcoreapp3.1;net5.0;net6.0;net7.0</TargetFrameworks>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>dotnet-version</ToolCommandName>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <RootNamespace>Skarp.Version.Cli</RootNamespace>
-    <Version>2.3.1</Version>
+    <Version>2.4.0</Version>
     <Title>dotnet-version-cli</Title>
     <Authors>nover</Authors>
     <Description>A dotnet core global tool for changing your csproj version and automatically comitting and tagging - npm version style.</Description>
