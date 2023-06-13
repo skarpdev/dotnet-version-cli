@@ -79,5 +79,39 @@ namespace Skarp.Version.Cli.Test.CsProj
             parser.Load(csProjXml);
             Assert.Empty(parser.PackageName);
         }
+
+        [Fact]
+        public void CanParse_when_versionprefix_is_set()
+        {
+            const string csProjXml = "<Project Sdk=\"Microsoft.NET.Sdk\">" +
+                                     "<PropertyGroup>" +
+                                     "<TargetFramework>netstandard1.6</TargetFramework>" +
+                                     "<RootNamespace>Unit.For.The.Win</RootNamespace>" +
+                                     "<VersionPrefix>1.0.0</VersionPrefix>" +
+                                     "</PropertyGroup>" +
+                                     "</Project>";
+
+            parser.Load(csProjXml);
+            Assert.Empty(parser.PackageName);
+            Assert.Equal("1.0.0", parser.Version);
+        }
+
+
+        [Fact]
+        public void CanParse_when_versionprefix_and_versionsuffix_is_set()
+        {
+            const string csProjXml = "<Project Sdk=\"Microsoft.NET.Sdk\">" +
+                                     "<PropertyGroup>" +
+                                     "<TargetFramework>netstandard1.6</TargetFramework>" +
+                                     "<RootNamespace>Unit.For.The.Win</RootNamespace>" +
+                                     "<VersionPrefix>1.0.0</VersionPrefix>" +
+                                     "<VersionSuffix>SNAPSHOT</VersionSuffix>" +
+                                     "</PropertyGroup>" +
+                                     "</Project>";
+
+            parser.Load(csProjXml);
+            Assert.Empty(parser.PackageName);
+            Assert.Equal("1.0.0-SNAPSHOT", parser.Version);
+        }
     }
 }
