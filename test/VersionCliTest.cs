@@ -32,6 +32,8 @@ namespace Skarp.Version.Cli.Test
 
             A.CallTo(() => _fileParser.Load(A<string>._)).DoesNothing();
             A.CallTo(() => _fileParser.Version).Returns("1.2.1");
+            A.CallTo(() => _fileParser.VersionPrefix).Returns("2.0.1");
+            A.CallTo(() => _fileParser.VersionSuffix).Returns("DEVELOPMENT");
 
             _cli = new VersionCli(
                     _vcsTool,
@@ -41,6 +43,18 @@ namespace Skarp.Version.Cli.Test
                     _filePatcher,
                     new SemVerBumper()
                 );
+        }
+
+        [Fact]
+        public void VersionCli_Bump_VersionPrefix()
+        {
+            A.CallTo(() => _fileParser.Version).Returns(null);
+            A.CallTo(() => _fileParser.VersionPrefix).Returns("2.0.1");
+            A.CallTo(() => _fileParser.VersionSuffix).Returns("DEVELOPMENT");
+
+            var output = _cli.Execute(new VersionCliArgs { OutputFormat = OutputFormat.Bare, VersionBump = VersionBump.None, DryRun = true });
+
+            Assert.Equal("2.0.1-DEVELOPMENT", output.OldVersion);
         }
 
         [Fact]
@@ -105,9 +119,9 @@ namespace Skarp.Version.Cli.Test
             _cli.Execute(new VersionCliArgs{VersionBump = VersionBump.Major, DoVcs = true, DryRun = false});
 
             // Verify
-            A.CallTo(() => _filePatcher.PatchVersionField(
-                    A<string>.That.Matches(ver => ver == "1.2.1"),
-                    A<string>.That.Matches(newVer => newVer == "2.0.0")
+            A.CallTo(() => _filePatcher.PatchField(
+                    A<string>.That.Matches(newVer => newVer == "2.0.0"),
+                    ProjectFileProperty.Version
                 ))
                 .MustHaveHappened(Repeated.Exactly.Once);
 
@@ -144,9 +158,9 @@ namespace Skarp.Version.Cli.Test
             _cli.Execute(new VersionCliArgs{VersionBump = VersionBump.PreMajor, DoVcs = true, DryRun = false});
 
             // Verify
-            A.CallTo(() => _filePatcher.PatchVersionField(
-                    A<string>.That.Matches(ver => ver == "1.2.1"),
-                    A<string>.That.Matches(newVer => newVer == "2.0.0-next.0")
+            A.CallTo(() => _filePatcher.PatchField(
+                    A<string>.That.Matches(newVer => newVer == "2.0.0-next.0"),
+                    ProjectFileProperty.Version
                 ))
                 .MustHaveHappened(Repeated.Exactly.Once);
             
@@ -183,9 +197,9 @@ namespace Skarp.Version.Cli.Test
             _cli.Execute(new VersionCliArgs{VersionBump = VersionBump.PreMajor, DoVcs = true, DryRun = false, PreReleasePrefix = "beta"});
 
             // Verify
-            A.CallTo(() => _filePatcher.PatchVersionField(
-                    A<string>.That.Matches(ver => ver == "1.2.1"),
-                    "2.0.0-beta.0"
+            A.CallTo(() => _filePatcher.PatchField(
+                    "2.0.0-beta.0",
+                    ProjectFileProperty.Version
                 ))
                 .MustHaveHappened(Repeated.Exactly.Once);
             
@@ -222,9 +236,9 @@ namespace Skarp.Version.Cli.Test
             _cli.Execute(new VersionCliArgs{VersionBump = VersionBump.PreMajor, DoVcs = true, DryRun = false, BuildMeta = "master"});
 
             // Verify
-            A.CallTo(() => _filePatcher.PatchVersionField(
-                    A<string>.That.Matches(ver => ver == "1.2.1"),
-                    A<string>.That.Matches(newVer => newVer == "2.0.0-next.0+master")
+            A.CallTo(() => _filePatcher.PatchField(
+                    A<string>.That.Matches(newVer => newVer == "2.0.0-next.0+master"),
+                    ProjectFileProperty.Version
                 ))
                 .MustHaveHappened(Repeated.Exactly.Once);
             
@@ -261,9 +275,9 @@ namespace Skarp.Version.Cli.Test
             _cli.Execute(new VersionCliArgs{VersionBump = VersionBump.Major, DoVcs = false, DryRun = false});
 
             // Verify
-            A.CallTo(() => _filePatcher.PatchVersionField(
-                    A<string>.That.Matches(ver => ver == "1.2.1"),
-                    A<string>.That.Matches(newVer => newVer == "2.0.0")
+            A.CallTo(() => _filePatcher.PatchField(
+                    A<string>.That.Matches(newVer => newVer == "2.0.0"),
+                    ProjectFileProperty.Version
                 ))
                 .MustHaveHappened(Repeated.Exactly.Once);
             A.CallTo(() => _filePatcher.Flush(
@@ -297,9 +311,9 @@ namespace Skarp.Version.Cli.Test
             Assert.Equal("2.0.0", info.NewVersion);
             
             // Verify
-            A.CallTo(() => _filePatcher.PatchVersionField(
-                    A<string>.That.Matches(ver => ver == "1.2.1"),
-                    A<string>.That.Matches(newVer => newVer == "2.0.0")
+            A.CallTo(() => _filePatcher.PatchField(
+                    A<string>.That.Matches(newVer => newVer == "2.0.0"),
+                    ProjectFileProperty.Version
                 ))
                 .MustNotHaveHappened();
 
@@ -331,9 +345,9 @@ namespace Skarp.Version.Cli.Test
             _cli.Execute(new VersionCliArgs { VersionBump = VersionBump.Major, DoVcs = true, DryRun = false, CommitMessage = "commit message" });
 
             // Verify
-            A.CallTo(() => _filePatcher.PatchVersionField(
-                    A<string>.That.Matches(ver => ver == "1.2.1"),
-                    A<string>.That.Matches(newVer => newVer == "2.0.0")
+            A.CallTo(() => _filePatcher.PatchField(
+                    A<string>.That.Matches(newVer => newVer == "2.0.0"),
+                    ProjectFileProperty.Version
                 ))
                 .MustHaveHappened(Repeated.Exactly.Once);
 
@@ -371,9 +385,9 @@ namespace Skarp.Version.Cli.Test
             _cli.Execute(new VersionCliArgs { VersionBump = VersionBump.Major, DoVcs = true, DryRun = false, CommitMessage = "bump from v$oldVer to v$newVer at $projName" });
 
             // Verify
-            A.CallTo(() => _filePatcher.PatchVersionField(
-                    A<string>.That.Matches(ver => ver == "1.2.1"),
-                    A<string>.That.Matches(newVer => newVer == "2.0.0")
+            A.CallTo(() => _filePatcher.PatchField(
+                    A<string>.That.Matches(newVer => newVer == "2.0.0"),
+                    ProjectFileProperty.Version
                 ))
                 .MustHaveHappened(Repeated.Exactly.Once);
 
@@ -410,9 +424,9 @@ namespace Skarp.Version.Cli.Test
             _cli.Execute(new VersionCliArgs { VersionBump = VersionBump.Major, DoVcs = true, DryRun = false, VersionControlTag = "vcs tag" });
 
             // Verify
-            A.CallTo(() => _filePatcher.PatchVersionField(
-                    A<string>.That.Matches(ver => ver == "1.2.1"),
-                    A<string>.That.Matches(newVer => newVer == "2.0.0")
+            A.CallTo(() => _filePatcher.PatchField(
+                    A<string>.That.Matches(newVer => newVer == "2.0.0"),
+                    ProjectFileProperty.Version
                 ))
                 .MustHaveHappened(Repeated.Exactly.Once);
 
@@ -450,9 +464,9 @@ namespace Skarp.Version.Cli.Test
             _cli.Execute(new VersionCliArgs { VersionBump = VersionBump.Major, DoVcs = true, DryRun = false, VersionControlTag = "bump from v$oldVer to v$newVer at $projName" });
 
             // Verify
-            A.CallTo(() => _filePatcher.PatchVersionField(
-                    A<string>.That.Matches(ver => ver == "1.2.1"),
-                    A<string>.That.Matches(newVer => newVer == "2.0.0")
+            A.CallTo(() => _filePatcher.PatchField(
+                    A<string>.That.Matches(newVer => newVer == "2.0.0"),
+                    ProjectFileProperty.Version
                 ))
                 .MustHaveHappened(Repeated.Exactly.Once);
 

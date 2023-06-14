@@ -8,31 +8,46 @@ namespace Skarp.Version.Cli.CsProj
     public class ProjectFileParser
     {
         public virtual string PackageName { get; private set; }
-        
+
         public virtual string PackageVersion { get; private set; }
-        
+
         public virtual string Version { get; private set; }
-        
+
+        public virtual string VersionPrefix { get; private set; }
+
+        public virtual string VersionSuffix { get; private set; }
+
+        public ProjectFileProperty VersionSource { get
+            {
+                return !string.IsNullOrEmpty(Version) ? ProjectFileProperty.Version : ProjectFileProperty.VersionPrefix;
+            } 
+        }
+
         private IEnumerable<XElement> _propertyGroup { get; set; }
 
         public virtual void Load(string xmlDocument, ProjectFileProperty property)
         {
             LoadPropertyGroup(xmlDocument);
 
-            var propertyElement = LoadProperty(property);
-            
-            switch(property)
+            XElement propertyElement = LoadProperty(property);
+
+            switch (property)
             {
                 case ProjectFileProperty.Version:
-                    Version = propertyElement?.Value ?? "0.0.0";
+                    Version = propertyElement?.Value ?? string.Empty;
                     break;
                 case ProjectFileProperty.PackageVersion:
-                    PackageVersion = propertyElement?.Value ?? Version;
+                    PackageVersion = propertyElement?.Value ?? string.Empty;
                     break;
                 case ProjectFileProperty.Title:
                     var defaultPropertyElement = LoadProperty(ProjectFileProperty.PackageId);
                     PackageName = propertyElement?.Value ?? defaultPropertyElement?.Value ?? string.Empty;
-                    
+                    break;
+                case ProjectFileProperty.VersionPrefix:
+                    VersionPrefix = propertyElement?.Value ?? string.Empty;
+                    break;
+                case ProjectFileProperty.VersionSuffix:
+                    VersionSuffix = propertyElement?.Value ?? string.Empty;
                     break;
             }
         }
@@ -47,8 +62,10 @@ namespace Skarp.Version.Cli.CsProj
                     ProjectFileProperty.Version,
                     ProjectFileProperty.PackageId,
                     ProjectFileProperty.PackageVersion,
+                    ProjectFileProperty.VersionPrefix,
+                    ProjectFileProperty.VersionSuffix
                 };
-            } 
+            }
             // Try to load xmlDocument even if there is no properties to be loaded
             // in order to verify if project file is well formed
             LoadPropertyGroup(xmlDocument);
@@ -61,7 +78,7 @@ namespace Skarp.Version.Cli.CsProj
 
         private XElement LoadProperty(ProjectFileProperty property)
         {
-            var propertyElement = (
+            XElement propertyElement = (
                 from prop in _propertyGroup.Elements()
                 where prop.Name == property.ToString("g")
                 select prop

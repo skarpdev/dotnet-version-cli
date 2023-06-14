@@ -14,7 +14,7 @@ namespace Skarp.Version.Cli.CsProj
         {
             _fileSystem = fileSystem;
         }
-        
+
         public virtual void Load(string xmlDocument)
         {
             _doc = XDocument.Parse(xmlDocument, LoadOptions.PreserveWhitespace);
@@ -23,23 +23,20 @@ namespace Skarp.Version.Cli.CsProj
         /// <summary>
         /// Replace the existing version number in the csproj xml with the new version
         /// </summary>
-        /// <param name="oldVersion">The old version number present in the xml</param>
-        /// <param name="newVersion">The new version number to persist in the csproj file</param>
+        /// <param name="newValue">The new version number to persist in the csproj file</param>
         /// <returns></returns>
-        public virtual void PatchVersionField(string oldVersion, string newVersion)
+        public virtual void PatchField(string newValue, ProjectFileProperty versionField)
         {
-            var elementName = "Version";
-            PatchGenericField(elementName, oldVersion, newVersion);
+            PatchGenericField(versionField.ToString(), newValue);
         }
 
         /// <summary>
         /// Helper method for patching up a generic XML field in the loaded XML
         /// </summary>
         /// <param name="elementName">The name to find and update or add it to the tree</param>
-        /// <param name="oldVal">Old value</param>
         /// <param name="newVal">New value</param>
         /// <exception cref="InvalidOperationException"></exception>
-        private void PatchGenericField(string elementName, string oldVal, string newVal)
+        private void PatchGenericField(string elementName, string newVal)
         {
             if (_doc == null)
             {
@@ -49,7 +46,7 @@ namespace Skarp.Version.Cli.CsProj
             // If the element is not present, add it to the XML document (csproj file
             if (!ContainsElement(elementName))
             {
-                AddMissingElementToCsProj(elementName, oldVal);
+                AddMissingElementToCsProj(elementName, newVal);
             }
 
             var elm = _doc.Descendants(elementName).First();
@@ -61,7 +58,7 @@ namespace Skarp.Version.Cli.CsProj
             var nodes = _doc.Descendants(elementName);
             return nodes.Any();
         }
-        
+
         private void AddMissingElementToCsProj(string elementName, string value)
         {
             // try to locate the PropertyGroup where the element belongs 

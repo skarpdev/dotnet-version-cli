@@ -1,4 +1,6 @@
-﻿namespace Skarp.Version.Cli
+﻿using Skarp.Version.Cli.CsProj;
+
+namespace Skarp.Version.Cli
 {
     public class VersionCliArgs
     {
@@ -40,5 +42,10 @@
         /// Override for the default `v<version>` vcs tag
         /// </summary>
         public string VersionControlTag { get; set; }
+
+        /// <summary>
+        /// Specify the Version-Tag that should be targeted. Default is PackageVersion
+        /// </summary>
+        public ProjectFileProperty ProjectFilePropertyName { get; set; } = ProjectFileProperty.PackageVersion;
     }
 }

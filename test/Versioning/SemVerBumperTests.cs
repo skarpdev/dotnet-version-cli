@@ -64,7 +64,7 @@ namespace Skarp.Version.Cli.Test.Versioning
         public void CanBumpAndSerializeStringVersion(string version, VersionBump bump, string expectedVersion)
         {
             var semver = _bumper.Bump(SemVer.FromString(version), bump);
-            Assert.Equal(expectedVersion, semver.ToSemVerVersionString());
+            Assert.Equal(expectedVersion, semver.ToSemVerVersionString(null));
         }
 
         [Theory]
@@ -79,7 +79,7 @@ namespace Skarp.Version.Cli.Test.Versioning
         )
         {
             var semver = _bumper.Bump(SemVer.FromString(version), bump, preReleasePrefix: prefix);
-            Assert.Equal(expectedVersion, semver.ToSemVerVersionString());
+            Assert.Equal(expectedVersion, semver.ToSemVerVersionString(null));
         }
 
         [Fact]

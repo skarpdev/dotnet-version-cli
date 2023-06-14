@@ -6,5 +6,7 @@
         PackageVersion,
         PackageId,
         Title,
+        VersionPrefix,
+        VersionSuffix
     }
 }

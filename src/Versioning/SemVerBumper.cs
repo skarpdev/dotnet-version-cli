@@ -20,7 +20,7 @@ namespace Skarp.Version.Cli.Versioning
             string preReleasePrefix = ""
         )
         {
-            var newVersion = SemVer.FromString(currentVersion.ToSemVerVersionString());
+            var newVersion = (SemVer)currentVersion.Clone();
             newVersion.BuildMeta = buildMeta;
 
             switch (bump)
@@ -65,6 +65,9 @@ namespace Skarp.Version.Cli.Versioning
                     HandleSpecificVersion(specificVersionToApply, newVersion);
                     break;
                 }
+                case VersionBump.None:
+                    //Do nothing;
+                    break;
                 default:
                 {
                     throw new ArgumentOutOfRangeException(nameof(bump), $"VersionBump : {bump} not supported");
