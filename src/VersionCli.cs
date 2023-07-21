@@ -49,13 +49,19 @@ namespace Skarp.Version.Cli
             }
 
             var csProjXml = _fileDetector.FindAndLoadCsProj(args.CsProjFilePath);
-            _fileParser.Load(csProjXml, args.ProjectFilePropertyName);
+            _fileParser.Load(
+                csProjXml, 
+                args.ProjectFilePropertyName);
 
 
 
-            var currentSemVer = SemVer.FromString(_fileParser.VersionSource == ProjectFileProperty.Version ? _fileParser.Version : _fileParser.VersionPrefix);
+            var currentSemVer = SemVer.FromString(
+                                    _fileParser.VersionSource == ProjectFileProperty.Version ? 
+                                        _fileParser.Version : 
+                                        _fileParser.VersionPrefix);
 
-            var bumpedSemVer = _bumper.Bump(currentSemVer,
+            var bumpedSemVer = _bumper.Bump(
+                currentSemVer,
                 args.VersionBump,
                 args.SpecificVersionToApply,
                 args.BuildMeta,
