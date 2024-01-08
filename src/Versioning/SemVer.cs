@@ -1,3 +1,4 @@
+using Skarp.Version.Cli.CsProj;
 using System;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -20,7 +21,7 @@ namespace Skarp.Version.Cli.Versioning
         /// Serialize the parsed version information into a SemVer version string including pre and build meta
         /// </summary>
         /// <returns></returns>
-        public string ToSemVerVersionString()
+        public string ToSemVerVersionString(ProjectFileParser projectFileParser)
         {
             var sb = new StringBuilder();
             sb.Append($"{Major}.{Minor}.{Patch}");
@@ -34,9 +35,16 @@ namespace Skarp.Version.Cli.Versioning
                 }
             }
 
+            if (projectFileParser != null 
+                && projectFileParser.VersionSource == ProjectFileProperty.VersionPrefix
+                && !string.IsNullOrWhiteSpace(projectFileParser.VersionSuffix))
+            {
+                sb.AppendFormat("-{0}", projectFileParser.VersionSuffix);
+            }
+
             return sb.ToString();
         }
-        
+
         /// <summary>
         /// Create a new instance of a SemVer based off the version string
         /// </summary>
@@ -57,8 +65,13 @@ namespace Skarp.Version.Cli.Versioning
                 Minor = Convert.ToInt32(matches.Groups[2].Value),
                 Patch = Convert.ToInt32(matches.Groups[3].Value),
                 PreRelease = matches.Groups[4].Value,
-                BuildMeta = matches.Groups[5].Value,
+                BuildMeta = matches.Groups[5].Value
             };
+        }
+
+        public object Clone()
+        {
+            return this.MemberwiseClone();
         }
 
         /// <summary>
@@ -88,5 +101,6 @@ namespace Skarp.Version.Cli.Versioning
         /// Build mtadata semver 2 information (the stuff added with a + sign after PreRelease info)
         /// </summary>
         public string BuildMeta { get; set; }
+
     }
 }

@@ -28,6 +28,11 @@ namespace Skarp.Version.Cli
         /// <summary>
         /// Apply a specific, given, version to the project file
         /// </summary>
-        Specific
+        Specific,
+
+        /// <summary>
+        /// Do not apply any changes.
+        /// </summary>
+        None
     }
 }

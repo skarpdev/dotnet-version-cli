@@ -31,7 +31,7 @@ namespace Skarp.Version.Cli.Test.CsProj
         [Fact]
         public void Throws_when_load_not_called()
         {
-            var ex = Record.Exception((() => _patcher.PatchVersionField("1.0.0", "2.0.0")));
+            var ex = Record.Exception((() => _patcher.PatchField("2.0.0", ProjectFileProperty.Version)));
 
             Assert.IsAssignableFrom<InvalidOperationException>(ex);
         }
@@ -40,7 +40,7 @@ namespace Skarp.Version.Cli.Test.CsProj
         public void CanPatchVersionOnWellFormedXml()
         {
             _patcher.Load(_projectXml);
-            _patcher.PatchVersionField("1.0.0", "1.1.0-0");
+            _patcher.PatchField("1.1.0-0", ProjectFileProperty.Version);
 
             var newXml = _patcher.ToXmlString();
             Assert.NotEqual(_projectXml, newXml);
@@ -60,7 +60,7 @@ namespace Skarp.Version.Cli.Test.CsProj
                 "</Project>";
 
             _patcher.Load(xml);
-            _patcher.PatchVersionField("1.0.0", "2.0.0");
+            _patcher.PatchField("2.0.0", ProjectFileProperty.Version);
             var newXml = _patcher.ToXmlString();
             Assert.Contains("<Version>2.0.0</Version>", newXml);
         }
@@ -77,7 +77,7 @@ namespace Skarp.Version.Cli.Test.CsProj
                 "</Project>";
 
             _patcher.Load(xml);
-            _patcher.PatchVersionField("1.0.0", "2.0.0");
+            _patcher.PatchField("2.0.0", ProjectFileProperty.Version);
             var newXml = _patcher.ToXmlString();
             Assert.Contains($"{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}",
                 newXml);
@@ -94,7 +94,7 @@ namespace Skarp.Version.Cli.Test.CsProj
                 "</Project>";
 
             _patcher.Load(xml);
-            _patcher.PatchVersionField("1.0.0", "2.0.0");
+            _patcher.PatchField("2.0.0", ProjectFileProperty.Version);
             var newXml = _patcher.ToXmlString();
             Assert.Contains("<Version>2.0.0</Version>", newXml);
         }
@@ -107,7 +107,7 @@ namespace Skarp.Version.Cli.Test.CsProj
                 "</Project>";
 
             _patcher.Load(xml);
-            var ex = Record.Exception(() => _patcher.PatchVersionField("1.0.0", "2.0.0"));
+            var ex = Record.Exception(() => _patcher.PatchField("2.0.0", ProjectFileProperty.Version));
 
             var aex = Assert.IsAssignableFrom<ArgumentException>(ex);
 

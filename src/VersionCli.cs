@@ -49,16 +49,24 @@ namespace Skarp.Version.Cli
             }
 
             var csProjXml = _fileDetector.FindAndLoadCsProj(args.CsProjFilePath);
-            _fileParser.Load(csProjXml, ProjectFileProperty.Version, ProjectFileProperty.PackageVersion);
+            _fileParser.Load(
+                csProjXml, 
+                args.ProjectFilePropertyName);
 
-            var semVer = _bumper.Bump(
-                SemVer.FromString(_fileParser.PackageVersion),
+
+
+            var currentSemVer = SemVer.FromString(
+                                    _fileParser.VersionSource == ProjectFileProperty.Version ? 
+                                        _fileParser.Version : 
+                                        _fileParser.VersionPrefix);
+
+            var bumpedSemVer = _bumper.Bump(
+                currentSemVer,
                 args.VersionBump,
                 args.SpecificVersionToApply,
                 args.BuildMeta,
                 args.PreReleasePrefix
             );
-            var versionString = semVer.ToSemVerVersionString();
 
             var theOutput = new VersionInfo
             {
@@ -67,8 +75,8 @@ namespace Skarp.Version.Cli
                     Name = ProductInfo.Name,
                     Version = ProductInfo.Version
                 },
-                OldVersion = _fileParser.PackageVersion,
-                NewVersion = versionString,
+                OldVersion = currentSemVer.ToSemVerVersionString(_fileParser),
+                NewVersion = bumpedSemVer.ToSemVerVersionString(_fileParser),
                 ProjectFile = _fileDetector.ResolvedCsProjFile,
                 VersionStrategy = args.VersionBump.ToString().ToLowerInvariant()
             };
@@ -77,9 +85,9 @@ namespace Skarp.Version.Cli
             {
                 _fileVersionPatcher.Load(csProjXml);
 
-                _fileVersionPatcher.PatchVersionField(
-                    _fileParser.Version,
-                    versionString
+                _fileVersionPatcher.PatchField(
+                    bumpedSemVer.ToSemVerVersionString(_fileParser),
+                    _fileParser.VersionSource
                 );
 
                 _fileVersionPatcher.Flush(
@@ -101,11 +109,11 @@ namespace Skarp.Version.Cli
             }
             else if (args.OutputFormat == OutputFormat.Bare)
             {
-                Console.WriteLine(versionString);
+                Console.WriteLine(bumpedSemVer.ToSemVerVersionString(_fileParser));
             }
             else
             {
-                Console.WriteLine($"Bumped {_fileDetector.ResolvedCsProjFile} to version {versionString}");
+                Console.WriteLine($"Bumped {_fileDetector.ResolvedCsProjFile} to version {bumpedSemVer.ToSemVerVersionString(_fileParser)}");
             }
 
             return theOutput;
