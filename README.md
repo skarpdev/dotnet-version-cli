@@ -8,9 +8,9 @@
 
 # dotnet-version-cli
 
-This repository contains the source code for an [npm/yarn version][1] inspired dotnet global tool for dotnet core 2.1 or newer with full [SemVer 2.0][semver2] compatibility!
+This repository contains the source code for an [npm/yarn version][1] inspired dotnet global tool for dotnet with full [SemVer 2.0][semver2] compatibility!
 
-This used to be a dotnet csproj installable `cli tool` - if you are not ready for the move to dotnet 2.1 global tools, please take a look at the last [0.7.0 release that supports csproj installation](https://github.com/skarpdev/dotnet-version-cli/blob/v0.7.0/README.md).
+This used to be a dotnet csproj installable `cli tool` - if you are not ready for the move to dotnet global tools, please take a look at the last [0.7.0 release that supports csproj installation](https://github.com/skarpdev/dotnet-version-cli/blob/v0.7.0/README.md).
 
 Once installed it provides a `dotnet version` command which allows you to easily bump `patch`, `minor` and `major` versions on your project. You can also release and manage pre-release
 vesions of your packages by using the `prepatch`, `preminor` and `premajor` commands. Once in pre-release mode you can use the `prerelease` option to update the pre-release number.
