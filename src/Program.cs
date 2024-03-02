@@ -65,6 +65,11 @@ namespace Skarp.Version.Cli
                 "Set tag's name - default is 'v<version>'. Available variables: $projName, $oldVer, $newVer",
                 CommandOptionType.SingleValue);
 
+            var projectFilePropertyName = commandLineApplication.Option(
+                "-v | --version-property-name <property-name>",
+                "Specify which tag from <PropertyGroup> to use as the version tag. Default is Version. Available values: Version, PackageVersion.",
+                CommandOptionType.SingleValue);
+
             commandLineApplication.OnExecute(() =>
             {
                 try
@@ -103,7 +108,8 @@ namespace Skarp.Version.Cli
                         buildMetaOption.Value(),
                         prefixOption.Value(),
                         commitMessage.Value(),
-                        vcsTag.Value()
+                        vcsTag.Value(),
+                        projectFilePropertyName.Value()
                     );
                     _cli.Execute(cliArgs);
 
@@ -143,7 +149,8 @@ namespace Skarp.Version.Cli
             string userSpecifiedBuildMeta,
             string preReleasePrefix,
             string commitMessage,
-            string vcsTag
+            string vcsTag,
+            string projectFilePropertyName
         )
         {
             if (remainingArguments == null || !remainingArguments.Any())
@@ -162,8 +169,9 @@ namespace Skarp.Version.Cli
                 BuildMeta = userSpecifiedBuildMeta,
                 PreReleasePrefix = preReleasePrefix,
                 CommitMessage = commitMessage,
-                VersionControlTag = vcsTag,
+                VersionControlTag = vcsTag
             };
+            
             var bump = VersionBump.Patch;
 
             foreach (var arg in remainingArguments)
@@ -177,6 +185,11 @@ namespace Skarp.Version.Cli
 
             args.VersionBump = bump;
             args.CsProjFilePath = userSpecifiedCsProjFilePath;
+            
+            if (!string.IsNullOrEmpty(projectFilePropertyName))
+            {
+                args.ProjectFilePropertyName = Enum.Parse<ProjectFileProperty>(projectFilePropertyName, ignoreCase: true);
+            }
 
             return args;
         }
