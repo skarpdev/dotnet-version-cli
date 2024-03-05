@@ -44,8 +44,8 @@ namespace Skarp.Version.Cli
         public string VersionControlTag { get; set; }
 
         /// <summary>
-        /// Specify the Version-Tag that should be targeted. Default is PackageVersion
+        /// Specify the Version-Tag that should be targeted. Default is Version.
         /// </summary>
-        public ProjectFileProperty ProjectFilePropertyName { get; set; } = ProjectFileProperty.PackageVersion;
+        public ProjectFileProperty ProjectFilePropertyName { get; set; } = ProjectFileProperty.Version;
     }
 }

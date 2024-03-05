@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using FakeItEasy;
-using Microsoft.Extensions.CommandLineUtils;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
+using Skarp.Version.Cli.CsProj;
 using Xunit;
 
 namespace Skarp.Version.Cli.Test
@@ -21,13 +18,14 @@ namespace Skarp.Version.Cli.Test
         [InlineData("1.0.1-0", VersionBump.Specific)]
         [InlineData("1.0.1-0+master", VersionBump.Specific)]
         [InlineData("1.0.1-alpha.43+4432fsd", VersionBump.Specific)]
-        public void GetVersionBumpFromRemaingArgsWork(string strVersionBump, VersionBump expectedBump)
+        public void GetVersionBumpFromRemainingArgsWork(string strVersionBump, VersionBump expectedBump)
         {
             var args = Program.GetVersionBumpFromRemainingArgs(
                 new List<string>() {strVersionBump},
                 OutputFormat.Text,
                 true,
                 true,
+                string.Empty,
                 string.Empty,
                 string.Empty,
                 string.Empty,
@@ -50,6 +48,7 @@ namespace Skarp.Version.Cli.Test
                     OutputFormat.Text,
                     true,
                     true,
+                    string.Empty,
                     string.Empty,
                     string.Empty,
                     string.Empty,
@@ -77,12 +76,55 @@ namespace Skarp.Version.Cli.Test
                     string.Empty,
                     string.Empty,
                     string.Empty,
+                    string.Empty,
                     string.Empty
                 )
             );
             Assert.Contains($"Invalid SemVer version string: {invalidVersion}",
                 ex.Message);
             Assert.Equal("versionString", ex.ParamName);
+        }
+        
+        [Fact]
+        public void DefaultsToReadingVersionStringFromVersionProperty()
+        {
+            var args = Program.GetVersionBumpFromRemainingArgs(
+                new List<string>() {"patch"},
+                OutputFormat.Text,
+                true,
+                true,
+                string.Empty,
+                string.Empty,
+                string.Empty,
+                string.Empty,
+                string.Empty,
+                string.Empty
+            );
+            
+            Assert.Equal(ProjectFileProperty.Version, args.ProjectFilePropertyName);
+        }
+        
+        [Theory]
+        [InlineData(null, ProjectFileProperty.Version)]
+        [InlineData("", ProjectFileProperty.Version)]
+        [InlineData("verSION", ProjectFileProperty.Version)]
+        [InlineData("packageversion", ProjectFileProperty.PackageVersion)]
+        public void CanOverrideTheVersionPropertyName(string input, ProjectFileProperty expected)
+        {
+            var args = Program.GetVersionBumpFromRemainingArgs(
+                new List<string>() {"patch"},
+                OutputFormat.Text,
+                true,
+                true,
+                string.Empty,
+                string.Empty,
+                string.Empty,
+                string.Empty,
+                string.Empty,
+                input
+            );
+            
+            Assert.Equal(expected, args.ProjectFilePropertyName);
         }
     }
 }
