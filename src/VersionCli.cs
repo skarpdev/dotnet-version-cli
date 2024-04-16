@@ -137,7 +137,8 @@ namespace Skarp.Version.Cli
         public void DumpVersion(VersionCliArgs args)
         {
             var csProjXml = _fileDetector.FindAndLoadCsProj(args.CsProjFilePath);
-            _fileParser.Load(csProjXml, ProjectFileProperty.Version, ProjectFileProperty.PackageVersion);
+            _fileParser.Load(csProjXml, args.ProjectFilePropertyName);
+            
             switch (args.OutputFormat)
             {
                 case OutputFormat.Json:
@@ -148,17 +149,18 @@ namespace Skarp.Version.Cli
                             Name = ProductInfo.Name,
                             Version = ProductInfo.Version
                         },
-                        CurrentVersion = _fileParser.PackageVersion,
+                        CurrentVersion = _fileParser.GetHumanReadableVersionFromSource(),
                         ProjectFile = _fileDetector.ResolvedCsProjFile,
                     };
                     WriteJsonToStdout(theOutput);
                     break;
                 case OutputFormat.Bare:
-                    Console.WriteLine(_fileParser.PackageVersion);
+                    Console.WriteLine(_fileParser.GetHumanReadableVersionFromSource());
                     break;
                 case OutputFormat.Text:
                 default:
-                    Console.WriteLine("Project version is: {0}\t{1}", Environment.NewLine, _fileParser.PackageVersion);
+                    Console.WriteLine("Project version is: {0}\t{1}", Environment.NewLine,
+                        _fileParser.GetHumanReadableVersionFromSource());
                     break;
             }
         }

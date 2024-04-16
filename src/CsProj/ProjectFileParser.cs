@@ -93,25 +93,13 @@ namespace Skarp.Version.Cli.CsProj
 
         public string GetHumanReadableVersionFromSource()
         {
-            switch (VersionSource)
+            return VersionSource switch
             {
-                case ProjectFileProperty.Version:
-                {
-                    return Version;
-                }
-                case ProjectFileProperty.VersionPrefix:
-                {
-                    return $"{VersionPrefix}-{VersionSuffix}";
-                }
-                case ProjectFileProperty.PackageVersion:
-                {
-                    return PackageVersion;
-                }
-                default:
-                {
-                    throw new ArgumentOutOfRangeException($"Unknown version source {VersionSource}");
-                }
-            }
+                ProjectFileProperty.Version => Version,
+                ProjectFileProperty.VersionPrefix => $"{VersionPrefix}-{VersionSuffix}",
+                ProjectFileProperty.PackageVersion => PackageVersion,
+                _ => throw new ArgumentOutOfRangeException($"Unknown version source {VersionSource}")
+            };
         }
 
         private XElement LoadProperty(ProjectFileProperty property)
