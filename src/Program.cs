@@ -95,7 +95,9 @@ namespace Skarp.Version.Cli
                         {
                             OutputFormat = outputFormat,
                             CsProjFilePath = csProjectFileOption.Value(),
+                            ProjectFilePropertyName = Enum.Parse<ProjectFileProperty>(projectFilePropertyName.Value(), ignoreCase: true),
                         });
+                        
                         return 0;
                     }
 

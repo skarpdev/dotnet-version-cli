@@ -17,15 +17,26 @@ namespace Skarp.Version.Cli.CsProj
 
         public virtual string VersionSuffix { get; private set; }
 
-        public ProjectFileProperty VersionSource { get
+        public virtual ProjectFileProperty DesiredVersionSource { get; private set; }
+
+        public ProjectFileProperty VersionSource
+        {
+            get
             {
-                return !string.IsNullOrEmpty(Version) ? ProjectFileProperty.Version : ProjectFileProperty.VersionPrefix;
-            } 
+                if (DesiredVersionSource == ProjectFileProperty.Version)
+                {
+                    return string.IsNullOrWhiteSpace(Version)
+                        ? ProjectFileProperty.VersionPrefix
+                        : ProjectFileProperty.Version;
+                }
+
+                return ProjectFileProperty.PackageVersion;
+            }
         }
 
         private IEnumerable<XElement> _propertyGroup { get; set; }
 
-        public virtual void Load(string xmlDocument, ProjectFileProperty property)
+        protected virtual void Load(string xmlDocument, ProjectFileProperty property)
         {
             LoadPropertyGroup(xmlDocument);
 
@@ -52,8 +63,11 @@ namespace Skarp.Version.Cli.CsProj
             }
         }
 
-        public virtual void Load(string xmlDocument, params ProjectFileProperty[] properties)
+
+        public virtual void Load(string xmlDocument, ProjectFileProperty versionSource,  params ProjectFileProperty[] properties)
         {
+            DesiredVersionSource = versionSource;
+            
             if (properties == null || !properties.Any())
             {
                 properties = new[]
@@ -66,6 +80,7 @@ namespace Skarp.Version.Cli.CsProj
                     ProjectFileProperty.VersionSuffix
                 };
             }
+
             // Try to load xmlDocument even if there is no properties to be loaded
             // in order to verify if project file is well formed
             LoadPropertyGroup(xmlDocument);
@@ -74,6 +89,17 @@ namespace Skarp.Version.Cli.CsProj
             {
                 Load(xmlDocument, property);
             }
+        }
+
+        public string GetHumanReadableVersionFromSource()
+        {
+            return VersionSource switch
+            {
+                ProjectFileProperty.Version => Version,
+                ProjectFileProperty.VersionPrefix => $"{VersionPrefix}-{VersionSuffix}",
+                ProjectFileProperty.PackageVersion => PackageVersion,
+                _ => throw new ArgumentOutOfRangeException($"Unknown version source {VersionSource}")
+            };
         }
 
         private XElement LoadProperty(ProjectFileProperty property)

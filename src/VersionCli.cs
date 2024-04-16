@@ -50,15 +50,13 @@ namespace Skarp.Version.Cli
 
             var csProjXml = _fileDetector.FindAndLoadCsProj(args.CsProjFilePath);
             _fileParser.Load(
-                csProjXml, 
-                args.ProjectFilePropertyName);
+                csProjXml,
+                args.ProjectFilePropertyName,
+                ProjectFileProperty.Version, ProjectFileProperty.PackageVersion, ProjectFileProperty.VersionSuffix,
+                ProjectFileProperty.VersionPrefix
+            );
 
-
-
-            var currentSemVer = SemVer.FromString(
-                                    _fileParser.VersionSource == ProjectFileProperty.Version ? 
-                                        _fileParser.Version : 
-                                        _fileParser.VersionPrefix);
+            var currentSemVer = GetCurrentSemVerFromSource();
 
             var bumpedSemVer = _bumper.Bump(
                 currentSemVer,
@@ -98,7 +96,8 @@ namespace Skarp.Version.Cli
                 {
                     _fileParser.Load(csProjXml, ProjectFileProperty.Title);
                     // Run git commands
-                    _vcsTool.Commit(_fileDetector.ResolvedCsProjFile, _vcsParser.Commit(theOutput, _fileParser, args.CommitMessage));
+                    _vcsTool.Commit(_fileDetector.ResolvedCsProjFile,
+                        _vcsParser.Commit(theOutput, _fileParser, args.CommitMessage));
                     _vcsTool.Tag(_vcsParser.Tag(theOutput, _fileParser, args.VersionControlTag));
                 }
             }
@@ -113,17 +112,33 @@ namespace Skarp.Version.Cli
             }
             else
             {
-                Console.WriteLine($"Bumped {_fileDetector.ResolvedCsProjFile} to version {bumpedSemVer.ToSemVerVersionString(_fileParser)}");
+                Console.WriteLine(
+                    $"Bumped {_fileDetector.ResolvedCsProjFile} to version {bumpedSemVer.ToSemVerVersionString(_fileParser)}");
             }
 
             return theOutput;
         }
 
+        private SemVer GetCurrentSemVerFromSource()
+        {
+            if (_fileParser.VersionSource == ProjectFileProperty.Version)
+            {
+                return SemVer.FromString(_fileParser.Version);
+            }
+
+            if (_fileParser.VersionSource == ProjectFileProperty.PackageVersion)
+            {
+                return SemVer.FromString(_fileParser.PackageVersion);
+            }
+
+            return SemVer.FromString(_fileParser.VersionPrefix);
+        }
+
         public void DumpVersion(VersionCliArgs args)
         {
             var csProjXml = _fileDetector.FindAndLoadCsProj(args.CsProjFilePath);
-            _fileParser.Load(csProjXml, ProjectFileProperty.Version, ProjectFileProperty.PackageVersion);
-
+            _fileParser.Load(csProjXml, args.ProjectFilePropertyName);
+            
             switch (args.OutputFormat)
             {
                 case OutputFormat.Json:
@@ -134,17 +149,18 @@ namespace Skarp.Version.Cli
                             Name = ProductInfo.Name,
                             Version = ProductInfo.Version
                         },
-                        CurrentVersion = _fileParser.PackageVersion,
+                        CurrentVersion = _fileParser.GetHumanReadableVersionFromSource(),
                         ProjectFile = _fileDetector.ResolvedCsProjFile,
                     };
                     WriteJsonToStdout(theOutput);
                     break;
                 case OutputFormat.Bare:
-                    Console.WriteLine(_fileParser.PackageVersion);
+                    Console.WriteLine(_fileParser.GetHumanReadableVersionFromSource());
                     break;
                 case OutputFormat.Text:
                 default:
-                    Console.WriteLine("Project version is: {0}\t{1}", Environment.NewLine, _fileParser.PackageVersion);
+                    Console.WriteLine("Project version is: {0}\t{1}", Environment.NewLine,
+                        _fileParser.GetHumanReadableVersionFromSource());
                     break;
             }
         }

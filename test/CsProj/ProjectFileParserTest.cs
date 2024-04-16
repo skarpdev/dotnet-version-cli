@@ -11,7 +11,6 @@ namespace Skarp.Version.Cli.Test.CsProj
         public ProjectFileParserTest()
         {
             parser = new ProjectFileParser();
-
         }
 
         [Fact]
@@ -27,10 +26,11 @@ namespace Skarp.Version.Cli.Test.CsProj
                                      "</PropertyGroup>" +
                                      "</Project>";
 
-            parser.Load(csProjXml, ProjectFileProperty.Version, ProjectFileProperty.PackageVersion);
+            parser.Load(csProjXml, ProjectFileProperty.Version, ProjectFileProperty.Version, ProjectFileProperty.PackageVersion);
             Assert.Equal("1.0.0", parser.Version);
             Assert.Equal("1.0.0-1+master", parser.PackageVersion);
         }
+
         [Fact]
         public void CanParse_when_version_and_package_version_missing()
         {
@@ -42,7 +42,7 @@ namespace Skarp.Version.Cli.Test.CsProj
                                      "</PropertyGroup>" +
                                      "</Project>";
 
-            parser.Load(csProjXml, ProjectFileProperty.Version, ProjectFileProperty.PackageVersion);
+            parser.Load(csProjXml, ProjectFileProperty.Version, ProjectFileProperty.PackageVersion, ProjectFileProperty.Version);
             Assert.Empty(parser.Version);
             Assert.Empty(parser.PackageVersion);
         }
@@ -59,7 +59,7 @@ namespace Skarp.Version.Cli.Test.CsProj
                                      "</Projectttttt>";
 
             var ex = Assert.Throws<ArgumentException>(() =>
-                parser.Load(csProjXml)
+                parser.Load(csProjXml, ProjectFileProperty.Version)
             );
 
             Assert.Contains($"The provided csproj file seems malformed - no <Project> in the root", ex.Message);
@@ -76,7 +76,7 @@ namespace Skarp.Version.Cli.Test.CsProj
                                      "</PropertyGroup>" +
                                      "</Project>";
 
-            parser.Load(csProjXml);
+            parser.Load(csProjXml, ProjectFileProperty.Version);
             Assert.Empty(parser.PackageName);
         }
 
@@ -91,7 +91,7 @@ namespace Skarp.Version.Cli.Test.CsProj
                                      "</PropertyGroup>" +
                                      "</Project>";
 
-            parser.Load(csProjXml);
+            parser.Load(csProjXml, ProjectFileProperty.Version);
             Assert.Empty(parser.PackageName);
             Assert.Equal("1.0.0", parser.VersionPrefix);
             Assert.Empty(parser.VersionSuffix);
@@ -111,11 +111,63 @@ namespace Skarp.Version.Cli.Test.CsProj
                                      "</PropertyGroup>" +
                                      "</Project>";
 
-            parser.Load(csProjXml);
+            parser.Load(csProjXml, ProjectFileProperty.Version);
             Assert.Empty(parser.PackageName);
             Assert.Equal("1.0.0", parser.VersionPrefix);
             Assert.Equal("SNAPSHOT", parser.VersionSuffix);
             Assert.Empty(parser.Version);
+        }
+
+        [Fact]
+        public void Can_get_human_readable_version_from_version()
+        {
+            const string csProjXml = "<Project Sdk=\"Microsoft.NET.Sdk\">" +
+                                     "<PropertyGroup>" +
+                                     "<TargetFramework>netstandard1.6</TargetFramework>" +
+                                     "<RootNamespace>Unit.For.The.Win</RootNamespace>" +
+                                     "<PackageId>Unit.Testing.Library</PackageId>" +
+                                     "<Version>1.0.0</Version>" +
+                                     "<PackageVersion>1.0.0-1+master</PackageVersion>" +
+                                     "</PropertyGroup>" +
+                                     "</Project>";
+
+            parser.Load(csProjXml, ProjectFileProperty.Version);
+            Assert.Equal("1.0.0", parser.GetHumanReadableVersionFromSource());
+        }
+
+        [Fact]
+        public void Can_get_human_readable_version_from_packageversion()
+        {
+            const string csProjXml = "<Project Sdk=\"Microsoft.NET.Sdk\">" +
+                                     "<PropertyGroup>" +
+                                     "<TargetFramework>netstandard1.6</TargetFramework>" +
+                                     "<RootNamespace>Unit.For.The.Win</RootNamespace>" +
+                                     "<PackageId>Unit.Testing.Library</PackageId>" +
+                                     "<Version>1.0.0</Version>" +
+                                     "<PackageVersion>1.0.0-1+master</PackageVersion>" +
+                                     "</PropertyGroup>" +
+                                     "</Project>";
+
+            parser.Load(csProjXml, ProjectFileProperty.PackageVersion);
+            Assert.Equal("1.0.0-1+master", parser.GetHumanReadableVersionFromSource());
+        }
+
+        [Fact]
+        public void Can_get_human_readable_version_from_versionprefix()
+        {
+            const string csProjXml = "<Project Sdk=\"Microsoft.NET.Sdk\">" +
+                                     "<PropertyGroup>" +
+                                     "<TargetFramework>netstandard1.6</TargetFramework>" +
+                                     "<RootNamespace>Unit.For.The.Win</RootNamespace>" +
+                                     "<PackageId>Unit.Testing.Library</PackageId>" +
+                                     "<VersionPrefix>1.0.0</VersionPrefix>" +
+                                     "<VersionSuffix>master</VersionSuffix>" +
+                                     "</PropertyGroup>" +
+                                     "</Project>";
+
+            parser.Load(csProjXml, ProjectFileProperty.Version, ProjectFileProperty.Version, ProjectFileProperty.VersionPrefix,
+                ProjectFileProperty.VersionSuffix, ProjectFileProperty.PackageVersion);
+            Assert.Equal("1.0.0-master", parser.GetHumanReadableVersionFromSource());
         }
     }
 }
