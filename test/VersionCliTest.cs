@@ -62,7 +62,7 @@ namespace Skarp.Version.Cli.Test
         [Fact]
         public void VersionCli_throws_when_vcs_tool_is_not_present_and_doVcs_is_true()
         {
-            A.CallTo(() => _vcsTool.IsVcsToolPresent()).Returns(false);
+            A.CallTo(() => _vcsTool.IsVcsToolPresent(null)).Returns(false);
 
             var ex = Assert.Throws<OperationCanceledException>(() =>
                 _cli.Execute(new VersionCliArgs { VersionBump = VersionBump.Major, DoVcs = true }));
@@ -72,7 +72,7 @@ namespace Skarp.Version.Cli.Test
         [Fact]
         public void VersionCli_doesNotThrow_when_vcs_tool_is_not_present_if_doVcs_is_false()
         {
-            A.CallTo(() => _vcsTool.IsVcsToolPresent()).Returns(false);
+            A.CallTo(() => _vcsTool.IsVcsToolPresent(null)).Returns(false);
             A.CallTo(() => _fileParser.Version).Returns("1.2.1");
             A.CallTo(() => _fileParser.PackageVersion).Returns("1.2.1");
 
@@ -82,8 +82,8 @@ namespace Skarp.Version.Cli.Test
         [Fact]
         public void VersionCli_throws_when_repo_is_not_clean_and_doVcs_is_true()
         {
-            A.CallTo(() => _vcsTool.IsVcsToolPresent()).Returns(true);
-            A.CallTo(() => _vcsTool.IsRepositoryClean()).Returns(false);
+            A.CallTo(() => _vcsTool.IsVcsToolPresent(null)).Returns(true);
+            A.CallTo(() => _vcsTool.IsRepositoryClean(null)).Returns(false);
 
             var ex = Assert.Throws<OperationCanceledException>(() =>
                 _cli.Execute(new VersionCliArgs { VersionBump = VersionBump.Major, DoVcs = true }));
@@ -94,8 +94,8 @@ namespace Skarp.Version.Cli.Test
         [Fact]
         public void VersionCli_doesNotThrow_when_repo_is_not_clean_if_doVcs_is_false()
         {
-            A.CallTo(() => _vcsTool.IsVcsToolPresent()).Returns(true);
-            A.CallTo(() => _vcsTool.IsRepositoryClean()).Returns(false);
+            A.CallTo(() => _vcsTool.IsVcsToolPresent(null)).Returns(true);
+            A.CallTo(() => _vcsTool.IsRepositoryClean(null)).Returns(false);
             A.CallTo(() => _fileParser.Version).Returns("1.2.1");
             A.CallTo(() => _fileParser.PackageVersion).Returns("1.2.1");
 
@@ -106,10 +106,10 @@ namespace Skarp.Version.Cli.Test
         public void VersionCli_can_bump_versions()
         {
             // Configure
-            A.CallTo(() => _vcsTool.IsRepositoryClean()).Returns(true);
-            A.CallTo(() => _vcsTool.IsVcsToolPresent()).Returns(true);
-            A.CallTo(() => _vcsTool.Commit(A<string>._, A<string>._)).DoesNothing();
-            A.CallTo(() => _vcsTool.Tag(A<string>._)).DoesNothing();
+            A.CallTo(() => _vcsTool.IsRepositoryClean(null)).Returns(true);
+            A.CallTo(() => _vcsTool.IsVcsToolPresent(null)).Returns(true);
+            A.CallTo(() => _vcsTool.Commit(A<string>._, A<string>._, null)).DoesNothing();
+            A.CallTo(() => _vcsTool.Tag(A<string>._, null)).DoesNothing();
 
             A.CallTo(() => _fileDetector.FindAndLoadCsProj(A<string>._)).Returns("<Project/>");
             const string csProjFilePath = "/unit-test/test.csproj";
@@ -134,10 +134,10 @@ namespace Skarp.Version.Cli.Test
                 .MustHaveHappened(Repeated.Exactly.Once);
             A.CallTo(() => _vcsTool.Commit(
                     A<string>.That.Matches(path => path == csProjFilePath),
-                    A<string>.That.Matches(msg => msg == "v2.0.0")))
+                    A<string>.That.Matches(msg => msg == "v2.0.0"), null))
                 .MustHaveHappened(Repeated.Exactly.Once);
             A.CallTo(() => _vcsTool.Tag(
-                    A<string>.That.Matches(tag => tag == "v2.0.0")))
+                    A<string>.That.Matches(tag => tag == "v2.0.0"), null))
                 .MustHaveHappened(Repeated.Exactly.Once);
         }
 
@@ -145,10 +145,10 @@ namespace Skarp.Version.Cli.Test
         public void VersionCli_can_bump_pre_release_versions()
         {
             // Configure
-            A.CallTo(() => _vcsTool.IsRepositoryClean()).Returns(true);
-            A.CallTo(() => _vcsTool.IsVcsToolPresent()).Returns(true);
-            A.CallTo(() => _vcsTool.Commit(A<string>._, A<string>._)).DoesNothing();
-            A.CallTo(() => _vcsTool.Tag(A<string>._)).DoesNothing();
+            A.CallTo(() => _vcsTool.IsRepositoryClean(null)).Returns(true);
+            A.CallTo(() => _vcsTool.IsVcsToolPresent(null)).Returns(true);
+            A.CallTo(() => _vcsTool.Commit(A<string>._, A<string>._ ,null)).DoesNothing();
+            A.CallTo(() => _vcsTool.Tag(A<string>._, null)).DoesNothing();
 
             A.CallTo(() => _fileDetector.FindAndLoadCsProj(A<string>._)).Returns("<Project/>");
             const string csProjFilePath = "/unit-test/test.csproj";
@@ -173,10 +173,10 @@ namespace Skarp.Version.Cli.Test
                 .MustHaveHappened(Repeated.Exactly.Once);
             A.CallTo(() => _vcsTool.Commit(
                     A<string>.That.Matches(path => path == csProjFilePath),
-                    A<string>.That.Matches(msg => msg == "v2.0.0-next.0")))
+                    A<string>.That.Matches(msg => msg == "v2.0.0-next.0"), null))
                 .MustHaveHappened(Repeated.Exactly.Once);
             A.CallTo(() => _vcsTool.Tag(
-                    A<string>.That.Matches(tag => tag == "v2.0.0-next.0")))
+                    A<string>.That.Matches(tag => tag == "v2.0.0-next.0"), null))
                 .MustHaveHappened(Repeated.Exactly.Once);
         }
 
@@ -184,10 +184,10 @@ namespace Skarp.Version.Cli.Test
         public void VersionCli_can_bump_pre_release_with_custom_prefix()
         {
             // Configure
-            A.CallTo(() => _vcsTool.IsRepositoryClean()).Returns(true);
-            A.CallTo(() => _vcsTool.IsVcsToolPresent()).Returns(true);
-            A.CallTo(() => _vcsTool.Commit(A<string>._, A<string>._)).DoesNothing();
-            A.CallTo(() => _vcsTool.Tag(A<string>._)).DoesNothing();
+            A.CallTo(() => _vcsTool.IsRepositoryClean(null)).Returns(true);
+            A.CallTo(() => _vcsTool.IsVcsToolPresent(null)).Returns(true);
+            A.CallTo(() => _vcsTool.Commit(A<string>._, A<string>._, null)).DoesNothing();
+            A.CallTo(() => _vcsTool.Tag(A<string>._, null)).DoesNothing();
 
             A.CallTo(() => _fileDetector.FindAndLoadCsProj(A<string>._)).Returns("<Project/>");
             const string csProjFilePath = "/unit-test/test.csproj";
@@ -213,10 +213,10 @@ namespace Skarp.Version.Cli.Test
                 .MustHaveHappened(Repeated.Exactly.Once);
             A.CallTo(() => _vcsTool.Commit(
                     csProjFilePath,
-                    "v2.0.0-beta.0"))
+                    "v2.0.0-beta.0", null))
                 .MustHaveHappened(Repeated.Exactly.Once);
             A.CallTo(() => _vcsTool.Tag(
-                    "v2.0.0-beta.0"))
+                    "v2.0.0-beta.0", null))
                 .MustHaveHappened(Repeated.Exactly.Once);
         }
 
@@ -224,10 +224,10 @@ namespace Skarp.Version.Cli.Test
         public void VersionCli_can_bump_pre_release_with_build_meta_versions()
         {
             // Configure
-            A.CallTo(() => _vcsTool.IsRepositoryClean()).Returns(true);
-            A.CallTo(() => _vcsTool.IsVcsToolPresent()).Returns(true);
-            A.CallTo(() => _vcsTool.Commit(A<string>._, A<string>._)).DoesNothing();
-            A.CallTo(() => _vcsTool.Tag(A<string>._)).DoesNothing();
+            A.CallTo(() => _vcsTool.IsRepositoryClean(null)).Returns(true);
+            A.CallTo(() => _vcsTool.IsVcsToolPresent(null)).Returns(true);
+            A.CallTo(() => _vcsTool.Commit(A<string>._, A<string>._ ,null)).DoesNothing();
+            A.CallTo(() => _vcsTool.Tag(A<string>._, null)).DoesNothing();
 
             A.CallTo(() => _fileDetector.FindAndLoadCsProj(A<string>._)).Returns("<Project/>");
             const string csProjFilePath = "/unit-test/test.csproj";
@@ -253,10 +253,10 @@ namespace Skarp.Version.Cli.Test
                 .MustHaveHappened(Repeated.Exactly.Once);
             A.CallTo(() => _vcsTool.Commit(
                     A<string>.That.Matches(path => path == csProjFilePath),
-                    A<string>.That.Matches(msg => msg == "v2.0.0-next.0+master")))
+                    A<string>.That.Matches(msg => msg == "v2.0.0-next.0+master"), null))
                 .MustHaveHappened(Repeated.Exactly.Once);
             A.CallTo(() => _vcsTool.Tag(
-                    A<string>.That.Matches(tag => tag == "v2.0.0-next.0+master")))
+                    A<string>.That.Matches(tag => tag == "v2.0.0-next.0+master"), null))
                 .MustHaveHappened(Repeated.Exactly.Once);
         }
 
@@ -264,10 +264,10 @@ namespace Skarp.Version.Cli.Test
         public void VersionCli_can_bump_versions_can_skip_vcs()
         {
             // Configure
-            A.CallTo(() => _vcsTool.IsRepositoryClean()).Returns(true);
-            A.CallTo(() => _vcsTool.IsVcsToolPresent()).Returns(true);
-            A.CallTo(() => _vcsTool.Commit(A<string>._, A<string>._)).DoesNothing();
-            A.CallTo(() => _vcsTool.Tag(A<string>._)).DoesNothing();
+            A.CallTo(() => _vcsTool.IsRepositoryClean(null)).Returns(true);
+            A.CallTo(() => _vcsTool.IsVcsToolPresent(null)).Returns(true);
+            A.CallTo(() => _vcsTool.Commit(A<string>._, A<string>._, null)).DoesNothing();
+            A.CallTo(() => _vcsTool.Tag(A<string>._, null)).DoesNothing();
 
             A.CallTo(() => _fileDetector.FindAndLoadCsProj(A<string>._)).Returns("<Project/>");
             const string csProjFilePath = "/unit-test/test.csproj";
@@ -289,18 +289,18 @@ namespace Skarp.Version.Cli.Test
             A.CallTo(() => _filePatcher.Flush(
                     A<string>.That.Matches(path => path == csProjFilePath)))
                 .MustHaveHappened(Repeated.Exactly.Once);
-            A.CallTo(() => _vcsTool.Commit(A<string>._, A<string>._)).MustNotHaveHappened();
-            A.CallTo(() => _vcsTool.Tag(A<string>._)).MustNotHaveHappened();
+            A.CallTo(() => _vcsTool.Commit(A<string>._, A<string>._, null)).MustNotHaveHappened();
+            A.CallTo(() => _vcsTool.Tag(A<string>._, null)).MustNotHaveHappened();
         }
 
         [Fact]
         public void VersionCli_can_bump_versions_can_dry_run()
         {
             // Configure
-            A.CallTo(() => _vcsTool.IsRepositoryClean()).Returns(true);
-            A.CallTo(() => _vcsTool.IsVcsToolPresent()).Returns(true);
-            A.CallTo(() => _vcsTool.Commit(A<string>._, A<string>._)).DoesNothing();
-            A.CallTo(() => _vcsTool.Tag(A<string>._)).DoesNothing();
+            A.CallTo(() => _vcsTool.IsRepositoryClean(null)).Returns(true);
+            A.CallTo(() => _vcsTool.IsVcsToolPresent(null)).Returns(true);
+            A.CallTo(() => _vcsTool.Commit(A<string>._, A<string>._, null)).DoesNothing();
+            A.CallTo(() => _vcsTool.Tag(A<string>._, null)).DoesNothing();
 
             A.CallTo(() => _fileDetector.FindAndLoadCsProj(A<string>._)).Returns("<Project/>");
             const string csProjFilePath = "/unit-test/test.csproj";
@@ -327,18 +327,18 @@ namespace Skarp.Version.Cli.Test
             A.CallTo(() => _filePatcher.Flush(
                     A<string>.That.Matches(path => path == csProjFilePath)))
                 .MustNotHaveHappened();
-            A.CallTo(() => _vcsTool.Commit(A<string>._, A<string>._)).MustNotHaveHappened();
-            A.CallTo(() => _vcsTool.Tag(A<string>._)).MustNotHaveHappened();
+            A.CallTo(() => _vcsTool.Commit(A<string>._, A<string>._, null)).MustNotHaveHappened();
+            A.CallTo(() => _vcsTool.Tag(A<string>._, null)).MustNotHaveHappened();
         }
 
         [Fact]
         public void VersionCli_can_set_vcs_commit_message()
         {
             // Configure
-            A.CallTo(() => _vcsTool.IsRepositoryClean()).Returns(true);
-            A.CallTo(() => _vcsTool.IsVcsToolPresent()).Returns(true);
-            A.CallTo(() => _vcsTool.Commit(A<string>._, A<string>._)).DoesNothing();
-            A.CallTo(() => _vcsTool.Tag(A<string>._)).DoesNothing();
+            A.CallTo(() => _vcsTool.IsRepositoryClean(null)).Returns(true);
+            A.CallTo(() => _vcsTool.IsVcsToolPresent(null)).Returns(true);
+            A.CallTo(() => _vcsTool.Commit(A<string>._, A<string>._, null)).DoesNothing();
+            A.CallTo(() => _vcsTool.Tag(A<string>._, null)).DoesNothing();
 
             A.CallTo(() => _fileDetector.FindAndLoadCsProj(A<string>._)).Returns("<Project/>");
             const string csProjFilePath = "/unit-test/test.csproj";
@@ -364,10 +364,10 @@ namespace Skarp.Version.Cli.Test
                 .MustHaveHappened(Repeated.Exactly.Once);
             A.CallTo(() => _vcsTool.Commit(
                     A<string>.That.Matches(path => path == csProjFilePath),
-                    A<string>.That.Matches(msg => msg == "commit message")))
+                    A<string>.That.Matches(msg => msg == "commit message"), null))
                 .MustHaveHappened(Repeated.Exactly.Once);
             A.CallTo(() => _vcsTool.Tag(
-                    A<string>.That.Matches(tag => tag == "v2.0.0")))
+                    A<string>.That.Matches(tag => tag == "v2.0.0"), null))
                 .MustHaveHappened(Repeated.Exactly.Once);
         }
 
@@ -375,10 +375,10 @@ namespace Skarp.Version.Cli.Test
         public void VersionCli_can_set_vcs_commit_message_with_variables()
         {
             // Configure
-            A.CallTo(() => _vcsTool.IsRepositoryClean()).Returns(true);
-            A.CallTo(() => _vcsTool.IsVcsToolPresent()).Returns(true);
-            A.CallTo(() => _vcsTool.Commit(A<string>._, A<string>._)).DoesNothing();
-            A.CallTo(() => _vcsTool.Tag(A<string>._)).DoesNothing();
+            A.CallTo(() => _vcsTool.IsRepositoryClean(null)).Returns(true);
+            A.CallTo(() => _vcsTool.IsVcsToolPresent(null)).Returns(true);
+            A.CallTo(() => _vcsTool.Commit(A<string>._, A<string>._, null)).DoesNothing();
+            A.CallTo(() => _vcsTool.Tag(A<string>._, null)).DoesNothing();
 
             A.CallTo(() => _fileDetector.FindAndLoadCsProj(A<string>._)).Returns("<Project/>");
             const string csProjFilePath = "/unit-test/test.csproj";
@@ -408,10 +408,10 @@ namespace Skarp.Version.Cli.Test
                 .MustHaveHappened(Repeated.Exactly.Once);
             A.CallTo(() => _vcsTool.Commit(
                     A<string>.That.Matches(path => path == csProjFilePath),
-                    A<string>.That.Matches(msg => msg == "bump from v1.2.1 to v2.0.0 at unit-test")))
+                    A<string>.That.Matches(msg => msg == "bump from v1.2.1 to v2.0.0 at unit-test"), null))
                 .MustHaveHappened(Repeated.Exactly.Once);
             A.CallTo(() => _vcsTool.Tag(
-                    A<string>.That.Matches(tag => tag == "v2.0.0")))
+                    A<string>.That.Matches(tag => tag == "v2.0.0"), null))
                 .MustHaveHappened(Repeated.Exactly.Once);
         }
 
@@ -419,10 +419,10 @@ namespace Skarp.Version.Cli.Test
         public void VersionCli_can_set_vcs_tag()
         {
             // Configure
-            A.CallTo(() => _vcsTool.IsRepositoryClean()).Returns(true);
-            A.CallTo(() => _vcsTool.IsVcsToolPresent()).Returns(true);
-            A.CallTo(() => _vcsTool.Commit(A<string>._, A<string>._)).DoesNothing();
-            A.CallTo(() => _vcsTool.Tag(A<string>._)).DoesNothing();
+            A.CallTo(() => _vcsTool.IsRepositoryClean(null)).Returns(true);
+            A.CallTo(() => _vcsTool.IsVcsToolPresent(null)).Returns(true);
+            A.CallTo(() => _vcsTool.Commit(A<string>._, A<string>._, null)).DoesNothing();
+            A.CallTo(() => _vcsTool.Tag(A<string>._, null)).DoesNothing();
 
             A.CallTo(() => _fileDetector.FindAndLoadCsProj(A<string>._)).Returns("<Project/>");
             const string csProjFilePath = "/unit-test/test.csproj";
@@ -448,10 +448,10 @@ namespace Skarp.Version.Cli.Test
                 .MustHaveHappened(Repeated.Exactly.Once);
             A.CallTo(() => _vcsTool.Commit(
                     A<string>.That.Matches(path => path == csProjFilePath),
-                    A<string>.That.Matches(msg => msg == "v2.0.0")))
+                    A<string>.That.Matches(msg => msg == "v2.0.0"), null))
                 .MustHaveHappened(Repeated.Exactly.Once);
             A.CallTo(() => _vcsTool.Tag(
-                    A<string>.That.Matches(tag => tag == "vcs tag")))
+                    A<string>.That.Matches(tag => tag == "vcs tag"), null))
                 .MustHaveHappened(Repeated.Exactly.Once);
         }
 
@@ -459,10 +459,10 @@ namespace Skarp.Version.Cli.Test
         public void VersionCli_can_set_vcs_tag_with_variables()
         {
             // Configure
-            A.CallTo(() => _vcsTool.IsRepositoryClean()).Returns(true);
-            A.CallTo(() => _vcsTool.IsVcsToolPresent()).Returns(true);
-            A.CallTo(() => _vcsTool.Commit(A<string>._, A<string>._)).DoesNothing();
-            A.CallTo(() => _vcsTool.Tag(A<string>._)).DoesNothing();
+            A.CallTo(() => _vcsTool.IsRepositoryClean(null)).Returns(true);
+            A.CallTo(() => _vcsTool.IsVcsToolPresent(null)).Returns(true);
+            A.CallTo(() => _vcsTool.Commit(A<string>._, A<string>._, null)).DoesNothing();
+            A.CallTo(() => _vcsTool.Tag(A<string>._, null)).DoesNothing();
 
             A.CallTo(() => _fileDetector.FindAndLoadCsProj(A<string>._)).Returns("<Project/>");
             const string csProjFilePath = "/unit-test/test.csproj";
@@ -492,10 +492,10 @@ namespace Skarp.Version.Cli.Test
                 .MustHaveHappened(Repeated.Exactly.Once);
             A.CallTo(() => _vcsTool.Commit(
                     A<string>.That.Matches(path => path == csProjFilePath),
-                    A<string>.That.Matches(msg => msg == "v2.0.0")))
+                    A<string>.That.Matches(msg => msg == "v2.0.0"), null))
                 .MustHaveHappened(Repeated.Exactly.Once);
             A.CallTo(() => _vcsTool.Tag(
-                    A<string>.That.Matches(tag => tag == "bump from v1.2.1 to v2.0.0 at unit-test")))
+                    A<string>.That.Matches(tag => tag == "bump from v1.2.1 to v2.0.0 at unit-test"), null))
                 .MustHaveHappened(Repeated.Exactly.Once);
         }
 
