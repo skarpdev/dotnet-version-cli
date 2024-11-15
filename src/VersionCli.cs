@@ -97,7 +97,7 @@ namespace Skarp.Version.Cli
                     _fileParser.Load(csProjXml, ProjectFileProperty.Title);
                     // Run git commands
                     _vcsTool.Commit(_fileDetector.ResolvedCsProjFile,
-                        _vcsParser.Commit(theOutput, _fileParser, args.CommitMessage));
+                        _vcsParser.Commit(theOutput, _fileParser, args.CommitMessage), args.SkipHooks);
                     _vcsTool.Tag(_vcsParser.Tag(theOutput, _fileParser, args.VersionControlTag));
                 }
             }

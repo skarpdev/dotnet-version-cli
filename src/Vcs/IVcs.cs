@@ -32,7 +32,8 @@ namespace Skarp.Version.Cli.Vcs
         /// </summary>
         /// <param name="csProjFilePath">Path to the cs project file</param>
         /// <param name="message">The message to create the commit message with</param>
-        void Commit(string csProjFilePath, string message);
+        /// <param name="skipHooks">Flag to skip commit hooks</param>
+        void Commit(string csProjFilePath, string message, bool skipHooks);
 
         /// <summary>
         /// When implemented by a concrete class it will tag the latest commit with the

@@ -47,5 +47,10 @@ namespace Skarp.Version.Cli
         /// Specify the Version-Tag that should be targeted. Default is Version.
         /// </summary>
         public ProjectFileProperty ProjectFilePropertyName { get; set; } = ProjectFileProperty.Version;
+        
+        /// <summary>
+        /// Whether to skip commit hooks
+        /// </summary>
+        public bool SkipHooks { get; set; }
     }
 }

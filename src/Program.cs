@@ -70,6 +70,11 @@ namespace Skarp.Version.Cli
                 "Specify which tag from <PropertyGroup> to use as the version tag. Default is Version. Available values: Version, PackageVersion.",
                 CommandOptionType.SingleValue);
 
+            var skipHooks = commandLineApplication.Option(
+                "-sh | --skip-hooks",
+                "Skip all commit hooks during commit",
+                CommandOptionType.NoValue);
+            
             commandLineApplication.OnExecute(() =>
             {
                 try
@@ -88,6 +93,7 @@ namespace Skarp.Version.Cli
 
                     var doVcs = !skipVcsOption.HasValue();
                     var dryRunEnabled = doDryRun.HasValue();
+                    var skipHooksEnabled = skipHooks.HasValue();
 
                     if (commandLineApplication.RemainingArguments.Count == 0)
                     {
@@ -111,7 +117,8 @@ namespace Skarp.Version.Cli
                         prefixOption.Value(),
                         commitMessage.Value(),
                         vcsTag.Value(),
-                        projectFilePropertyName.Value()
+                        projectFilePropertyName.Value(),
+                        skipHooksEnabled
                     );
                     _cli.Execute(cliArgs);
 
@@ -152,7 +159,8 @@ namespace Skarp.Version.Cli
             string preReleasePrefix,
             string commitMessage,
             string vcsTag,
-            string projectFilePropertyName
+            string projectFilePropertyName,
+            bool skipHooks
         )
         {
             if (remainingArguments == null || !remainingArguments.Any())
@@ -171,7 +179,8 @@ namespace Skarp.Version.Cli
                 BuildMeta = userSpecifiedBuildMeta,
                 PreReleasePrefix = preReleasePrefix,
                 CommitMessage = commitMessage,
-                VersionControlTag = vcsTag
+                VersionControlTag = vcsTag,
+                SkipHooks = skipHooks,
             };
             
             var bump = VersionBump.Patch;

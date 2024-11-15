@@ -30,7 +30,8 @@ namespace Skarp.Version.Cli.Test
                 string.Empty,
                 string.Empty,
                 string.Empty,
-                string.Empty
+                string.Empty,
+                true
             );
             Assert.Equal(expectedBump, args.VersionBump);
             if (expectedBump == VersionBump.Specific)
@@ -53,7 +54,8 @@ namespace Skarp.Version.Cli.Test
                     string.Empty,
                     string.Empty,
                     string.Empty,
-                    string.Empty
+                    string.Empty,
+                    true
                 )
             );
             Assert.Contains(
@@ -77,7 +79,8 @@ namespace Skarp.Version.Cli.Test
                     string.Empty,
                     string.Empty,
                     string.Empty,
-                    string.Empty
+                    string.Empty,
+                    true
                 )
             );
             Assert.Contains($"Invalid SemVer version string: {invalidVersion}",
@@ -98,7 +101,8 @@ namespace Skarp.Version.Cli.Test
                 string.Empty,
                 string.Empty,
                 string.Empty,
-                string.Empty
+                string.Empty,
+                true
             );
             
             Assert.Equal(ProjectFileProperty.Version, args.ProjectFilePropertyName);
@@ -121,7 +125,8 @@ namespace Skarp.Version.Cli.Test
                 string.Empty,
                 string.Empty,
                 string.Empty,
-                input
+                input,
+                true
             );
             
             Assert.Equal(expected, args.ProjectFilePropertyName);

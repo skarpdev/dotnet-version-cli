@@ -10,14 +10,16 @@ namespace Skarp.Version.Cli.Vcs.Git
         /// </summary>
         /// <param name="csProjFilePath">Path to the cs project file that was version updated</param>
         /// <param name="message">The message to include in the commit</param>
-        public void Commit(string csProjFilePath, string message)
+        /// <param name="skipHooks">Flag to skip commit hooks</param>
+        public void Commit(string csProjFilePath, string message, bool skipHooks = false)
         {
             if(!LaunchGitWithArgs($"add \"{csProjFilePath}\""))
             {
                 throw new OperationCanceledException($"Unable to add cs proj file {csProjFilePath} to git index");
             }
 
-            if(!LaunchGitWithArgs($"commit -m \"{message}\""))
+            var skipHooksArg = skipHooks ? "--no-verify" : "";
+            if(!LaunchGitWithArgs($"commit {skipHooksArg} -m \"{message}\""))
             {
                 throw new OperationCanceledException("Unable to commit");
             }
