@@ -61,7 +61,7 @@ namespace Skarp.Version.Cli.Vcs.Git
                 var startInfo = CreateGitShellStartInfo(args);
                 var proc = Process.Start(startInfo);
                 proc.WaitForExit(waitForExitTimeMs);
-
+                
                 return proc.ExitCode == exitCode;
             }
             catch (Exception ex)
