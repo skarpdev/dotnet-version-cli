@@ -48,7 +48,7 @@ namespace Skarp.Version.Cli.Vcs.Git
         /// <param name="tagName">Name of the tag</param>
         public void Tag(string tagName)
         {
-            if(!LaunchGitWithArgs($"tag {tagName}"))
+            if(!LaunchGitWithArgs($"tag -a {tagName} -m {tagName}"))
             {
                 throw new OperationCanceledException("Unable to create tag");
             }
@@ -60,13 +60,7 @@ namespace Skarp.Version.Cli.Vcs.Git
             {
                 var startInfo = CreateGitShellStartInfo(args);
                 var proc = Process.Start(startInfo);
-                if (proc == null)
-                {
-                    throw new Exception("Something is horribly wrong");
-                }
                 proc.WaitForExit(waitForExitTimeMs);
-
-                // Console.WriteLine(exitCode);
                 
                 return proc.ExitCode == exitCode;
             }
