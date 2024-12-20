@@ -22,6 +22,7 @@ namespace Skarp.Version.Cli.Test.Versioning
         [InlineData("2.1.0", VersionBump.PrePatch, 2, 1, 1, "next.0", "")]
         [InlineData("3.2.1", VersionBump.Specific, 3, 2, 1, "", "")]
         [InlineData("3.2.1-0+master", VersionBump.Specific, 3, 2, 1, "0", "master")]
+        [InlineData("6.0.2-1-g609a472", VersionBump.Specific, 6, 0, 2, "1-g609a472", "")]
         public void CanBumpVersions(
             string version,
             VersionBump bump,

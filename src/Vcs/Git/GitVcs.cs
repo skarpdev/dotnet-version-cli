@@ -60,8 +60,14 @@ namespace Skarp.Version.Cli.Vcs.Git
             {
                 var startInfo = CreateGitShellStartInfo(args);
                 var proc = Process.Start(startInfo);
+                if (proc == null)
+                {
+                    throw new Exception("Something is horribly wrong");
+                }
                 proc.WaitForExit(waitForExitTimeMs);
 
+                // Console.WriteLine(exitCode);
+                
                 return proc.ExitCode == exitCode;
             }
             catch (Exception ex)

@@ -121,17 +121,12 @@ namespace Skarp.Version.Cli
 
         private SemVer GetCurrentSemVerFromSource()
         {
-            if (_fileParser.VersionSource == ProjectFileProperty.Version)
+            return _fileParser.VersionSource switch
             {
-                return SemVer.FromString(_fileParser.Version);
-            }
-
-            if (_fileParser.VersionSource == ProjectFileProperty.PackageVersion)
-            {
-                return SemVer.FromString(_fileParser.PackageVersion);
-            }
-
-            return SemVer.FromString(_fileParser.VersionPrefix);
+                ProjectFileProperty.Version => SemVer.FromString(string.IsNullOrWhiteSpace(_fileParser.Version) ? "0.0.0" : _fileParser.Version),
+                ProjectFileProperty.PackageVersion => SemVer.FromString(string.IsNullOrWhiteSpace(_fileParser.PackageVersion) ? "0.0.0" : _fileParser.PackageVersion),
+                _ => SemVer.FromString(string.IsNullOrWhiteSpace(_fileParser.VersionPrefix) ? "0.0.0" : _fileParser.VersionPrefix)
+            };
         }
 
         public void DumpVersion(VersionCliArgs args)
