@@ -22,7 +22,7 @@ namespace Skarp.Version.Cli.CsProj.FileSystem
         /// <returns></returns>
         public bool IsCsProjectFile(string path)
         {
-            return File.Exists(path) && (path.EndsWith(".csproj") || path.EndsWith(".targets"));
+            return File.Exists(path) && (path.EndsWith(".csproj") || path.EndsWith(".targets") || path.EndsWith(".props"));
         }
 
         /// <summary>
